@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExamPulse Pro — Study Group Mock Test & PYQ PDF Studio</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Mozilla PDF.js & Chart.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #090d16;
+      --bg-elevated: #111827;
+      --card: #161f33;
+      --card-hover: #1e293b;
+      --border: #26334d;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-soft: rgba(59, 130, 246, 0.14);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.14);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.14);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.14);
+      --purple: #8b5cf6;
+      --purple-soft: rgba(139, 92, 246, 0.15);
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f1f5f9;
+      --bg-elevated: #ffffff;
+      --card: #ffffff;
+      --card-hover: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: rgba(37, 99, 235, 0.1);
+      --success: #059669;
+      --success-soft: rgba(5, 150, 105, 0.1);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --purple: #7c3aed;
+      --purple-soft: rgba(124, 58, 237, 0.1);
+      --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* TOP NAVIGATION BAR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: 0.15s;
+    }
+    .nav-btn:hover { color: var(--text); background: var(--card-hover); }
+    .nav-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .section-pill {
+      display: flex;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 6px 4px 10px;
+      gap: 6px;
+    }
+    .section-pill select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .section-pill select option { background: var(--card); color: var(--text); }
+    .icon-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      transition: 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .view-section { display: none; animation: fadeIn 0.2s ease; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* CARDS & GRIDS */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .studio-grid { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+    @media (max-width: 980px) {
+      .grid-2, .grid-3, .grid-4, .studio-grid { grid-template-columns: 1fr; }
+    }
+
+    /* BUTTONS & INPUTS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { filter: brightness(1.08); }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--card-hover); border-color: var(--muted); }
+    .btn-sm { padding: 6px 11px; font-size: 0.8rem; }
+
+    input[type="text"], input[type="number"], input[type="password"], select, textarea {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    label.field-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+
+    /* HERO / GUIDE BANNER */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(139, 92, 246, 0.16));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    /* DROPZONE */
+    .dropzone {
+      border: 2px dashed var(--primary);
+      background: var(--primary-soft);
+      border-radius: 12px;
+      padding: 26px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .dropzone:hover { filter: brightness(1.1); }
+    .dropzone input { display: none; }
+
+    /* VISUAL QUESTION EDITOR CARDS */
+    .q-list { display: flex; flex-direction: column; gap: 14px; max-height: 68vh; overflow-y: auto; padding-right: 6px; }
+    .q-edit-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .q-passage-box {
+      background: var(--warning-soft);
+      border-left: 3px solid var(--warning);
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+    .opt-edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+    @media (max-width: 640px) { .opt-edit-grid { grid-template-columns: 1fr; } }
+    .opt-edit-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    .opt-edit-item.correct { border-color: var(--success); background: var(--success-soft); }
+    .opt-edit-item input[type="text"] { border: none; background: transparent; padding: 2px; }
+
+    /* EXAM ENGINE OVERLAY (FULL SCREEN TCS iON / IBPS PRO LAYOUT) */
+    #examOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+    }
+    #examOverlay.active { display: flex; }
+    .exam-header {
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .timer-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timer-box.urgent { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.6; } }
+
+    .exam-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      .exam-body { grid-template-columns: 1fr; overflow-y: auto; }
+    }
+    .exam-main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+    }
+    .exam-subtabs {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .exam-workspace {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .exam-workspace.has-passage {
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 900px) {
+      .exam-workspace.has-passage { grid-template-columns: 1fr; }
+    }
+    .passage-pane {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      overflow-y: auto;
+      max-height: 62vh;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+    .question-pane {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .option-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: 0.15s;
+      font-size: 0.95rem;
+    }
+    .option-card:hover { border-color: var(--primary); background: var(--card-hover); }
+    .option-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 600;
+    }
+    .opt-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+    .option-card.selected .opt-letter {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .exam-footer {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* QUESTION PALETTE SIDEBAR */
+    .exam-sidebar {
+      background: var(--bg-elevated);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+    .palette-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .p-btn {
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.12s;
+    }
+    .p-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .p-btn.answered { background: var(--success); color: #fff; border-color: var(--success); }
+    .p-btn.unanswered { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .p-btn.review { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .p-btn.ans-review {
+      background: var(--purple);
+      color: #fff;
+      border: 2px solid var(--success);
+    }
+
+    /* MODALS */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* KPI & TABLES */
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .kpi-val { font-size: 1.65rem; font-weight: 800; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+    .tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================= TOP NAVBAR ======================= -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div>ExamPulse Pro</div>
+        <div style="font-size: 0.72rem; color: var(--muted); font-weight: 500;">Study Circle Mock & PYQ Studio</div>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="switchView('guide', this)">🏠 Welcome & Guide</button>
+      <button class="nav-btn" onclick="switchView('studio', this)">📄 Smart PDF Converter</button>
+      <button class="nav-btn" onclick="switchView('library', this)">🗂️ Test Library <span id="libCountBadge" class="tag" style="margin-left:4px;">0</span></button>
+      <button class="nav-btn" onclick="switchView('analytics', this)">📊 Analytics</button>
+      <button class="nav-btn" onclick="switchView('bookmarks', this)">🔖 Bookmarks <span id="bmCountBadge" class="tag" style="margin-left:4px;">0</span></button>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Custom Exam Section Dropdown & Organizer -->
+      <div class="section-pill" title="Filter by Exam Section">
+        <span style="font-size: 0.8rem; color: var(--muted);">🗂️</span>
+        <select id="globalSectionSelect" onchange="onGlobalSectionChange()"></select>
+        <button class="icon-btn" style="width:26px;height:26px;border:none;" onclick="openModal('sectionModal')" title="Edit / Organize Exam Sections">⚙️</button>
+      </div>
+
+      <!-- Firebase Spark Google Sign-In & Cloud Sync -->
+      <button class="btn btn-outline btn-sm" id="authBtn" onclick="handleAuthClick()">
+        ☁️ <span id="authStatusText">Google Sign-In</span>
+      </button>
+      <button class="icon-btn" onclick="openModal('firebaseModal')" title="Firebase Spark Cloud Setup">🔑</button>
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light Theme">🌙</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ======================= VIEW 1: WELCOME & GUIDE ======================= -->
+    <section id="view-guide" class="view-section active">
+      <div class="hero-banner">
+        <div style="max-width: 680px;">
+          <span class="tag" style="margin-bottom: 10px;">100% Free • Client-Side • Study Group Edition</span>
+          <h1 style="font-size: 1.85rem; font-weight: 800; margin-bottom: 10px;">Practice Any Exam PDF or Question Paper Together</h1>
+          <p style="color: var(--muted); font-size: 0.95rem; margin-bottom: 18px;">
+            Upload raw PYQ PDFs from <b>Adda247, Testbook, Oliveboard, or Telegram</b> to automatically strip ads, unmix 2-column pages, link passages, and take real timer-based mock tests with cloud score syncing.
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="triggerNav('studio')">📄 Convert a PYQ PDF Now</button>
+            <button class="btn btn-success" onclick="loadSampleMockTest()">🚀 Try Instant Demo Mock Test</button>
+            <button class="btn btn-outline" onclick="openModal('promptModal')">🤖 Copy ChatGPT / Gemini Prompt</button>
+          </div>
+        </div>
+        <div class="card" style="min-width: 260px; background: var(--bg-elevated);">
+          <div style="font-size: 0.8rem; color: var(--muted); font-weight: 600; margin-bottom: 8px;">QUICK STUDY STATS</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--muted); font-size: 0.88rem;">Saved Mock Tests:</span>
+            <strong id="quickStatTests">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--muted); font-size: 0.88rem;">Attempts Completed:</span>
+            <strong id="quickStatAttempts">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--muted); font-size: 0.88rem;">Sync Mode:</span>
+            <strong id="quickStatSync" style="color: var(--warning);">Local Browser</strong>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="font-size: 1.15rem; margin-bottom: 14px;">🛠️ How Our Study Group Uses This Website (3 Easy Steps)</h2>
+      <div class="grid-3" style="margin-bottom: 24px;">
+        <div class="card">
+          <div class="step-badge">1</div>
+          <h3 style="font-size: 1rem; margin-bottom: 6px;">Upload PDF or Paste AI JSON</h3>
+          <p style="font-size: 0.86rem; color: var(--muted);">
+            Go to the <b>Smart PDF Converter</b> tab and drop any coaching PYQ PDF. It strips watermarks, fixes 2-column layouts, and merges the answer key automatically. Or use our built-in prompt with ChatGPT/Gemini!
+          </p>
+        </div>
+        <div class="card">
+          <div class="step-badge">2</div>
+          <h3 style="font-size: 1rem; margin-bottom: 6px;">Organize Sections & Take Mock</h3>
+          <p style="font-size: 0.86rem; color: var(--muted);">
+            Assign the test to an Exam Section (like <i>UIIC AO, IBPS PO, SSC</i>), set your timer and negative marking (e.g., <code>+1 / -0.25</code>), and launch the full-screen exam interface.
+          </p>
+        </div>
+        <div class="card">
+          <div class="step-badge">3</div>
+          <h3 style="font-size: 1rem; margin-bottom: 6px;">Track Progress & Sync on Cloud</h3>
+          <p style="font-size: 0.86rem; color: var(--muted);">
+            Submit your test via the last-question confirmation modal, review detailed solutions, and check your <b>Progression Line Chart</b> and <b>Marks Comparison Bar Chart</b>. Sign in with Google to sync across devices!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= VIEW 2: SMART PDF & JSON STUDIO ======================= -->
+    <section id="view-studio" class="view-section">
+      <div class="studio-grid">
+        <!-- LEFT SIDEBAR: UPLOAD & SMART HURDLE FILTERS -->
+        <div class="card">
+          <h2 style="font-size: 1.05rem; margin-bottom: 12px;">1. Upload Any Coaching PYQ PDF</h2>
+          <label class="dropzone" id="pdfDropzone">
+            <input type="file" id="pdfFileInput" accept="application/pdf" />
+            <div style="font-size: 2rem; margin-bottom: 6px;">📥</div>
+            <div style="font-weight: 700; font-size: 0.92rem;" id="pdfFileName">Drop PDF Here or Click to Browse</div>
+            <div style="font-size: 0.76rem; color: var(--muted); margin-top: 4px;">Adda247 • Testbook • Oliveboard • PracticeMock</div>
+          </label>
+
+          <div style="margin-bottom: 14px;">
+            <label class="field-label">Test Title</label>
+            <input type="text" id="studioTestTitle" placeholder="e.g., UIIC AO Prelims Full Mock 1" value="Imported PYQ Mock Test" />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label class="field-label">Exam Section</label>
+              <select id="studioSectionSelect"></select>
+            </div>
+            <div>
+              <label class="field-label">Duration (Mins)</label>
+              <input type="number" id="studioDuration" value="30" min="1" max="240" />
+            </div>
+          </div>
+
+          <h2 style="font-size: 0.95rem; margin: 14px 0 8px;">2. Smart PDF Hurdle Filters</h2>
+          <div style="display: flex; flex-direction: column; gap: 7px; font-size: 0.84rem; color: var(--muted); margin-bottom: 12px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkTwoCol" checked /> Unmix 2-column newspaper layouts</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkFreqWatermark" checked /> Auto-strip repeating headers & watermarks</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkCoachingAds" checked /> Strip coaching URLs, app promos & codes</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkLinkPassages" checked /> Link "Directions (Q. X–Y)" passages</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkMergeAnswers" checked /> Merge Answer Key & Solutions at back of PDF</label>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label class="field-label">Extra Words to Remove (comma-separated)</label>
+            <input type="text" id="customBlacklistInput" placeholder="e.g., Use Code, Telegram, Mock" />
+          </div>
+
+          <button class="btn btn-outline" style="width: 100%; margin-bottom: 16px;" onclick="reRunPdfParser()">🔄 Re-Run Smart Parser</button>
+
+          <hr style="border:none;border-top:1px solid var(--border);margin: 14px 0;" />
+
+          <h2 style="font-size: 0.92rem; margin-bottom: 6px;">3. Optional: Free Gemini API Clean</h2>
+          <p style="font-size: 0.76rem; color: var(--muted); margin-bottom: 8px;">
+            If a scanned/broken PDF has messy numbering, paste a free Google AI Studio key for 1-click AI structuring:
+          </p>
+          <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key (AIzaSy...)" style="margin-bottom: 8px;" />
+          <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="runGeminiFallback()">✨ Structure with Free Gemini API</button>
+        </div>
+
+        <!-- RIGHT PANEL: VISUAL QUESTION EDITOR & RAW/JSON IMPORTER -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+            <div>
+              <span id="studioStatusText" style="font-size: 0.88rem; color: var(--muted);">Upload a PDF or paste JSON/Text to begin.</span>
+              <span class="tag" id="studioQCount" style="margin-left: 8px;">0 Questions</span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('visual')">🛠️ Visual Editor</button>
+              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('json')">📋 Paste JSON / Text</button>
+              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('raw')">📝 Cleaned PDF Text</button>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+            <button class="btn btn-success" style="flex: 2;" onclick="saveAndStartMockFromStudio(true)">🚀 Save & Start Mock Test Now</button>
+            <button class="btn btn-primary" style="flex: 1;" onclick="saveAndStartMockFromStudio(false)">💾 Save to Test Library</button>
+            <button class="btn btn-outline" onclick="addBlankStudioQuestion()">➕ Add Question</button>
+          </div>
+
+          <!-- STUDIO SUB-TAB 1: VISUAL EDITOR -->
+          <div id="studio-tab-visual">
+            <div class="q-list" id="studioVisualList">
+              <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">📄</div>
+                Drop any PYQ PDF on the left, or click <b>"Paste JSON / Text"</b> above to import questions from ChatGPT/Gemini.
+              </div>
+            </div>
+          </div>
+
+          <!-- STUDIO SUB-TAB 2: PASTE JSON OR FORMATTED TEXT -->
+          <div id="studio-tab-json" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 0.84rem; color: var(--muted);">Paste JSON output from ChatGPT/Gemini (or export this JSON to share on WhatsApp):</span>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-primary btn-sm" onclick="importFromJsonTextarea()">⚡ Load JSON into Editor</button>
+                <button class="btn btn-outline btn-sm" onclick="copyStudioJson()">📋 Copy JSON</button>
+              </div>
+            </div>
+            <textarea id="studioJsonTextarea" rows="20" style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;" placeholder='[{"id":1,"section":"Quant","passage":"","question":"What is 15% of 240?","options":["32","36","40","42"],"answer":1,"explanation":"0.15 * 240 = 36"}]'></textarea>
+          </div>
+
+          <!-- STUDIO SUB-TAB 3: CLEANED RAW TEXT -->
+          <div id="studio-tab-raw" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 0.84rem; color: var(--muted);">Raw text after 2-column unmixing & watermark removal. Edit any text and re-parse:</span>
+              <button class="btn btn-primary btn-sm" onclick="parseFromEditedRawText()">⚡ Parse Questions from Text Below</button>
+            </div>
+            <textarea id="studioRawTextarea" rows="20" style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;" placeholder="1. Who is the current Governor of RBI?&#10;(a) Option 1&#10;(b) Option 2&#10;(c) Option 3&#10;(d) Option 4&#10;Ans: (b)"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= VIEW 3: TEST LIBRARY & LAUNCHPAD ======================= -->
+    <section id="view-library" class="view-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+        <div>
+          <h2 style="font-size: 1.35rem;">🗂️ Saved Mock Test Library</h2>
+          <p style="font-size: 0.88rem; color: var(--muted);">Configure positive/negative marking and timer before launching any test, or download JSON to share on WhatsApp.</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <div class="card" style="padding: 8px 14px; display: flex; gap: 14px; align-items: center;">
+            <div>
+              <span style="font-size: 0.75rem; color: var(--muted);">Correct (+):</span>
+              <input type="number" id="markPositive" value="1" step="0.25" style="width: 64px; padding: 4px 6px;" />
+            </div>
+            <div>
+              <span style="font-size: 0.75rem; color: var(--muted);">Negative (-):</span>
+              <input type="number" id="markNegative" value="0.25" step="0.05" style="width: 68px; padding: 4px 6px;" />
+            </div>
+          </div>
+          <label class="btn btn-outline">
+            📂 Import .JSON File
+            <input type="file" accept=".json" style="display: none;" onchange="importJsonFileToLibrary(event)" />
+          </label>
+        </div>
+      </div>
+
+      <div id="libraryGrid" class="grid-3"></div>
+    </section>
+
+    <!-- ======================= VIEW 4: ANALYTICS DASHBOARD ======================= -->
+    <section id="view-analytics" class="view-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+        <div>
+          <h2 style="font-size: 1.35rem;">📊 Performance & Progression Analytics</h2>
+          <p style="font-size: 0.88rem; color: var(--muted);">Filterable by the Exam Section dropdown in the top navigation bar.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="exportBackupData()">💾 Export Full Backup (.json)</button>
+      </div>
+
+      <!-- KPI Summary Row -->
+      <div class="grid-4" style="margin-bottom: 20px;">
+        <div class="kpi-card">
+          <div style="font-size: 0.8rem; color: var(--muted);">Total Mock Attempts</div>
+          <div class="kpi-val" id="kpiAttempts">0</div>
+        </div>
+        <div class="kpi-card">
+          <div style="font-size: 0.8rem; color: var(--muted);">Average Score (%)</div>
+          <div class="kpi-val" id="kpiAvgScore" style="color: var(--primary);">0%</div>
+        </div>
+        <div class="kpi-card">
+          <div style="font-size: 0.8rem; color: var(--muted);">Average Accuracy</div>
+          <div class="kpi-val" id="kpiAccuracy" style="color: var(--success);">0%</div>
+        </div>
+        <div class="kpi-card">
+          <div style="font-size: 0.8rem; color: var(--muted);">Highest Marks Scored</div>
+          <div class="kpi-val" id="kpiBestScore" style="color: var(--purple);">0</div>
+        </div>
+      </div>
+
+      <!-- Progression Line Chart & Marks Comparison Bar Chart -->
+      <div class="grid-2" style="margin-bottom: 24px;">
+        <div class="card">
+          <h3 style="font-size: 1rem; margin-bottom: 12px;">📈 Score & Accuracy Progression Line Chart</h3>
+          <div style="height: 270px;"><canvas id="progressionLineChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 1rem; margin-bottom: 12px;">📊 Marks Comparison Bar Chart (Scored vs Max Marks)</h3>
+          <div style="height: 270px;"><canvas id="marksBarChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Attempt History & Detailed Review Table -->
+      <div class="card">
+        <h3 style="font-size: 1rem; margin-bottom: 12px;">🕓 Recent Test Attempts</h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Mock Test Title</th>
+                <th>Exam Section</th>
+                <th>Marks Scored</th>
+                <th>Accuracy</th>
+                <th>Time Taken</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="attemptsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= VIEW 5: REVISION BOOKMARKS ======================= -->
+    <section id="view-bookmarks" class="view-section">
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 1.35rem;">🔖 Starred Revision Questions</h2>
+        <p style="font-size: 0.88rem; color: var(--muted);">Questions you bookmarked during a mock test or solution review appear here for quick revision before exam day.</p>
+      </div>
+      <div id="bookmarksContainer" class="q-list" style="max-height: none;"></div>
+    </section>
+
+    <!-- ======================= VIEW 6: POST-TEST SOLUTION REVIEW ======================= -->
+    <section id="view-review" class="view-section">
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <span class="tag" id="reviewSectionBadge">Section</span>
+            <h2 id="reviewTestTitle" style="font-size: 1.4rem; margin-top: 4px;">Test Review</h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('all')">All</button>
+            <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('correct')">✅ Correct</button>
+            <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('wrong')">❌ Wrong</button>
+            <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('skipped')">⚪ Skipped</button>
+            <button class="btn btn-primary btn-sm" onclick="triggerNav('analytics')">📊 Back to Analytics</button>
+          </div>
+        </div>
+        <div class="grid-4" style="margin-top: 16px;" id="reviewScoreSummary"></div>
+      </div>
+      <div id="reviewQuestionsList" class="q-list" style="max-height: none;"></div>
+    </section>
+
+  </div>
+
+  <!-- ======================= FULL-SCREEN LIVE MOCK EXAM ENGINE ======================= -->
+  <div id="examOverlay">
+    <div class="exam-header">
+      <div>
+        <div style="font-weight: 800; font-size: 1.05rem;" id="liveExamTitle">Mock Test</div>
+        <div style="font-size: 0.78rem; color: var(--muted);" id="liveExamSectionMeta">Section • Marking: +1 / -0.25</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="timer-box" id="liveTimerBox">
+          ⏱️ <span id="liveTimerText">30:00</span>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="togglePauseExam()" id="pauseExamBtn">⏸️ Pause</button>
+        <button class="btn btn-primary btn-sm" onclick="openSubmitModal()">Submit Test</button>
+      </div>
+    </div>
+
+    <div class="exam-body">
+      <div class="exam-main">
+        <!-- Sub-section tabs inside the paper -->
+        <div class="exam-subtabs" id="examSubTabs"></div>
+
+        <!-- Question & Shared Passage Workspace -->
+        <div class="exam-workspace" id="examWorkspace">
+          <div class="passage-pane" id="livePassagePane" style="display: none;"></div>
+          <div class="question-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+              <div>
+                <span style="font-weight: 800; color: var(--primary); font-size: 1rem;" id="liveQNumLabel">Question 1</span>
+                <span class="tag" id="liveQSubSection" style="margin-left: 8px;">General</span>
+              </div>
+              <button class="btn btn-outline btn-sm" id="liveBookmarkBtn" onclick="toggleCurrentQuestionBookmark()">☆ Bookmark</button>
+            </div>
+
+            <div id="liveQuestionText" style="font-size: 1.02rem; font-weight: 500; white-space: pre-wrap;"></div>
+
+            <div id="liveOptionsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;"></div>
+          </div>
+        </div>
+
+        <div class="exam-footer">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-outline" onclick="markForReviewAndNext()">🟣 Mark for Review & Next</button>
+            <button class="btn btn-outline" onclick="clearCurrentResponse()">🧹 Clear Response</button>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-outline" onclick="navigateQuestion(-1)" id="prevQBtn">⬅️ Previous</button>
+            <button class="btn btn-success" onclick="saveAndNextQuestion()" id="nextQBtn">Save & Next ➡️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Palette Sidebar -->
+      <div class="exam-sidebar">
+        <div style="font-weight: 700; font-size: 0.92rem;">Question Palette</div>
+        <div class="palette-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span> Answered</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span> Not Answered</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Marked Review</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--card);border:1px solid var(--border)"></span> Not Visited</div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);" />
+        <div class="palette-grid" id="livePaletteGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL 1: LAST-QUESTION / SUBMIT CONFIRMATION ======================= -->
+  <div class="modal-backdrop" id="submitModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="submitModalTitle">🏁 Ready to Submit Your Mock Test?</h3>
+        <button class="icon-btn" onclick="closeModal('submitModal')">✕</button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 16px;" id="submitModalSubtext">
+        You have reached the end of the question paper. Here is a summary of your responses before final submission:
+      </p>
+      <div class="grid-2" style="gap: 12px; margin-bottom: 20px;" id="submitSummaryGrid"></div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-outline" onclick="closeModal('submitModal')">🔙 Return to Test</button>
+        <button class="btn btn-success" onclick="finalizeExamSubmission()">✅ Confirm & Submit Final Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL 2: CUSTOM EXAM SECTION ORGANIZER ======================= -->
+  <div class="modal-backdrop" id="sectionModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🗂️ Custom Exam Section Organizer</h3>
+        <button class="icon-btn" onclick="closeModal('sectionModal')">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 14px;">
+        Add, rename, or remove custom exam categories (e.g., <i>UIIC AO, IBPS PO, SSC CGL, Sectional Reasoning</i>).
+      </p>
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <input type="text" id="newSectionInput" placeholder="New Exam Section Name..." />
+        <button class="btn btn-primary" onclick="addCustomSection()">➕ Add</button>
+      </div>
+      <div id="sectionOrganizerList" style="display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL 3: CHATGPT / GEMINI CONVERSION PROMPT ======================= -->
+  <div class="modal-backdrop" id="promptModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🤖 Copyable AI Prompt for ChatGPT / Gemini</h3>
+        <button class="icon-btn" onclick="closeModal('promptModal')">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 10px;">
+        If you ever want to use ChatGPT or Gemini directly to format raw text or images into our website's exact JSON format, copy this prompt and paste your questions below it:
+      </p>
+      <textarea id="aiPromptText" rows="11" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-bottom: 12px;">Convert the following exam questions into a strict JSON array so I can import it into my mock test website.
+Strip all coaching advertisements, headers, and watermarks.
+Follow this exact JSON schema for every question:
+[
+  {
+    "id": 1,
+    "section": "Quantitative Aptitude",
+    "passage": "Include shared Directions/Passage/RC here if applicable, otherwise empty string",
+    "question": "Full question text here",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "answer": 0,
+    "explanation": "Detailed solution here (answer is 0-based index: 0=A, 1=B, 2=C, 3=D, 4=E)"
+  }
+]
+Return ONLY valid JSON without markdown formatting. Here is the question paper:</textarea>
+      <button class="btn btn-primary" style="width: 100%;" onclick="copyAiPrompt()">📋 Copy Prompt to Clipboard</button>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL 4: FIREBASE SPARK CLOUD SYNC SETUP ======================= -->
+  <div class="modal-backdrop" id="firebaseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>☁️ Firebase Spark Plan (Google Sign-In & Firestore)</h3>
+        <button class="icon-btn" onclick="closeModal('firebaseModal')">✕</button>
+      </div>
+      <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 12px;">
+        Paste your free <b>Firebase Web App Config JSON</b> (from <i>Firebase Console → Project Settings → General</i>). Enable <b>Google Sign-In</b> in Authentication and <b>Cloud Firestore</b> to sync your study group's progress across devices!
+      </p>
+      <textarea id="firebaseConfigInput" rows="8" style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-bottom: 12px;" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "your-app.firebaseapp.com",
+  "projectId": "your-app",
+  "storageBucket": "your-app.appspot.com",
+  "messagingSenderId": "123456",
+  "appId": "1:123456:web:abcdef"
+}'></textarea>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" style="flex: 2;" onclick="saveFirebaseConfig()">💾 Save & Connect Firebase</button>
+        <button class="btn btn-danger" style="flex: 1;" onclick="clearFirebaseConfig()">Disconnect</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================================
+    // 1. GLOBAL STATE & LOCALSTORAGE / FIREBASE SPARK SYNC ARCHITECTURE
+    // ============================================================================
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const STORAGE_KEYS = {
+      SECTIONS: 'EP_SECTIONS_V2',
+      TESTS: 'EP_SAVED_TESTS_V2',
+      ATTEMPTS: 'EP_ATTEMPTS_V2',
+      BOOKMARKS: 'EP_BOOKMARKS_V2',
+      FB_CONFIG: 'EP_FIREBASE_CONFIG',
+      THEME: 'EP_THEME'
+    };
+
+    let appState = {
+      sections: JSON.parse(localStorage.getItem(STORAGE_KEYS.SECTIONS)) || [
+        'UIIC AO Prelims',
+        'IBPS / SBI PO',
+        'SSC CGL / CHSL',
+        'General Practice'
+      ],
+      selectedGlobalSection: 'ALL',
+      savedTests: JSON.parse(localStorage.getItem(STORAGE_KEYS.TESTS)) || [],
+      attempts: JSON.parse(localStorage.getItem(STORAGE_KEYS.ATTEMPTS)) || [],
+      bookmarks: JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS)) || [],
+      studioQuestions: [],
+      rawPdfPages: []
+    };
+
+    // Firebase instances (loaded dynamically if configured)
+    let fbAuth = null, fbDb = null, fbUser = null, fbModules = null;
+
+    // Live Exam State
+    let liveExam = {
+      testId: null,
+      title: '',
+      section: '',
+      questions: [],
+      responses: {},     // { qIndex: selectedOptionIndex }
+      status: {},        // { qIndex: 'not-visited' | 'unanswered' | 'answered' | 'review' | 'ans-review' }
+      timeSpent: {},     // { qIndex: seconds }
+      currentIndex: 0,
+      remainingSeconds: 1800,
+      totalSeconds: 1800,
+      timerInterval: null,
+      paused: false,
+      posMark: 1,
+      negMark: 0.25
+    };
+
+    let currentReviewAttempt = null;
+    let lineChartInstance = null, barChartInstance = null;
+
+    // ============================================================================
+    // 2. INITIALIZATION & THEME
+    // ============================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+      // Ensure at least 1 starter test exists in the library
+      if (appState.savedTests.length === 0) {
+        appState.savedTests.push(createBuiltInSampleTest());
+        persistState();
+      }
+
+      setupPdfDropzone();
+      setupKeyboardShortcuts();
+      refreshAllUI();
+      initFirebaseIfConfigured();
+    });
+
+    function toggleTheme() {
+      const curr = document.documentElement.getAttribute('data-theme');
+      const next = curr === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEYS.THEME, next);
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '🌙' : '☀️';
+      renderAnalyticsCharts();
+    }
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEYS.SECTIONS, JSON.stringify(appState.sections));
+      localStorage.setItem(STORAGE_KEYS.TESTS, JSON.stringify(appState.savedTests));
+      localStorage.setItem(STORAGE_KEYS.ATTEMPTS, JSON.stringify(appState.attempts));
+      localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(appState.bookmarks));
+      syncToFirestoreCloud();
+    }
+
+    function refreshAllUI() {
+      renderSectionSelectors();
+      renderLibraryView();
+      renderAnalyticsView();
+      renderBookmarksView();
+      document.getElementById('libCountBadge').textContent = appState.savedTests.length;
+      document.getElementById('bmCountBadge').textContent = appState.bookmarks.length;
+      document.getElementById('quickStatTests').textContent = appState.savedTests.length;
+      document.getElementById('quickStatAttempts').textContent = appState.attempts.length;
+    }
+
+    function switchView(viewName, btnEl) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`view-${viewName}`).classList.add('active');
+      if (btnEl) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btnEl.classList.add('active');
+      }
+      if (viewName === 'analytics') renderAnalyticsView();
+      if (viewName === 'library') renderLibraryView();
+      if (viewName === 'bookmarks') renderBookmarksView();
+    }
+
+    function triggerNav(viewName) {
+      const map = { guide: 0, studio: 1, library: 2, analytics: 3, bookmarks: 4 };
+      const btns = document.querySelectorAll('.nav-btn');
+      switchView(viewName, btns[map[viewName]]);
+    }
+
+    function openModal(id) {
+      if (id === 'sectionModal') renderSectionOrganizerModal();
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // ============================================================================
+    // 3. CUSTOM EXAM SECTION ORGANIZER (ADD / RENAME / DELETE)
+    // ============================================================================
+    function renderSectionSelectors() {
+      const globalSel = document.getElementById('globalSectionSelect');
+      const studioSel = document.getElementById('studioSectionSelect');
+
+      globalSel.innerHTML = `<option value="ALL">All Exam Sections</option>` +
+        appState.sections.map(s => `<option value="${escapeHtml(s)}" ${appState.selectedGlobalSection === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('');
+
+      studioSel.innerHTML = appState.sections.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    }
+
+    function onGlobalSectionChange() {
+      appState.selectedGlobalSection = document.getElementById('globalSectionSelect').value;
+      renderLibraryView();
+      renderAnalyticsView();
+    }
+
+    function renderSectionOrganizerModal() {
+      const list = document.getElementById('sectionOrganizerList');
+      list.innerHTML = appState.sections.map((sec, idx) => `
+        <div style="display:flex;gap:8px;align-items:center;background:var(--bg);padding:8px 10px;border-radius:8px;border:1px solid var(--border);">
+          <input type="text" value="${escapeHtml(sec)}" onchange="renameSection(${idx}, this.value)" style="flex:1;" />
+          <button class="btn btn-danger btn-sm" onclick="deleteSection(${idx})">🗑</button>
+        </div>
+      `).join('');
+    }
+
+    function addCustomSection() {
+      const inp = document.getElementById('newSectionInput');
+      const name = inp.value.trim();
+      if (!name || appState.sections.includes(name)) return;
+      appState.sections.push(name);
+      inp.value = '';
+      persistState();
+      renderSectionSelectors();
+      renderSectionOrganizerModal();
+    }
+
+    function renameSection(idx, newName) {
+      const trimmed = newName.trim();
+      if (!trimmed) return;
+      const oldName = appState.sections[idx];
+      appState.sections[idx] = trimmed;
+      // Cascade section rename across saved tests & attempts
+      appState.savedTests.forEach(t => { if (t.section === oldName) t.section = trimmed; });
+      appState.attempts.forEach(a => { if (a.section === oldName) a.section = trimmed; });
+      persistState();
+      refreshAllUI();
+    }
+
+    function deleteSection(idx) {
+      if (appState.sections.length <= 1) return alert('At least one exam section must remain.');
+      appState.sections.splice(idx, 1);
+      appState.selectedGlobalSection = 'ALL';
+      persistState();
+      renderSectionOrganizerModal();
+      refreshAllUI();
+    }
+
+    // ============================================================================
+    // 4. UNIVERSAL PYQ PDF CONVERTER ENGINE (2-COLUMN, WATERMARKS, PASSAGES, KEYS)
+    // ============================================================================
+    const COACHING_AD_PATTERNS = [
+      /https?:\/\/\S+/gi,
+      /www\.[a-z0-9.-]+\.[a-z]{2,}/gi,
+      /\b(adda247|testbook|oliveboard|practicemock|guidely|smartkeeda|bankersadda|sscadda|gradeup|byju'?s|ixambee|affairscloud|careerpower)\b/gi,
+      /download\s+(our\s+)?app/gi,
+      /join\s+(our\s+)?telegram/gi,
+      /subscribe\s+to\s+our\s+youtube/gi,
+      /use\s+code\s+[a-z0-9]+/gi,
+      /all\s+rights\s+reserved/gi,
+      /page\s+\d+\s*(of\s*\d+)?/gi,
+      /^\s*\d+\s*\|\s*p\s*a\s*g\s*e\s*$/gi
+    ];
+
+    function setupPdfDropzone() {
+      const dz = document.getElementById('pdfDropzone');
+      const inp = document.getElementById('pdfFileInput');
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.filter = 'brightness(1.2)'; });
+      dz.addEventListener('dragleave', () => { dz.style.filter = ''; });
+      dz.addEventListener('drop', e => {
+        e.preventDefault();
+        dz.style.filter = '';
+        if (e.dataTransfer.files.length) readUploadedPdf(e.dataTransfer.files[0]);
+      });
+      inp.addEventListener('change', e => {
+        if (e.target.files.length) readUploadedPdf(e.target.files[0]);
+      });
+    }
+
+    async function readUploadedPdf(file) {
+      document.getElementById('pdfFileName').textContent = file.name;
+      document.getElementById('studioTestTitle').value = file.name.replace(/\.pdf$/i, '');
+      setStudioStatus(`Extracting coordinates from "${file.name}"...`);
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      appState.rawPdfPages = [];
+
+      for (let p = 1; p <= pdf.numPages; p++) {
+        setStudioStatus(`Reading PDF Page ${p} of ${pdf.numPages}...`);
+        const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale: 1.0 });
+        const tc = await page.getTextContent();
+
+        const items = tc.items.map(it => ({
+          str: it.str,
+          x: it.transform[4],
+          y: it.transform[5],
+          w: it.width || 0
+        })).filter(i => i.str && i.str.trim().length > 0);
+
+        appState.rawPdfPages.push({ pageNum: p, width: vp.width, height: vp.height, items });
+      }
+
+      reRunPdfParser();
+    }
+
+    function reRunPdfParser() {
+      if (!appState.rawPdfPages.length) {
+        if (document.getElementById('studioRawTextarea').value.trim()) {
+          parseFromEditedRawText();
+        }
+        return;
+      }
+
+      const useTwoCol = document.getElementById('chkTwoCol').checked;
+      const useFreqWatermark = document.getElementById('chkFreqWatermark').checked;
+      const useCoachingAds = document.getElementById('chkCoachingAds').checked;
+      const customBlacklist = document.getElementById('customBlacklistInput').value
+        .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+      // Step A: Group items into lines (unmixing 2-column layouts if detected)
+      const pagesLines = appState.rawPdfPages.map(page => {
+        let items = [...page.items];
+        if (useFreqWatermark) {
+          items = items.filter(it => it.y < page.height * 0.955 && it.y > page.height * 0.045);
+        }
+        if (useTwoCol && detectTwoColumnPage(items, page.width)) {
+          const midX = page.width / 2;
+          const left = items.filter(it => it.x < midX - 8);
+          const right = items.filter(it => it.x >= midX - 8);
+          return [...itemsToLines(left), ...itemsToLines(right)];
+        }
+        return itemsToLines(items);
+      });
+
+      // Step B: Cross-page frequency analysis to strip repeating headers/watermarks
+      const freqMap = {};
+      if (useFreqWatermark && pagesLines.length >= 3) {
+        pagesLines.forEach(lines => {
+          const unique = new Set(lines.map(l => l.toLowerCase().replace(/\d+/g, '#').trim()));
+          unique.forEach(norm => { if (norm.length > 4) freqMap[norm] = (freqMap[norm] || 0) + 1; });
+        });
+      }
+      const repeatCut = Math.max(3, Math.ceil(pagesLines.length * 0.35));
+
+      const cleanedLines = [];
+      pagesLines.forEach(lines => {
+        lines.forEach(line => {
+          let txt = line.trim();
+          if (!txt) return;
+          const norm = txt.toLowerCase().replace(/\d+/g, '#').trim();
+          if (useFreqWatermark && freqMap[norm] >= repeatCut) return;
+          if (customBlacklist.some(bad => txt.toLowerCase().includes(bad))) return;
+          if (useCoachingAds) {
+            COACHING_AD_PATTERNS.forEach(rx => { txt = txt.replace(rx, ''); });
+            txt = txt.trim();
+            if (!txt) return;
+          }
+          cleanedLines.push(txt);
+        });
+      });
+
+      document.getElementById('studioRawTextarea').value = cleanedLines.join('\n');
+      appState.studioQuestions = parseLinesIntoQuestions(cleanedLines);
+      renderStudioQuestions();
+      setStudioStatus(`Extracted and cleaned ${appState.studioQuestions.length} questions!`);
+    }
+
+    function detectTwoColumnPage(items, pageWidth) {
+      if (items.length < 25) return false;
+      const mid = pageWidth / 2;
+      let leftStarts = 0, rightStarts = 0, crossesMid = 0;
+      items.forEach(it => {
+        if (it.x < mid * 0.35) leftStarts++;
+        if (it.x > mid * 0.92 && it.x < mid * 1.35) rightStarts++;
+        if (it.x < mid - 15 && (it.x + it.w) > mid + 15) crossesMid++;
+      });
+      return leftStarts > 8 && rightStarts > 8 && crossesMid < items.length * 0.08;
+    }
+
+    function itemsToLines(items) {
+      if (!items.length) return [];
+      const sorted = [...items].sort((a, b) => (Math.abs(b.y - a.y) > 4 ? b.y - a.y : a.x - b.x));
+      const lines = [];
+      let cur = [sorted[0]], curY = sorted[0].y;
+      for (let i = 1; i < sorted.length; i++) {
+        if (Math.abs(sorted[i].y - curY) <= 4.5) {
+          cur.push(sorted[i]);
+        } else {
+          cur.sort((a, b) => a.x - b.x);
+          lines.push(cur.map(x => x.str).join(' ').replace(/\s+/g, ' ').trim());
+          cur = [sorted[i]];
+          curY = sorted[i].y;
+        }
+      }
+      if (cur.length) {
+        cur.sort((a, b) => a.x - b.x);
+        lines.push(cur.map(x => x.str).join(' ').replace(/\s+/g, ' ').trim());
+      }
+      return lines;
+    }
+
+    function parseLinesIntoQuestions(lines) {
+      const linkPassages = document.getElementById('chkLinkPassages').checked;
+      const mergeAnswers = document.getElementById('chkMergeAnswers').checked;
+      const defaultSec = document.getElementById('studioSectionSelect').value || 'General';
+
+      const qArray = [], qMap = new Map(), passageRanges = [], ansKeyMap = {};
+      const dirRx = /^(?:directions?|instructions?)\s*(?:\(?q?(?:uestions?)?\.?\s*(\d+)\s*(?:to|[-–—])\s*(\d+)\)?)\s*[:.-]?(.*)/i;
+      const qStartRx = /^(?:Q(?:uestion)?\.?\s*(\d+)|(\d+)\s*[.)]|\[(\d+)\])\s+(.+)/i;
+      const solStartRx = /^(?:S(?:ol(?:ution)?)?\.?\s*(\d+)|Ans(?:wer)?\.?\s*(\d+))\s*[:.)-]*\s*(.*)/i;
+      const inlineAnsRx = /^(?:Ans(?:wer)?|Correct\s+Ans(?:wer)?|Correct\s+Option)\s*[:.-]?\s*\(?([a-eA-E1-5])\)?(?:\s*[:.-]?\s*(.*))?$/i;
+      const tablePairRx = /\b(\d{1,3})\s*[-–:=\s]\s*\(([a-eA-E1-5])\)/g;
+
+      let mode = 'QUESTIONS', curQ = null, curPassage = null, curSolNum = null, curSec = defaultSec;
+
+      for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        if (/^(?:section\s*[:.-]?\s*)?(reasoning\s+ability|quantitative\s+aptitude|english\s+language|general\s+awareness|computer\s+knowledge)/i.test(line) && line.length < 42) {
+          curSec = line.replace(/^section\s*[:.-]?\s*/i, '').trim();
+          continue;
+        }
+
+        if (/^(?:answer\s+key|answers?\s+(?:and|&)\s+solutions?|solutions?\s*(?:and|&)?\s*explanations?|detailed\s+solutions?)$/i.test(line)) {
+          if (curQ) { pushQ(curQ); curQ = null; }
+          mode = 'SOLUTIONS';
+          continue;
+        }
+
+        const solMatch = line.match(solStartRx);
+        if (solMatch && (mode === 'SOLUTIONS' || /^S\d+\./i.test(line))) {
+          if (curQ) { pushQ(curQ); curQ = null; }
+          mode = 'SOLUTIONS';
+          curSolNum = parseInt(solMatch[1] || solMatch[2], 10);
+          const rest = solMatch[3] || '';
+          if (!ansKeyMap[curSolNum]) ansKeyMap[curSolNum] = { idx: -1, exp: '' };
+          const letM = rest.match(/(?:ans(?:wer)?\.?\s*)?\(?([a-eA-E1-5])\)?/i);
+          if (letM) ansKeyMap[curSolNum].idx = charToIdx(letM[1]);
+          ansKeyMap[curSolNum].exp += rest + '\n';
+          continue;
+        }
+
+        if (mode === 'SOLUTIONS') {
+          let pm, found = false;
+          while ((pm = tablePairRx.exec(line)) !== null) {
+            found = true;
+            const n = parseInt(pm[1], 10);
+            if (!ansKeyMap[n]) ansKeyMap[n] = { idx: charToIdx(pm[2]), exp: '' };
+          }
+          if (!found && curSolNum && ansKeyMap[curSolNum]) ansKeyMap[curSolNum].exp += line + '\n';
+          continue;
+        }
+
+        if (linkPassages) {
+          const dm = line.match(dirRx);
+          if (dm) {
+            if (curQ) { pushQ(curQ); curQ = null; }
+            curPassage = { start: parseInt(dm[1], 10), end: parseInt(dm[2], 10), text: line + '\n' };
+            passageRanges.push(curPassage);
+            mode = 'PASSAGE';
+            continue;
+          }
+        }
+
+        const inAns = line.match(inlineAnsRx);
+        if (inAns && curQ) {
+          curQ.answer = charToIdx(inAns[1]);
+          if (inAns[2]) curQ.explanation = inAns[2].trim();
+          continue;
+        }
+
+        const opts = extractInlineOptions(line);
+        if (opts.length > 0 && curQ) {
+          curQ.options.push(...opts);
+          continue;
+        }
+
+        const qm = line.match(qStartRx);
+        if (qm) {
+          if (curQ) pushQ(curQ);
+          mode = 'QUESTIONS';
+          const qNum = parseInt(qm[1] || qm[2] || qm[3], 10);
+          const split = splitQTextAndOpts(qm[4].trim());
+          curQ = {
+            id: qNum,
+            section: curSec,
+            passage: '',
+            question: split.qText,
+            options: split.opts,
+            answer: 0,
+            explanation: ''
+          };
+          continue;
+        }
+
+        if (mode === 'PASSAGE' && curPassage) {
+          curPassage.text += line + '\n';
+        } else if (curQ) {
+          if (curQ.options.length === 0) {
+            const split = splitQTextAndOpts(line);
+            curQ.question += ' ' + split.qText;
+            if (split.opts.length) curQ.options.push(...split.opts);
+          } else {
+            curQ.options[curQ.options.length - 1] += ' ' + line;
+          }
+        }
+      }
+
+      if (curQ) pushQ(curQ);
+
+      function pushQ(q) {
+        q.question = q.question.replace(/\s+/g, ' ').trim();
+        q.options = q.options.map(o => o.replace(/\s+/g, ' ').trim()).filter(Boolean);
+        while (q.options.length < 4) q.options.push(`Option ${String.fromCharCode(65 + q.options.length)}`);
+        qArray.push(q);
+        qMap.set(q.id, q);
+      }
+
+      if (linkPassages) {
+        passageRanges.forEach(pr => {
+          for (let n = pr.start; n <= pr.end; n++) {
+            if (qMap.get(n)) qMap.get(n).passage = pr.text.trim();
+          }
+        });
+      }
+
+      if (mergeAnswers) {
+        Object.keys(ansKeyMap).forEach(k => {
+          const q = qMap.get(parseInt(k, 10));
+          const data = ansKeyMap[k];
+          if (q && data) {
+            if (data.idx >= 0 && data.idx < q.options.length) q.answer = data.idx;
+            if (data.exp && !q.explanation) q.explanation = data.exp.trim();
+          }
+        });
+      }
+
+      return qArray;
+    }
+
+    function extractInlineOptions(line) {
+      if (!/^(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+/.test(line)) return [];
+      return line.split(/(?=(?:^|\s+)(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+)/)
+        .map(p => p.trim().replace(/^(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+/, '').trim())
+        .filter(Boolean);
+    }
+
+    function splitQTextAndOpts(txt) {
+      const idx = txt.search(/\s+(?=(?:\([a-eA-E]\)|[a-eA-E][.)])\s+)/);
+      if (idx === -1) return { qText: txt, opts: [] };
+      return { qText: txt.slice(0, idx).trim(), opts: extractInlineOptions(txt.slice(idx).trim()) };
+    }
+
+    function charToIdx(c) {
+      const up = c.toUpperCase();
+      if (up >= 'A' && up <= 'E') return up.charCodeAt(0) - 65;
+      if (up >= '1' && up <= '5') return parseInt(up, 10) - 1;
+      return 0;
+    }
+
+    // ============================================================================
+    // 5. STUDIO VISUAL EDITOR, RAW TEXT & GEMINI API FALLBACK
+    // ============================================================================
+    function renderStudioQuestions() {
+      const list = document.getElementById('studioVisualList');
+      document.getElementById('studioQCount').textContent = `${appState.studioQuestions.length} Questions`;
+      document.getElementById('studioJsonTextarea').value = JSON.stringify(appState.studioQuestions, null, 2);
+
+      if (!appState.studioQuestions.length) {
+        list.innerHTML = `<div style="text-align:center;padding:50px;color:var(--muted);">No questions loaded yet. Upload a PDF or paste text/JSON.</div>`;
+        return;
+      }
+
+      list.innerHTML = appState.studioQuestions.map((q, qi) => `
+        <div class="q-edit-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-weight:700;color:var(--primary);font-size:0.9rem;">Q${qi + 1} • ${escapeHtml(q.section || 'General')}</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-outline btn-sm" onclick="addFifthOptionStudio(${qi})">+ Opt E</button>
+              <button class="btn btn-danger btn-sm" onclick="removeStudioQuestion(${qi})">🗑</button>
+            </div>
+          </div>
+          ${q.passage ? `<div class="q-passage-box"><b>Directions / Passage:</b>\n${escapeHtml(q.passage)}</div>` : ''}
+          <textarea rows="2" onchange="appState.studioQuestions[${qi}].question = this.value" style="margin-bottom:8px;">${escapeHtml(q.question)}</textarea>
+          <div class="opt-edit-grid">
+            ${q.options.map((opt, oi) => `
+              <div class="opt-edit-item ${q.answer === oi ? 'correct' : ''}">
+                <input type="radio" name="st_ans_${qi}" ${q.answer === oi ? 'checked' : ''} onchange="setStudioAnswer(${qi}, ${oi})" title="Mark Correct Answer" />
+                <strong style="font-size:0.8rem;color:var(--muted);">${String.fromCharCode(65 + oi)}.</strong>
+                <input type="text" value="${escapeHtml(opt)}" onchange="appState.studioQuestions[${qi}].options[${oi}] = this.value" />
+              </div>
+            `).join('')}
+          </div>
+          <input type="text" placeholder="Explanation / Solution note (optional)" value="${escapeHtml(q.explanation || '')}" onchange="appState.studioQuestions[${qi}].explanation = this.value" style="font-size:0.8rem;" />
+        </div>
+      `).join('');
+    }
+
+    function setStudioAnswer(qi, oi) {
+      appState.studioQuestions[qi].answer = oi;
+      renderStudioQuestions();
+    }
+    function addFifthOptionStudio(qi) {
+      if (appState.studioQuestions[qi].options.length < 5) {
+        appState.studioQuestions[qi].options.push('Option E');
+        renderStudioQuestions();
+      }
+    }
+    function removeStudioQuestion(qi) {
+      appState.studioQuestions.splice(qi, 1);
+      renderStudioQuestions();
+    }
+    function addBlankStudioQuestion() {
+      appState.studioQuestions.push({
+        id: appState.studioQuestions.length + 1,
+        section: document.getElementById('studioSectionSelect').value || 'General',
+        passage: '',
+        question: 'Enter question text here...',
+        options: ['Option A', 'Option B', 'Option C', 'Option D'],
+        answer: 0,
+        explanation: ''
+      });
+      switchStudioTab('visual');
+      renderStudioQuestions();
+    }
+
+    function switchStudioTab(tab) {
+      ['visual', 'json', 'raw'].forEach(t => {
+        document.getElementById(`studio-tab-${t}`).style.display = t === tab ? 'block' : 'none';
+      });
+    }
+
+    function parseFromEditedRawText() {
+      const lines = document.getElementById('studioRawTextarea').value.split('\n');
+      appState.studioQuestions = parseLinesIntoQuestions(lines);
+      switchStudioTab('visual');
+      renderStudioQuestions();
+      setStudioStatus(`Parsed ${appState.studioQuestions.length} questions from raw text!`);
+    }
+
+    function importFromJsonTextarea() {
+      try {
+        const raw = document.getElementById('studioJsonTextarea').value.trim();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('JSON must be an array of question objects.');
+        appState.studioQuestions = parsed;
+        switchStudioTab('visual');
+        renderStudioQuestions();
+        setStudioStatus(`Loaded ${parsed.length} questions from JSON!`);
+      } catch (e) {
+        alert('Invalid JSON format: ' + e.message);
+      }
+    }
+
+    function copyStudioJson() {
+      navigator.clipboard.writeText(JSON.stringify(appState.studioQuestions, null, 2));
+      setStudioStatus('📋 Copied JSON to clipboard!');
+    }
+
+    async function runGeminiFallback() {
+      const key = document.getElementById('geminiApiKeyInput').value.trim();
+      const rawText = document.getElementById('studioRawTextarea').value.trim();
+      if (!key) return alert('Please paste a free Google AI Studio (Gemini) API Key first.');
+      if (!rawText) return alert('Please upload a PDF or paste raw text in the "Cleaned PDF Text" tab first.');
+
+      setStudioStatus('✨ Structuring with Gemini 2.5 Flash API...');
+      try {
+        const prompt = `Convert the following exam paper text into a strict JSON array of question objects. Strip all coaching ads or watermarks.
+Each object must follow: {"id":number,"section":string,"passage":string,"question":string,"options":[string,string,string,string],"answer":number,"explanation":string}.
+Return ONLY valid JSON.\n\nTEXT:\n${rawText.slice(0, 85000)}`;
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: 'application/json' }
+          })
+        });
+        const data = await res.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error(data.error?.message || 'Empty response');
+        appState.studioQuestions = JSON.parse(text);
+        switchStudioTab('visual');
+        renderStudioQuestions();
+        setStudioStatus(`✨ Gemini structured ${appState.studioQuestions.length} questions!`);
+      } catch (err) {
+        alert('Gemini API Error: ' + err.message);
+      }
+    }
+
+    function saveAndStartMockFromStudio(startImmediately) {
+      if (!appState.studioQuestions.length) return alert('Please extract or add at least 1 question first.');
+      const title = document.getElementById('studioTestTitle').value.trim() || `Mock Test ${appState.savedTests.length + 1}`;
+      const section = document.getElementById('studioSectionSelect').value || appState.sections[0];
+      const duration = parseInt(document.getElementById('studioDuration').value, 10) || 30;
+
+      const newTest = {
+        id: 'test_' + Date.now(),
+        title,
+        section,
+        duration,
+        createdAt: new Date().toISOString(),
+        questions: JSON.parse(JSON.stringify(appState.studioQuestions))
+      };
+
+      appState.savedTests.unshift(newTest);
+      persistState();
+      refreshAllUI();
+
+      if (startImmediately) {
+        startMockExam(newTest.id);
+      } else {
+        triggerNav('library');
+      }
+    }
+
+    function setStudioStatus(msg) {
+      document.getElementById('studioStatusText').textContent = msg;
+    }
+
+    // ============================================================================
+    // 6. SAVED TEST LIBRARY & WHATSAPP JSON SHARING
+    // ============================================================================
+    function renderLibraryView() {
+      const grid = document.getElementById('libraryGrid');
+      const filtered = appState.selectedGlobalSection === 'ALL'
+        ? appState.savedTests
+        : appState.savedTests.filter(t => t.section === appState.selectedGlobalSection);
+
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">No mock tests in this section yet. Convert a PDF or load the Demo Test!</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(t => `
+        <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:14px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span class="tag">${escapeHtml(t.section)}</span>
+              <span style="font-size:0.78rem;color:var(--muted);">⏱️ ${t.duration || 30}m • ${t.questions.length} Qs</span>
+            </div>
+            <h3 style="font-size:1.08rem;margin-bottom:6px;">${escapeHtml(t.title)}</h3>
+            <p style="font-size:0.8rem;color:var(--muted);">Created ${new Date(t.createdAt).toLocaleDateString()}</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" style="flex:1;" onclick="startMockExam('${t.id}')">▶️ Start Test</button>
+            <button class="btn btn-outline btn-sm" onclick="downloadSingleTestJson('${t.id}')" title="Download JSON to share on WhatsApp">📤 Share</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSavedTest('${t.id}')" title="Delete Test">🗑</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function downloadSingleTestJson(testId) {
+      const t = appState.savedTests.find(x => x.id === testId);
+      if (!t) return;
+      const blob = new Blob([JSON.stringify(t, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${t.title.replace(/\s+/g, '_')}.json`;
+      a.click();
+    }
+
+    function importJsonFileToLibrary(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (Array.isArray(data)) {
+            appState.savedTests.unshift({
+              id: 'test_' + Date.now(),
+              title: file.name.replace(/\.json$/i, ''),
+              section: appState.sections[0],
+              duration: 30,
+              createdAt: new Date().toISOString(),
+              questions: data
+            });
+          } else if (data.questions && Array.isArray(data.questions)) {
+            data.id = 'test_' + Date.now();
+            appState.savedTests.unshift(data);
+          } else {
+            throw new Error('Unrecognized JSON structure');
+          }
+          persistState();
+          refreshAllUI();
+          alert('Successfully imported mock test into your Library!');
+        } catch (err) {
+          alert('Failed to import JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function deleteSavedTest(testId) {
+      if (!confirm('Delete this mock test from your library?')) return;
+      appState.savedTests = appState.savedTests.filter(t => t.id !== testId);
+      persistState();
+      refreshAllUI();
+    }
+
+    // ============================================================================
+    // 7. FULL-SCREEN MOCK EXAM ENGINE + LAST-QUESTION POP-UP MODAL
+    // ============================================================================
+    function startMockExam(testId) {
+      const test = appState.savedTests.find(t => t.id === testId);
+      if (!test || !test.questions.length) return;
+
+      const pos = parseFloat(document.getElementById('markPositive')?.value) || 1;
+      const neg = parseFloat(document.getElementById('markNegative')?.value) || 0.25;
+      const durSeconds = (parseInt(test.duration, 10) || 30) * 60;
+
+      liveExam = {
+        testId: test.id,
+        title: test.title,
+        section: test.section,
+        questions: test.questions,
+        responses: {},
+        status: {},
+        timeSpent: {},
+        currentIndex: 0,
+        remainingSeconds: durSeconds,
+        totalSeconds: durSeconds,
+        timerInterval: null,
+        paused: false,
+        posMark: pos,
+        negMark: neg
+      };
+
+      test.questions.forEach((_, idx) => {
+        liveExam.status[idx] = idx === 0 ? 'unanswered' : 'not-visited';
+        liveExam.timeSpent[idx] = 0;
+      });
+
+      document.getElementById('liveExamTitle').textContent = test.title;
+      document.getElementById('liveExamSectionMeta').textContent = `${test.section} • Marking: +${pos} / -${neg}`;
+      document.getElementById('examOverlay').classList.add('active');
+
+      renderExamSubTabs();
+      renderLiveQuestion();
+      startExamTimer();
+    }
+
+    function startExamTimer() {
+      clearInterval(liveExam.timerInterval);
+      updateTimerDisplay();
+      liveExam.timerInterval = setInterval(() => {
+        if (liveExam.paused) return;
+        liveExam.remainingSeconds--;
+        liveExam.timeSpent[liveExam.currentIndex] = (liveExam.timeSpent[liveExam.currentIndex] || 0) + 1;
+        updateTimerDisplay();
+        if (liveExam.remainingSeconds <= 0) {
+          clearInterval(liveExam.timerInterval);
+          finalizeExamSubmission();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(liveExam.remainingSeconds / 60);
+      const s = liveExam.remainingSeconds % 60;
+      document.getElementById('liveTimerText').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      document.getElementById('liveTimerBox').classList.toggle('urgent', liveExam.remainingSeconds < 120);
+    }
+
+    function togglePauseExam() {
+      liveExam.paused = !liveExam.paused;
+      document.getElementById('pauseExamBtn').textContent = liveExam.paused ? '▶️ Resume' : '⏸️ Pause';
+    }
+
+    function renderExamSubTabs() {
+      const uniqueSubSecs = [...new Set(liveExam.questions.map(q => q.section || 'General'))];
+      const bar = document.getElementById('examSubTabs');
+      bar.innerHTML = uniqueSubSecs.map(sec => `
+        <button class="btn btn-outline btn-sm" onclick="jumpToSubSection('${escapeHtml(sec)}')">${escapeHtml(sec)}</button>
+      `).join('');
+    }
+
+    function jumpToSubSection(secName) {
+      const idx = liveExam.questions.findIndex(q => (q.section || 'General') === secName);
+      if (idx !== -1) goToQuestion(idx);
+    }
+
+    function renderLiveQuestion() {
+      const idx = liveExam.currentIndex;
+      const q = liveExam.questions[idx];
+      if (liveExam.status[idx] === 'not-visited') liveExam.status[idx] = 'unanswered';
+
+      document.getElementById('liveQNumLabel').textContent = `Question ${idx + 1} of ${liveExam.questions.length}`;
+      document.getElementById('liveQSubSection').textContent = q.section || liveExam.section;
+      document.getElementById('liveQuestionText').textContent = q.question;
+
+      // Split screen if passage exists
+      const ws = document.getElementById('examWorkspace');
+      const pPane = document.getElementById('livePassagePane');
+      if (q.passage && q.passage.trim()) {
+        ws.classList.add('has-passage');
+        pPane.style.display = 'block';
+        pPane.innerHTML = `<div style="font-weight:700;color:var(--warning);margin-bottom:8px;">📖 Shared Passage / Directions</div>` + escapeHtml(q.passage);
+      } else {
+        ws.classList.remove('has-passage');
+        pPane.style.display = 'none';
+      }
+
+      // Bookmark status
+      const isBm = appState.bookmarks.some(b => b.question === q.question);
+      document.getElementById('liveBookmarkBtn').textContent = isBm ? '⭐ Bookmarked' : '☆ Bookmark';
+
+      // Options
+      const selectedOpt = liveExam.responses[idx];
+      document.getElementById('liveOptionsContainer').innerHTML = q.options.map((opt, oi) => `
+        <div class="option-card ${selectedOpt === oi ? 'selected' : ''}" onclick="selectLiveOption(${oi})">
+          <div class="opt-letter">${String.fromCharCode(65 + oi)}</div>
+          <div>${escapeHtml(opt)}</div>
+        </div>
+      `).join('');
+
+      // Next button label on last question
+      const isLast = idx === liveExam.questions.length - 1;
+      document.getElementById('nextQBtn').textContent = isLast ? 'Save & Finish 🏁' : 'Save & Next ➡️';
+
+      renderPaletteGrid();
+    }
+
+    function selectLiveOption(oi) {
+      const idx = liveExam.currentIndex;
+      liveExam.responses[idx] = oi;
+      liveExam.status[idx] = (liveExam.status[idx] === 'review' || liveExam.status[idx] === 'ans-review') ? 'ans-review' : 'answered';
+      renderLiveQuestion();
+    }
+
+    function clearCurrentResponse() {
+      const idx = liveExam.currentIndex;
+      delete liveExam.responses[idx];
+      liveExam.status[idx] = 'unanswered';
+      renderLiveQuestion();
+    }
+
+    function markForReviewAndNext() {
+      const idx = liveExam.currentIndex;
+      liveExam.status[idx] = liveExam.responses[idx] !== undefined ? 'ans-review' : 'review';
+      if (idx === liveExam.questions.length - 1) {
+        openSubmitModal(true);
+      } else {
+        goToQuestion(idx + 1);
+      }
+    }
+
+    function saveAndNextQuestion() {
+      const idx = liveExam.currentIndex;
+      if (liveExam.responses[idx] !== undefined && liveExam.status[idx] !== 'ans-review') {
+        liveExam.status[idx] = 'answered';
+      }
+      // LAST-QUESTION POP-UP MODAL TRIGGER
+      if (idx === liveExam.questions.length - 1) {
+        openSubmitModal(true);
+      } else {
+        goToQuestion(idx + 1);
+      }
+    }
+
+    function navigateQuestion(delta) {
+      const next = liveExam.currentIndex + delta;
+      if (next >= 0 && next < liveExam.questions.length) goToQuestion(next);
+    }
+
+    function goToQuestion(idx) {
+      liveExam.currentIndex = idx;
+      renderLiveQuestion();
+    }
+
+    function renderPaletteGrid() {
+      const grid = document.getElementById('livePaletteGrid');
+      grid.innerHTML = liveExam.questions.map((_, i) => {
+        const st = liveExam.status[i] || 'not-visited';
+        return `<button class="p-btn ${st} ${i === liveExam.currentIndex ? 'current' : ''}" onclick="goToQuestion(${i})">${i + 1}</button>`;
+      }).join('');
+    }
+
+    function openSubmitModal(fromLastQuestion = false) {
+      let ans = 0, unans = 0, rev = 0, notVis = 0;
+      liveExam.questions.forEach((_, i) => {
+        const st = liveExam.status[i];
+        if (st === 'answered' || st === 'ans-review') ans++;
+        else if (st === 'review') rev++;
+        else if (st === 'unanswered') unans++;
+        else notVis++;
+      });
+
+      document.getElementById('submitModalTitle').textContent = fromLastQuestion
+        ? '🏁 Last Question Reached — Submit Mock Test?'
+        : '🏁 Confirm Mock Test Submission';
+
+      document.getElementById('submitSummaryGrid').innerHTML = `
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">✅ Answered</div><div class="kpi-val" style="color:var(--success)">${ans}</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">❌ Not Answered</div><div class="kpi-val" style="color:var(--danger)">${unans}</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">🟣 Marked for Review</div><div class="kpi-val" style="color:var(--purple)">${rev}</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">⚪ Not Visited</div><div class="kpi-val">${notVis}</div></div>
+      `;
+      openModal('submitModal');
+    }
+
+    function finalizeExamSubmission() {
+      clearInterval(liveExam.timerInterval);
+      closeModal('submitModal');
+      document.getElementById('examOverlay').classList.remove('active');
+
+      let correct = 0, wrong = 0, skipped = 0;
+      liveExam.questions.forEach((q, i) => {
+        const userAns = liveExam.responses[i];
+        if (userAns === undefined) skipped++;
+        else if (userAns === q.answer) correct++;
+        else wrong++;
+      });
+
+      const maxMarks = liveExam.questions.length * liveExam.posMark;
+      const rawScore = (correct * liveExam.posMark) - (wrong * liveExam.negMark);
+      const score = Number(rawScore.toFixed(2));
+      const attempted = correct + wrong;
+      const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+      const timeTaken = liveExam.totalSeconds - liveExam.remainingSeconds;
+
+      const attemptRecord = {
+        id: 'att_' + Date.now(),
+        testId: liveExam.testId,
+        title: liveExam.title,
+        section: liveExam.section,
+        date: new Date().toISOString(),
+        score,
+        maxMarks,
+        correct,
+        wrong,
+        skipped,
+        accuracy,
+        timeTaken,
+        questions: liveExam.questions,
+        responses: liveExam.responses,
+        timeSpent: liveExam.timeSpent
+      };
+
+      appState.attempts.push(attemptRecord);
+      persistState();
+      refreshAllUI();
+      openSolutionReview(attemptRecord.id);
+    }
+
+    function setupKeyboardShortcuts() {
+      window.addEventListener('keydown', e => {
+        if (!document.getElementById('examOverlay').classList.contains('active')) return;
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        const key = e.key.toUpperCase();
+        if (key >= '1' && key <= '5') selectLiveOption(parseInt(key, 10) - 1);
+        else if (key >= 'A' && key <= 'E') selectLiveOption(key.charCodeAt(0) - 65);
+        else if (e.key === 'ArrowRight') saveAndNextQuestion();
+        else if (e.key === 'ArrowLeft') navigateQuestion(-1);
+      });
+    }
+
+    // ============================================================================
+    // 8. POST-TEST SOLUTIONS REVIEW & BOOKMARKS
+    // ============================================================================
+    function openSolutionReview(attemptId) {
+      const att = appState.attempts.find(a => a.id === attemptId);
+      if (!att) return;
+      currentReviewAttempt = att;
+
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('view-review').classList.add('active');
+
+      document.getElementById('reviewSectionBadge').textContent = att.section;
+      document.getElementById('reviewTestTitle').textContent = att.title;
+
+      document.getElementById('reviewScoreSummary').innerHTML = `
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Final Score</div><div class="kpi-val" style="color:var(--primary)">${att.score} / ${att.maxMarks}</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Accuracy</div><div class="kpi-val" style="color:var(--success)">${att.accuracy}%</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Correct / Wrong / Skipped</div><div class="kpi-val" style="font-size:1.3rem;">${att.correct} / ${att.wrong} / ${att.skipped}</div></div>
+        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Time Taken</div><div class="kpi-val">${Math.floor(att.timeTaken / 60)}m ${att.timeTaken % 60}s</div></div>
+      `;
+
+      filterReviewQuestions('all');
+    }
+
+    function filterReviewQuestions(filter) {
+      if (!currentReviewAttempt) return;
+      const att = currentReviewAttempt;
+      const container = document.getElementById('reviewQuestionsList');
+
+      const cards = att.questions.map((q, i) => {
+        const uAns = att.responses?.[i];
+        const isCorrect = uAns === q.answer;
+        const isSkipped = uAns === undefined;
+        if (filter === 'correct' && !isCorrect) return '';
+        if (filter === 'wrong' && (isSkipped || isCorrect)) return '';
+        if (filter === 'skipped' && !isSkipped) return '';
+
+        const statusBadge = isSkipped
+          ? `<span class="tag" style="background:var(--border);color:var(--muted);">⚪ Skipped</span>`
+          : isCorrect
+            ? `<span class="tag" style="background:var(--success-soft);color:var(--success);">✅ Correct</span>`
+            : `<span class="tag" style="background:var(--danger-soft);color:var(--danger);">❌ Wrong</span>`;
+
+        return `
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div><strong>Q${i + 1}.</strong> ${statusBadge} <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">⏱️ ${att.timeSpent?.[i] || 0}s</span></div>
+              <button class="btn btn-outline btn-sm" onclick="bookmarkQuestionByRef(${i})">🔖 Bookmark</button>
+            </div>
+            ${q.passage ? `<div class="q-passage-box">${escapeHtml(q.passage)}</div>` : ''}
+            <div style="font-weight:600;margin-bottom:12px;white-space:pre-wrap;">${escapeHtml(q.question)}</div>
+            <div class="grid-2" style="gap:8px;margin-bottom:12px;">
+              ${q.options.map((opt, oi) => {
+                let border = 'var(--border)', bg = 'var(--bg)';
+                if (oi === q.answer) { border = 'var(--success)'; bg = 'var(--success-soft)'; }
+                else if (oi === uAns && uAns !== q.answer) { border = 'var(--danger)'; bg = 'var(--danger-soft)'; }
+                return `<div style="padding:10px 12px;border-radius:8px;border:1.5px solid ${border};background:${bg};font-size:0.88rem;">
+                  <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
+                  ${oi === q.answer ? ' <b style="color:var(--success);float:right;">✓ Correct</b>' : ''}
+                  ${oi === uAns && uAns !== q.answer ? ' <b style="color:var(--danger);float:right;">✗ Your Choice</b>' : ''}
+                </div>`;
+              }).join('')}
+            </div>
+            ${q.explanation ? `<div style="background:var(--bg);border:1px solid var(--border);padding:10px 14px;border-radius:8px;font-size:0.85rem;color:var(--muted);white-space:pre-wrap;"><b style="color:var(--text);">💡 Solution:</b> ${escapeHtml(q.explanation)}</div>` : ''}
+          </div>
+        `;
+      }).filter(Boolean);
+
+      container.innerHTML = cards.length ? cards.join('') : `<div class="card" style="text-align:center;color:var(--muted);">No questions match this filter.</div>`;
+    }
+
+    function toggleCurrentQuestionBookmark() {
+      const q = liveExam.questions[liveExam.currentIndex];
+      toggleBookmarkObject(q);
+      renderLiveQuestion();
+    }
+
+    function bookmarkQuestionByRef(idx) {
+      if (!currentReviewAttempt) return;
+      toggleBookmarkObject(currentReviewAttempt.questions[idx]);
+      alert('Toggled question in your Revision Bookmarks!');
+    }
+
+    function toggleBookmarkObject(q) {
+      const existingIdx = appState.bookmarks.findIndex(b => b.question === q.question);
+      if (existingIdx >= 0) appState.bookmarks.splice(existingIdx, 1);
+      else appState.bookmarks.unshift({ ...q, savedAt: new Date().toISOString() });
+      persistState();
+      document.getElementById('bmCountBadge').textContent = appState.bookmarks.length;
+    }
+
+    function renderBookmarksView() {
+      const container = document.getElementById('bookmarksContainer');
+      if (!appState.bookmarks.length) {
+        container.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--muted);">No bookmarked questions yet. Star tricky questions during a mock test or review!</div>`;
+        return;
+      }
+      container.innerHTML = appState.bookmarks.map((q, idx) => `
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span class="tag">${escapeHtml(q.section || 'Revision')}</span>
+            <button class="btn btn-danger btn-sm" onclick="appState.bookmarks.splice(${idx},1);persistState();refreshAllUI();">🗑 Remove</button>
+          </div>
+          ${q.passage ? `<div class="q-passage-box">${escapeHtml(q.passage)}</div>` : ''}
+          <div style="font-weight:600;margin-bottom:10px;">${escapeHtml(q.question)}</div>
+          <div class="grid-2" style="gap:8px;margin-bottom:10px;">
+            ${q.options.map((opt, oi) => `
+              <div style="padding:8px 12px;border-radius:8px;border:1px solid ${oi === q.answer ? 'var(--success)' : 'var(--border)'};background:${oi === q.answer ? 'var(--success-soft)' : 'var(--bg)'};font-size:0.86rem;">
+                <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
+              </div>
+            `).join('')}
+          </div>
+          ${q.explanation ? `<div style="font-size:0.84rem;color:var(--muted);"><b>💡 Solution:</b> ${escapeHtml(q.explanation)}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // ============================================================================
+    // 9. VISUAL ANALYTICS DASHBOARD (PROGRESSION LINE CHART & MARKS BAR CHART)
+    // ============================================================================
+    function renderAnalyticsView() {
+      const filtered = appState.selectedGlobalSection === 'ALL'
+        ? appState.attempts
+        : appState.attempts.filter(a => a.section === appState.selectedGlobalSection);
+
+      document.getElementById('kpiAttempts').textContent = filtered.length;
+      if (filtered.length > 0) {
+        const avgPct = Math.round(filtered.reduce((acc, a) => acc + ((a.score / (a.maxMarks || 1)) * 100), 0) / filtered.length);
+        const avgAcc = Math.round(filtered.reduce((acc, a) => acc + (a.accuracy || 0), 0) / filtered.length);
+        const best = Math.max(...filtered.map(a => a.score));
+        document.getElementById('kpiAvgScore').textContent = `${avgPct}%`;
+        document.getElementById('kpiAccuracy').textContent = `${avgAcc}%`;
+        document.getElementById('kpiBestScore').textContent = best;
+      } else {
+        document.getElementById('kpiAvgScore').textContent = '0%';
+        document.getElementById('kpiAccuracy').textContent = '0%';
+        document.getElementById('kpiBestScore').textContent = '0';
+      }
+
+      const tbody = document.getElementById('attemptsTableBody');
+      tbody.innerHTML = filtered.slice().reverse().map(a => `
+        <tr>
+          <td>${new Date(a.date).toLocaleDateString()}</td>
+          <td><strong>${escapeHtml(a.title)}</strong></td>
+          <td><span class="tag">${escapeHtml(a.section)}</span></td>
+          <td><strong>${a.score}</strong> / ${a.maxMarks}</td>
+          <td>${a.accuracy}%</td>
+          <td>${Math.floor(a.timeTaken / 60)}m ${a.timeTaken % 60}s</td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="openSolutionReview('${a.id}')">🔍 Review</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAttempt('${a.id}')">🗑</button>
+          </td>
+        </tr>
+      `).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;">No attempts recorded yet. Take a mock test to see visual charts!</td></tr>`;
+
+      renderAnalyticsCharts(filtered);
+    }
+
+    function renderAnalyticsCharts(filtered = appState.attempts) {
+      const labels = filtered.map((a, i) => `#${i + 1} ${a.title.slice(0, 12)}`);
+      const pctScores = filtered.map(a => Math.max(0, Math.round((a.score / (a.maxMarks || 1)) * 100)));
+      const accuracies = filtered.map(a => a.accuracy || 0);
+      const rawScores = filtered.map(a => a.score);
+      const maxScores = filtered.map(a => a.maxMarks);
+
+      const ctxLine = document.getElementById('progressionLineChart');
+      const ctxBar = document.getElementById('marksBarChart');
+      if (!ctxLine || !ctxBar) return;
+
+      if (lineChartInstance) lineChartInstance.destroy();
+      if (barChartInstance) barChartInstance.destroy();
+
+      lineChartInstance = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Score %', data: pctScores, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.15)', tension: 0.35, fill: true },
+            { label: 'Accuracy %', data: accuracies, borderColor: '#10b981', borderDash: [5, 5], tension: 0.35 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+      });
+
+      barChartInstance = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Marks Scored', data: rawScores, backgroundColor: '#8b5cf6', borderRadius: 6 },
+            { label: 'Max Marks', data: maxScores, backgroundColor: 'rgba(148,163,184,0.25)', borderRadius: 6 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function deleteAttempt(id) {
+      appState.attempts = appState.attempts.filter(a => a.id !== id);
+      persistState();
+      refreshAllUI();
+    }
+
+    // ============================================================================
+    // 10. FIREBASE SPARK PLAN (GOOGLE SIGN-IN & CLOUD FIRESTORE SYNC)
+    // ============================================================================
+    async function initFirebaseIfConfigured() {
+      const savedConfigStr = localStorage.getItem(STORAGE_KEYS.FB_CONFIG);
+      if (!savedConfigStr) return;
+      document.getElementById('firebaseConfigInput').value = savedConfigStr;
+
+      try {
+        const firebaseConfig = JSON.parse(savedConfigStr);
+        const appMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+        const authMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+        const fsMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        fbModules = { ...appMod, ...authMod, ...fsMod };
+
+        const app = fbModules.initializeApp(firebaseConfig);
+        fbAuth = fbModules.getAuth(app);
+        fbDb = fbModules.getFirestore(app);
+
+        fbModules.onAuthStateChanged(fbAuth, async (user) => {
+          fbUser = user;
+          if (user) {
+            document.getElementById('authStatusText').textContent = user.displayName?.split(' ')[0] || 'Synced';
+            document.getElementById('quickStatSync').textContent = '☁️ Firebase Cloud';
+            document.getElementById('quickStatSync').style.color = 'var(--success)';
+            await pullFromFirestoreCloud();
+          } else {
+            document.getElementById('authStatusText').textContent = 'Google Sign-In';
+            document.getElementById('quickStatSync').textContent = 'Local Browser';
+          }
+        });
+      } catch (err) {
+        console.warn('Firebase init error:', err);
+      }
+    }
+
+    function saveFirebaseConfig() {
+      try {
+        const raw = document.getElementById('firebaseConfigInput').value.trim();
+        JSON.parse(raw);
+        localStorage.setItem(STORAGE_KEYS.FB_CONFIG, raw);
+        closeModal('firebaseModal');
+        location.reload();
+      } catch (e) {
+        alert('Please paste a valid JSON Firebase configuration object.');
+      }
+    }
+
+    function clearFirebaseConfig() {
+      localStorage.removeItem(STORAGE_KEYS.FB_CONFIG);
+      location.reload();
+    }
+
+    async function handleAuthClick() {
+      if (!fbAuth || !fbModules) {
+        openModal('firebaseModal');
+        return;
+      }
+      if (fbUser) {
+        if (confirm(`Signed in as ${fbUser.email}. Do you want to sign out?`)) {
+          await fbModules.signOut(fbAuth);
+        }
+      } else {
+        try {
+          const provider = new fbModules.GoogleAuthProvider();
+          await fbModules.signInWithPopup(fbAuth, provider);
+        } catch (err) {
+          alert('Google Sign-In Error: ' + err.message);
+        }
+      }
+    }
+
+    async function syncToFirestoreCloud() {
+      if (!fbUser || !fbDb || !fbModules) return;
+      try {
+        const ref = fbModules.doc(fbDb, 'users', fbUser.uid);
+        await fbModules.setDoc(ref, {
+          sections: appState.sections,
+          savedTests: appState.savedTests,
+          attempts: appState.attempts,
+          bookmarks: appState.bookmarks,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (e) {
+        console.warn('Cloud sync write skipped:', e);
+      }
+    }
+
+    async function pullFromFirestoreCloud() {
+      if (!fbUser || !fbDb || !fbModules) return;
+      try {
+        const ref = fbModules.doc(fbDb, 'users', fbUser.uid);
+        const snap = await fbModules.getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.sections?.length) appState.sections = data.sections;
+          if (data.savedTests?.length) appState.savedTests = data.savedTests;
+          if (data.attempts?.length) appState.attempts = data.attempts;
+          if (data.bookmarks?.length) appState.bookmarks = data.bookmarks;
+          persistState();
+          refreshAllUI();
+        } else {
+          await syncToFirestoreCloud();
+        }
+      } catch (e) {
+        console.warn('Cloud sync pull error:', e);
+      }
+    }
+
+    // ============================================================================
+    // 11. BUILT-IN SAMPLE MOCK TEST & UTILITY HELPERS
+    // ============================================================================
+    function createBuiltInSampleTest() {
+      return {
+        id: 'demo_starter_test',
+        title: 'UIIC AO & Banking Prelims — Starter Mini Mock',
+        section: 'UIIC AO Prelims',
+        duration: 10,
+        createdAt: new Date().toISOString(),
+        questions: [
+          {
+            id: 1,
+            section: 'Reasoning Ability',
+            passage: 'Directions (Q. 1-2): Study the following information carefully:\nEight boxes A, B, C, D, E, F, G, and H are kept one above another. Box A is kept immediately above Box C. Only two boxes are kept between Box C and Box F. Box D is kept at the bottommost position.',
+            question: 'If Box F is above Box C, how many boxes are between Box A and Box F?',
+            options: ['One', 'Two', 'Three', 'Four', 'None'],
+            answer: 0,
+            explanation: 'Since A is immediately above C and there are two boxes between C and F (with F above C), only one box sits between A and F.'
+          },
+          {
+            id: 2,
+            section: 'Reasoning Ability',
+            passage: 'Directions (Q. 1-2): Study the following information carefully:\nEight boxes A, B, C, D, E, F, G, and H are kept one above another. Box A is kept immediately above Box C. Only two boxes are kept between Box C and Box F. Box D is kept at the bottommost position.',
+            question: 'Which box is placed at the bottommost position?',
+            options: ['Box A', 'Box C', 'Box D', 'Box F', 'Cannot be determined'],
+            answer: 2,
+            explanation: 'As directly stated in the directions, Box D is kept at the bottommost position.'
+          },
+          {
+            id: 3,
+            section: 'Quantitative Aptitude',
+            passage: '',
+            question: 'A sum of ₹12,500 amounts to ₹15,500 in 4 years at the rate of simple interest. What is the annual rate of interest?',
+            options: ['4%', '5%', '6%', '6.5%', '8%'],
+            answer: 2,
+            explanation: 'Simple Interest = 15500 - 12500 = ₹3000. Rate = (3000 × 100) / (12500 × 4) = 6%.'
+          },
+          {
+            id: 4,
+            section: 'General Awareness',
+            passage: '',
+            question: 'Where is the headquarters of United India Insurance Company Limited (UIIC) located?',
+            options: ['Mumbai', 'Chennai', 'New Delhi', 'Kolkata', 'Hyderabad'],
+            answer: 1,
+            explanation: 'United India Insurance Company Limited (UIIC) is headquartered in Chennai, Tamil Nadu.'
+          },
+          {
+            id: 5,
+            section: 'English Language',
+            passage: '',
+            question: 'Choose the word most similar in meaning (Synonym) to the word "PRUDENT":',
+            options: ['Reckless', 'Cautious and Wise', 'Extravagant', 'Hostile', 'Negligent'],
+            answer: 1,
+            explanation: 'Prudent means acting with or showing care and thought for the future (Cautious and Wise).'
+          }
+        ]
+      };
+    }
+
+    function loadSampleMockTest() {
+      let demo = appState.savedTests.find(t => t.id === 'demo_starter_test');
+      if (!demo) {
+        demo = createBuiltInSampleTest();
+        appState.savedTests.unshift(demo);
+        persistState();
+        refreshAllUI();
+      }
+      startMockExam(demo.id);
+    }
+
+    function copyAiPrompt() {
+      const txt = document.getElementById('aiPromptText').value;
+      navigator.clipboard.writeText(txt);
+      alert('Copied AI conversion prompt to clipboard!');
+    }
+
+    function exportBackupData() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ExamPulse_Backup_${Date.now()}.json`;
+      a.click();
+    }
+
+    function escapeHtml(str = '') {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
