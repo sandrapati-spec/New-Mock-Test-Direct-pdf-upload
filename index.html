@@ -76,13 +76,13 @@
       font-size: 1.5rem;
       color: var(--text-main);
       cursor: pointer;
-      padding: 4px;
+      padding: 4px 8px;
       border-radius: 6px;
       transition: 0.2s;
     }
     .menu-toggle:hover { background: var(--border); }
     
-    .brand { font-weight: 800; font-size: 1.25rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .brand { font-weight: 800; font-size: 1.25rem; color: var(--primary); display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .header-actions { display: flex; gap: 12px; align-items: center; }
 
     /* VERTICAL COLLAPSIBLE SIDEBAR */
@@ -142,16 +142,18 @@
     .tag-primary { background: var(--primary-soft); color: var(--primary); }
     .tag-success { background: var(--success-soft); color: var(--success); }
     .tag-warning { background: var(--warning-soft); color: var(--warning); }
+    .tag-danger { background: var(--danger-soft); color: var(--danger); }
+    .tag-purple { background: var(--purple-soft); color: var(--purple); }
 
     /* BUTTONS & INPUTS */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: 0.15s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: 0.15s; font-family: inherit; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: transparent; border-color: var(--border); color: var(--text-main); }
     .btn-outline:hover { background: var(--bg-body); }
     .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-    .btn-danger { background: var(--danger); color: #fff; }
     
     input, select, textarea { width: 100%; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.95rem; font-family: inherit; outline: none; transition: 0.2s; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
@@ -163,29 +165,32 @@
     th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; background: var(--bg-body); }
 
     /* DROPZONE */
-    .dropzone { border: 2px dashed var(--primary); background: var(--primary-soft); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-    .dropzone:hover { background: #dbeafe; }
+    .dropzone { display: block; border: 2px dashed var(--primary); background: var(--primary-soft); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .dropzone:hover, .dropzone.dragover { background: #dbeafe; border-color: var(--primary-hover); }
     .dropzone input { display: none; }
 
     /* EXAM OVERLAY */
     #examOverlay { position: fixed; inset: 0; background: var(--bg-body); z-index: 2000; display: none; flex-direction: column; }
     #examOverlay.active { display: flex; }
-    .exam-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .exam-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 12px; }
     .timer-box { background: var(--bg-body); border: 1px solid var(--border); padding: 6px 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+    .timer-box.low-time { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); }
     
     .exam-body { flex: 1; display: grid; grid-template-columns: 1fr 320px; overflow: hidden; }
+    @media (max-width: 900px) { .exam-body { grid-template-columns: 1fr; overflow-y: auto; } }
     .exam-main { display: flex; flex-direction: column; overflow-y: auto; padding: 30px; }
     .question-pane { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: var(--shadow-sm); }
     
-    .option-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 20px; margin-top: 12px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: 0.15s; font-size: 1rem; }
+    .option-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 20px; margin-top: 12px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: 0.15s; font-size: 1rem; user-select: none; }
     .option-card:hover { border-color: var(--primary); background: var(--primary-soft); }
     .option-card.selected { border-color: var(--primary); background: var(--primary-soft); font-weight: 600; box-shadow: 0 0 0 1px var(--primary); }
-    .opt-letter { width: 32px; height: 32px; border-radius: 6px; background: var(--bg-body); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .option-card.struck { text-decoration: line-through; opacity: 0.45; }
+    .opt-letter { width: 32px; height: 32px; flex-shrink: 0; border-radius: 6px; background: var(--bg-body); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
     .option-card.selected .opt-letter { background: var(--primary); color: #fff; border-color: var(--primary); }
 
     .exam-sidebar { background: var(--bg-card); border-left: 1px solid var(--border); padding: 24px; overflow-y: auto; }
     .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 16px; }
-    .p-btn { height: 42px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .p-btn { height: 42px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.15s; }
     .p-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
     .p-btn.answered { background: var(--success); color: #fff; border-color: var(--success); }
     .p-btn.unanswered { background: var(--danger); color: #fff; border-color: var(--danger); }
@@ -194,7 +199,8 @@
     /* MODALS */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-backdrop.active { display: flex; }
-    .modal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 600px; padding: 28px; box-shadow: var(--shadow-lg); }
+    .modal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 28px; box-shadow: var(--shadow-lg); }
+    .modal-lg { max-width: 850px; }
   </style>
 </head>
 <body>
@@ -202,8 +208,8 @@
   <!-- TOP HEADER -->
   <header class="top-header">
     <div class="header-left">
-      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-      <div class="brand">⚡ ExamForge</div>
+      <button class="menu-toggle" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="brand" onclick="navTo('landing')">⚡ ExamForge</div>
     </div>
     <div class="header-actions">
       <span class="tag tag-success" id="authStatusLabel">☁️ Connecting Firebase...</span>
@@ -222,8 +228,9 @@
       <button class="nav-item" id="nav-dashboard" onclick="navTo('dashboard')"><span class="nav-icon">📊</span> Dashboard</button>
       <button class="nav-item" id="nav-categories" onclick="navTo('categories')"><span class="nav-icon">🗂️</span> Paper Library</button>
       <button class="nav-item" id="nav-studio" onclick="navTo('studio')"><span class="nav-icon">📄</span> Upload PDF</button>
+      <button class="nav-item" id="nav-bookmarks" onclick="navTo('bookmarks')"><span class="nav-icon">🔖</span> Bookmarks</button>
       <hr style="border-top:1px solid var(--border); margin: 8px 0;" />
-      <button class="nav-item" onclick="handleGoogleAuth()"><span class="nav-icon">🔑</span> Google Sign-In</button>
+      <button class="nav-item" id="googleAuthBtn" onclick="handleGoogleAuth()"><span class="nav-icon">🔑</span> Google Sign-In</button>
     </nav>
   </aside>
 
@@ -255,18 +262,24 @@
       </div>
 
       <div class="grid-2" style="margin-bottom: 30px;">
-        <div class="card"><h3 style="margin-bottom:16px; font-size:1rem;">📈 Score Progression</h3><div style="height: 260px;"><canvas id="dashLineChart"></canvas></div></div>
-        <div class="card"><h3 style="margin-bottom:16px; font-size:1rem;">📊 Marks Comparison</h3><div style="height: 260px;"><canvas id="dashBarChart"></canvas></div></div>
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:1rem;">📈 Score Progression (%)</h3>
+          <div style="height: 260px; position: relative;"><canvas id="dashLineChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:1rem;">📊 Marks Comparison</h3>
+          <div style="height: 260px; position: relative;"><canvas id="dashBarChart"></canvas></div>
+        </div>
       </div>
 
       <div class="card">
         <h3 style="margin-bottom: 16px;">🕓 Recent Activity</h3>
         <div style="overflow-x: auto;">
           <table>
-            <thead><tr><th>Date</th><th>Paper</th><th>Category</th><th>Score</th><th>Max</th><th>Action</th></tr></thead>
-            <tbody id="dashActivityTableBody">
-                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No activity recorded yet.</td></tr>
-            </tbody>
+            <thead>
+              <tr><th>Date</th><th>Paper</th><th>Category</th><th>Score</th><th>Accuracy</th><th>Action</th></tr>
+            </thead>
+            <tbody id="dashActivityTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -275,7 +288,7 @@
     <!-- VIEW 3: CATEGORIES & LIBRARY -->
     <section id="view-categories" class="view-section">
       <div id="catOverviewPanel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
           <h2>🗂️ Paper Library</h2>
           <button class="btn btn-outline btn-sm" onclick="openModal('categoryModal')">⚙️ Manage Categories</button>
         </div>
@@ -284,7 +297,7 @@
       
       <div id="catLibraryPanel" style="display:none;">
         <button class="btn btn-outline btn-sm" style="margin-bottom:16px;" onclick="closeCategoryFolder()">← Back to Categories</button>
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
           <h2 id="activeCategoryTitle">Category</h2>
           <button class="btn btn-primary" onclick="navTo('studio')">➕ Upload Paper</button>
         </div>
@@ -300,15 +313,16 @@
           <label class="dropzone" id="pdfDropzone">
             <input type="file" id="pdfFileInput" accept="application/pdf,.json" />
             <div style="font-size: 2rem; margin-bottom: 10px;">📥</div>
-            <div style="font-weight: 700; font-size:1.1rem;" id="pdfFileName">Drop Question PDF Here</div>
+            <div style="font-weight: 700; font-size:1.1rem;" id="pdfFileName">Drop Question PDF or JSON Here</div>
+            <div class="text-muted" style="margin-top:4px; font-size:0.8rem;">Supports multi-page PDFs & exported JSON arrays</div>
           </label>
           <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
             <div><label>Paper Title</label><input type="text" id="studioTitle" value="New Mock Paper" /></div>
             <div><label>Category</label><select id="studioCategorySelect"></select></div>
             <div style="display:flex; gap:12px;">
-              <div style="flex:1"><label>Duration (m)</label><input type="number" id="studioDuration" value="60" /></div>
-              <div style="flex:1"><label>Correct (+)</label><input type="number" id="studioPosMark" value="1" /></div>
-              <div style="flex:1"><label>Negative (-)</label><input type="number" id="studioNegMark" value="0.25" /></div>
+              <div style="flex:1"><label>Duration (m)</label><input type="number" id="studioDuration" value="60" min="1" /></div>
+              <div style="flex:1"><label>Correct (+)</label><input type="number" id="studioPosMark" value="1" step="any" min="0" /></div>
+              <div style="flex:1"><label>Negative (-)</label><input type="number" id="studioNegMark" value="0.25" step="any" min="0" /></div>
             </div>
           </div>
         </div>
@@ -317,28 +331,22 @@
             <strong style="font-size:1.1rem;">Verified Questions: <span id="studioQCount" class="tag tag-primary">0</span></strong>
             <button class="btn btn-success" onclick="saveStudioPaper()">💾 Save to Firebase</button>
           </div>
-          <div style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;" id="studioStatus">Upload a PDF to parse...</div>
-          <textarea id="studioJsonTextarea" style="flex:1; min-height: 300px; font-family:monospace; font-size:0.85rem;"></textarea>
+          <div style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;" id="studioStatus">Upload a PDF or paste JSON below to parse...</div>
+          <textarea id="studioJsonTextarea" placeholder='[{"id": 1, "question": "Sample Question?", "options": ["Opt A", "Opt B", "Opt C", "Opt D"], "answer": 0, "explanation": ""}]' style="flex:1; min-height: 300px; font-family:'JetBrains Mono', monospace; font-size:0.85rem;"></textarea>
         </div>
       </div>
     </section>
 
-  </main>
+    <!-- VIEW 5: BOOKMARKS -->
+    <section id="view-bookmarks" class="view-section">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2>🔖 Saved Bookmarks</h2>
+        <span class="tag tag-primary" id="bookmarkTotalTag">0 Saved</span>
+      </div>
+      <div id="bookmarksList" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </section>
 
-  <!-- CATEGORY MANAGEMENT MODAL -->
-  <div class="modal-backdrop" id="categoryModal">
-    <div class="modal">
-      <h3 style="margin-bottom:16px;">Manage Categories</h3>
-      <div style="display:flex; gap:10px; margin-bottom: 20px;">
-        <input type="text" id="newCategoryInput" placeholder="Enter new category name..." />
-        <button class="btn btn-primary" onclick="addNewCategory()">Add</button>
-      </div>
-      <div id="categoryManagerList" style="display:flex; flex-direction:column; gap:12px; max-height: 300px; overflow-y:auto; margin-bottom:20px;"></div>
-      <div style="display:flex; justify-content:flex-end;">
-        <button class="btn btn-outline" onclick="closeModal('categoryModal')">Close</button>
-      </div>
-    </div>
-  </div>
+  </main>
 
   <!-- EXAM OVERLAY -->
   <div id="examOverlay">
@@ -347,7 +355,8 @@
         <div style="font-weight:800; font-size:1.15rem;" id="liveTitle">Mock Exam</div>
         <div style="font-size:0.85rem; color:var(--text-muted);" id="liveMeta">Category</div>
       </div>
-      <div style="display:flex; gap:16px; align-items:center;">
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="pauseAndExitExam()" title="Pause and return to dashboard">⏸ Pause & Save</button>
         <button class="btn btn-outline btn-sm" onclick="toggleFullScreen()" title="Fullscreen">⛶ Fullscreen</button>
         <div class="timer-box" id="liveTimer">00:00:00</div>
         <button class="btn btn-success" onclick="openSubmitModal()">Submit Test</button>
@@ -356,42 +365,63 @@
     <div class="exam-body">
       <div class="exam-main">
         <div class="question-pane">
-          <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
             <strong style="color:var(--primary); font-size:1.1rem;" id="liveQNum">Question 1</strong>
-            <span class="tag" id="liveSaveStatus">Live</span>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button class="btn btn-outline btn-sm" id="liveBookmarkBtn" onclick="toggleLiveBookmark()">🔖 Bookmark</button>
+              <span class="tag" id="liveSaveStatus">Saved</span>
+            </div>
           </div>
-          <div id="livePassage" style="display:none; padding:16px; background:var(--warning-soft); border-left:4px solid var(--warning); margin-bottom:20px; font-size:0.95rem; border-radius:6px;"></div>
+          <div id="livePassage" style="display:none; padding:16px; background:var(--warning-soft); border-left:4px solid var(--warning); margin-bottom:20px; font-size:0.95rem; border-radius:6px; white-space:pre-wrap;"></div>
           <div id="liveQText" style="white-space:pre-wrap; font-weight:600; font-size:1.1rem; margin-bottom:24px;"></div>
           <div id="liveOptions" style="display:flex; flex-direction:column;"></div>
+          <div class="text-muted" style="margin-top:16px; font-size:0.8rem;">💡 Tip: Right-click any option to strike it out.</div>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-top:24px;">
+        <div style="display:flex; justify-content:space-between; margin-top:24px; flex-wrap:wrap; gap:12px;">
           <div style="display:flex; gap:12px;">
             <button class="btn btn-outline" onclick="markReview()">🟣 Mark for Review</button>
             <button class="btn btn-outline" onclick="clearResponse()">🧹 Clear</button>
           </div>
           <div style="display:flex; gap:12px;">
-            <button class="btn btn-outline" onclick="navQ(-1)">← Previous</button>
-            <button class="btn btn-primary" onclick="saveAndNext()">Save & Next →</button>
+            <button class="btn btn-outline" id="prevQBtn" onclick="navQ(-1)">← Previous</button>
+            <button class="btn btn-primary" id="nextQBtn" onclick="saveAndNext()">Save & Next →</button>
           </div>
         </div>
       </div>
       <div class="exam-sidebar">
         <div style="font-weight:700; margin-bottom:16px;">Question Palette</div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.8rem; color:var(--text-muted); margin-bottom:20px;">
-          <div><span style="display:inline-block;width:12px;height:12px;background:var(--success);border-radius:3px;"></span> Answered</div>
-          <div><span style="display:inline-block;width:12px;height:12px;background:var(--danger);border-radius:3px;"></span> Unanswered</div>
-          <div><span style="display:inline-block;width:12px;height:12px;background:var(--purple);border-radius:3px;"></span> Marked</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--success);border-radius:3px;vertical-align:middle;"></span> Answered (<span id="countAnswered">0</span>)</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--danger);border-radius:3px;vertical-align:middle;"></span> Unanswered (<span id="countUnanswered">0</span>)</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--purple);border-radius:3px;vertical-align:middle;"></span> Marked (<span id="countReview">0</span>)</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:3px;vertical-align:middle;"></span> Not Visited (<span id="countNotVisited">0</span>)</div>
         </div>
         <div class="palette-grid" id="livePalette"></div>
       </div>
     </div>
   </div>
 
-  <!-- SUBMIT MODAL -->
+  <!-- CATEGORY MANAGEMENT MODAL -->
+  <div class="modal-backdrop" id="categoryModal">
+    <div class="modal">
+      <h3 style="margin-bottom:16px;">⚙️ Manage Categories</h3>
+      <div style="display:flex; gap:10px; margin-bottom:20px;">
+        <input type="text" id="newCategoryInput" placeholder="New category name (e.g., IBPS PO)" />
+        <button class="btn btn-primary" onclick="addNewCategory()">Add</button>
+      </div>
+      <div id="categoryManagerList" style="display:flex; flex-direction:column; gap:10px; max-height:280px; overflow-y:auto; margin-bottom:20px;"></div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="closeModal('categoryModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT CONFIRMATION MODAL -->
   <div class="modal-backdrop" id="submitModal">
     <div class="modal">
-      <h3 style="margin-bottom:16px;">Confirm Submission</h3>
-      <p class="text-muted" style="margin-bottom:24px;">Are you sure you want to submit? You cannot change answers after submission.</p>
+      <h3 style="margin-bottom:12px;">Confirm Submission</h3>
+      <p class="text-muted" style="margin-bottom:16px;">Are you sure you want to submit? You cannot change answers after submission.</p>
+      <div id="submitSummaryBox" style="background:var(--bg-body); padding:16px; border-radius:8px; margin-bottom:24px; font-size:0.9rem; display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div>
       <div style="display:flex; justify-content:flex-end; gap:12px;">
         <button class="btn btn-outline" onclick="closeModal('submitModal')">Cancel</button>
         <button class="btn btn-success" onclick="finalizeExam()">Submit Final</button>
@@ -399,9 +429,20 @@
     </div>
   </div>
 
+  <!-- ATTEMPT REVIEW MODAL -->
+  <div class="modal-backdrop" id="reviewModal">
+    <div class="modal modal-lg">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+        <h3 id="reviewModalTitle">Attempt Review</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('reviewModal')">✕ Close</button>
+      </div>
+      <div id="reviewModalBody" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </div>
+  </div>
+
   <script type="module">
     // =======================================================================
-    // 1. FIREBASE CONFIGURATION
+    // 1. FIREBASE CONFIGURATION & INITIALIZATION
     // =======================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -409,7 +450,6 @@
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // Updated with User's requested credentials
     const firebaseConfig = {
       apiKey: "AIzaSyBPhZrTBpQdy3iqgdliUuA9M0w-iMjBQEY",
       authDomain: "free-mock-test-by-srujan.firebaseapp.com",
@@ -425,13 +465,32 @@
     const db = getFirestore(app);
     let currentUser = null;
 
-    let state = { categories: ["ESE", "GATE", "SSC", "UIIC AO"], papers: [], attempts: [], activeAttempt: null, studioQs: [], rawPages: [] };
+    let state = {
+      categories: ["ESE", "GATE", "SSC", "UIIC AO"],
+      papers: [],
+      attempts: [],
+      bookmarks: [],
+      activeAttempt: null,
+      studioQs: [],
+      rawPages: [],
+      activeCategoryView: null
+    };
     let timerInt = null;
 
+    // Safe HTML sanitizer (prevents math inequalities like "A < B" from breaking DOM)
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     // =======================================================================
-    // EXPOSING FUNCTIONS TO WINDOW FOR INLINE HTML EVENT HANDLERS
+    // 2. NAVIGATION & SIDEBAR
     // =======================================================================
-    
     window.toggleSidebar = () => {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -439,293 +498,704 @@
 
     window.navTo = (viewId) => {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.getElementById(`view-${viewId}`).classList.add('active');
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) targetView.classList.add('active');
+
       document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-      if(document.getElementById(`nav-${viewId}`)) document.getElementById(`nav-${viewId}`).classList.add('active');
+      const targetNav = document.getElementById(`nav-${viewId}`);
+      if (targetNav) targetNav.classList.add('active');
       
       document.getElementById('sidebar').classList.remove('active');
       document.getElementById('sidebarOverlay').classList.remove('active');
 
-      if(viewId === 'landing') renderLanding();
-      if(viewId === 'dashboard') renderDashboard();
-      if(viewId === 'categories') renderCategories();
-      if(viewId === 'studio') { document.getElementById('studioCategorySelect').innerHTML = state.categories.map(c=>`<option value="${c}">${c}</option>`).join(''); }
+      if (viewId === 'landing') renderLanding();
+      if (viewId === 'dashboard') renderDashboard();
+      if (viewId === 'categories') renderCategories();
+      if (viewId === 'studio') populateStudioCategories();
+      if (viewId === 'bookmarks') renderBookmarks();
     };
+
+    function populateStudioCategories() {
+      const sel = document.getElementById('studioCategorySelect');
+      const currentVal = sel.value;
+      sel.innerHTML = state.categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      if (state.categories.includes(currentVal)) sel.value = currentVal;
+    }
 
     window.openModal = (id) => {
       document.getElementById(id).classList.add('active');
       if (id === 'categoryModal') renderCategoryManager();
     };
-    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
-    // AUTH
+    window.closeModal = (id) => {
+      document.getElementById(id).classList.remove('active');
+    };
+
+    // =======================================================================
+    // 3. AUTHENTICATION & CLOUD SYNC
+    // =======================================================================
     onAuthStateChanged(auth, async (user) => {
+      const statusLabel = document.getElementById("authStatusLabel");
+      const authBtn = document.getElementById("googleAuthBtn");
       if (user) {
         currentUser = user;
-        document.getElementById("authStatusLabel").textContent = user.isAnonymous ? "Guest Mode" : "☁️ Synced";
+        if (user.isAnonymous) {
+          statusLabel.textContent = "☁️ Guest Mode";
+          statusLabel.className = "tag tag-warning";
+          authBtn.innerHTML = `<span class="nav-icon">🔑</span> Google Sign-In`;
+        } else {
+          statusLabel.textContent = `☁️ ${user.displayName || user.email || 'Synced'}`;
+          statusLabel.className = "tag tag-success";
+          authBtn.innerHTML = `<span class="nav-icon">🚪</span> Sign Out`;
+        }
         await loadFromCloud();
-      } else { signInAnonymously(auth).catch(e => console.warn(e)); }
+      } else {
+        statusLabel.textContent = "⚠️ Offline / Local";
+        statusLabel.className = "tag";
+        signInAnonymously(auth).catch(e => console.warn("Anonymous auth fallback:", e));
+      }
     });
 
     window.handleGoogleAuth = async () => {
-      if (currentUser && !currentUser.isAnonymous) { if(confirm("Sign out?")) await signOut(auth); return; }
-      try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { alert(e.message); }
+      if (currentUser && !currentUser.isAnonymous) {
+        if (confirm("Sign out of your Google account?")) {
+          await signOut(auth);
+        }
+        return;
+      }
+      try {
+        await signInWithPopup(auth, new GoogleAuthProvider());
+      } catch (e) {
+        alert("Sign-In Error: " + e.message);
+      }
     };
 
     async function loadFromCloud() {
-      if(!currentUser) return;
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      if(snap.exists() && snap.data().categories) state.categories = snap.data().categories;
-      if(snap.exists() && snap.data().activeAttempt) state.activeAttempt = snap.data().activeAttempt;
+      if (!currentUser) return;
+      try {
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          if (Array.isArray(data.categories) && data.categories.length > 0) state.categories = data.categories;
+          state.activeAttempt = data.activeAttempt || null;
+          state.bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+        }
 
-      const pSnap = await getDocs(collection(db, "users", currentUser.uid, "papers"));
-      state.papers = []; pSnap.forEach(d => state.papers.push(d.data()));
+        const pSnap = await getDocs(collection(db, "users", currentUser.uid, "papers"));
+        state.papers = [];
+        pSnap.forEach(d => state.papers.push(d.data()));
 
-      const aSnap = await getDocs(collection(db, "users", currentUser.uid, "attempts"));
-      state.attempts = []; aSnap.forEach(d => state.attempts.push(d.data()));
+        const aSnap = await getDocs(collection(db, "users", currentUser.uid, "attempts"));
+        state.attempts = [];
+        aSnap.forEach(d => state.attempts.push(d.data()));
 
-      // Refresh Current View
-      renderLanding();
+        refreshActiveView();
+      } catch (e) {
+        console.error("Failed loading cloud data:", e);
+      }
     }
     
     async function saveMeta() {
-      if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { categories: state.categories, activeAttempt: state.activeAttempt }, {merge:true});
+      if (!currentUser) return;
+      try {
+        await setDoc(doc(db, "users", currentUser.uid), {
+          categories: state.categories,
+          activeAttempt: state.activeAttempt,
+          bookmarks: state.bookmarks
+        }, { merge: true });
+      } catch (e) {
+        console.error("Meta sync failed:", e);
+      }
+    }
+
+    function refreshActiveView() {
+      renderLanding();
+      if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+      if (document.getElementById('view-categories').classList.contains('active')) renderCategories();
+      if (document.getElementById('view-studio').classList.contains('active')) populateStudioCategories();
+      if (document.getElementById('view-bookmarks').classList.contains('active')) renderBookmarks();
     }
 
     // =======================================================================
-    // DASHBOARD & CHARTS
+    // 4. LANDING & DASHBOARD
     // =======================================================================
-    let lineChart, barChart;
+    let lineChart = null, barChart = null;
+
     function renderLanding() {
-      document.getElementById('landingCategories').innerHTML = state.categories.map(c => `
-        <div class="card card-interactive" onclick="window.openCat('${c}')">
-          <h3 style="margin-bottom:8px;">${c}</h3>
-          <span class="tag">${state.papers.filter(p=>p.category===c).length} Papers</span>
-        </div>
-      `).join('');
+      document.getElementById('landingCategories').innerHTML = state.categories.map((c, idx) => {
+        const count = state.papers.filter(p => p.category === c).length;
+        return `
+          <div class="card card-interactive" onclick="window.openCatByIndex(${idx})">
+            <h3 style="margin-bottom:8px;">${escapeHtml(c)}</h3>
+            <span class="tag">${count} ${count === 1 ? 'Paper' : 'Papers'}</span>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderDashboard() {
-      // Resume Container Logic
-      const rc = document.getElementById('dashboardResumeContainer');
+      // 1. Active Attempt Resume Card
+      const resumeEl = document.getElementById('dashboardResumeContainer');
       if (state.activeAttempt) {
-        rc.innerHTML = `
-          <div class="card" style="margin-bottom: 24px; border-color: var(--primary); background: var(--primary-soft); display:flex; justify-content:space-between; align-items:center;">
+        const remMins = Math.ceil((state.activeAttempt.remainingSeconds || 0) / 60);
+        resumeEl.innerHTML = `
+          <div class="card" style="margin-bottom: 24px; border-color: var(--primary); background: var(--primary-soft); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div>
-              <h3 style="color:var(--primary); margin-bottom:4px;">⚠️ Active Exam in Progress</h3>
-              <p class="text-muted">Resume your attempt for <strong>${state.activeAttempt.title}</strong>.</p>
+              <span class="tag tag-primary" style="margin-bottom:6px;">IN PROGRESS</span>
+              <h3 style="margin-bottom:4px;">${escapeHtml(state.activeAttempt.title)}</h3>
+              <p class="text-muted">${escapeHtml(state.activeAttempt.category)} • ~${remMins} min remaining</p>
             </div>
-            <button class="btn btn-primary" onclick="window.resumeExam()">Resume Exam</button>
-          </div>`;
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-outline btn-sm" onclick="window.discardActiveAttempt()">Discard</button>
+              <button class="btn btn-primary" onclick="window.resumeExam()">▶ Resume Exam</button>
+            </div>
+          </div>
+        `;
       } else {
-        rc.innerHTML = '';
+        resumeEl.innerHTML = '';
       }
 
+      // 2. KPIs
       document.getElementById('kpiPapers').textContent = state.papers.length;
       document.getElementById('kpiAttempts').textContent = state.attempts.length;
-      
-      let chartLabels = [], chartLineData = [], chartBarData = [];
 
-      if(state.attempts.length > 0) {
-        const validAttempts = state.attempts.filter(a => a.maxMarks > 0);
-        if (validAttempts.length > 0) {
-           const scores = validAttempts.map(a => (a.score/a.maxMarks)*100);
-           document.getElementById('kpiAvgScore').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) + '%';
-           document.getElementById('kpiBestScore').textContent = Math.round(Math.max(...scores)) + '%';
-        }
-        
-        // Activity Table Populating
-        const recActivity = [...state.attempts].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,5);
-        document.getElementById('dashActivityTableBody').innerHTML = recActivity.map(a => `
-          <tr>
-            <td>${new Date(a.date).toLocaleDateString()}</td>
-            <td><strong>${a.title}</strong></td>
-            <td><span class="tag">${a.category}</span></td>
-            <td style="color:var(--primary); font-weight:700;">${a.score.toFixed(2)}</td>
-            <td>${a.maxMarks}</td>
-            <td><span class="tag tag-success">Completed</span></td>
-          </tr>
-        `).join('');
+      const sortedAttempts = [...state.attempts].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        // Chart Data Prep
-        const recCharts = [...validAttempts].sort((a,b) => new Date(a.date) - new Date(b.date)).slice(-10);
-        chartLabels = recCharts.map((_,i)=>`#${i+1}`);
-        chartLineData = recCharts.map(a=>(a.score/a.maxMarks)*100);
-        chartBarData = recCharts.map(a=>a.score);
+      if (sortedAttempts.length > 0) {
+        const percentages = sortedAttempts.map(a => a.maxMarks > 0 ? Math.max(0, (a.score / a.maxMarks) * 100) : 0);
+        const avg = percentages.reduce((acc, v) => acc + v, 0) / percentages.length;
+        const best = Math.max(...percentages);
+        document.getElementById('kpiAvgScore').textContent = Math.round(avg) + '%';
+        document.getElementById('kpiBestScore').textContent = Math.round(best) + '%';
       } else {
-        document.getElementById('dashActivityTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No activity recorded yet.</td></tr>`;
+        document.getElementById('kpiAvgScore').textContent = '0%';
+        document.getElementById('kpiBestScore').textContent = '0%';
       }
 
-      // Chart Generation (Safe Destroy)
-      if(lineChart) { lineChart.destroy(); lineChart = null; }
-      if(barChart) { barChart.destroy(); barChart = null; }
-      
+      // 3. Charts
+      if (lineChart) { lineChart.destroy(); lineChart = null; }
+      if (barChart) { barChart.destroy(); barChart = null; }
+
+      const rec = sortedAttempts.slice(-10);
+      const labels = rec.map((_, i) => `#${i + 1}`);
+      const pctData = rec.map(a => a.maxMarks > 0 ? Math.round((a.score / a.maxMarks) * 100) : 0);
+      const marksData = rec.map(a => Number(a.score.toFixed(2)));
+
       lineChart = new Chart(document.getElementById('dashLineChart'), {
-        type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Score %', data: chartLineData, borderColor: '#3182CE', tension: 0.3 }] }
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Score %',
+            data: pctData,
+            borderColor: '#3182CE',
+            backgroundColor: 'rgba(49, 130, 206, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
       });
+
       barChart = new Chart(document.getElementById('dashBarChart'), {
-        type: 'bar', data: { labels: chartLabels, datasets: [{ label: 'Marks', data: chartBarData, backgroundColor: '#805AD5' }] }
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Marks Scored',
+            data: marksData,
+            backgroundColor: '#805AD5',
+            borderRadius: 6
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
       });
+
+      // 4. Activity Table
+      const tbody = document.getElementById('dashActivityTableBody');
+      const revAttempts = [...sortedAttempts].reverse();
+      if (revAttempts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No attempts recorded yet. Start a test from the Paper Library!</td></tr>`;
+      } else {
+        tbody.innerHTML = revAttempts.map(a => {
+          const totalAttempted = (a.correct || 0) + (a.wrong || 0);
+          const accuracy = totalAttempted > 0 ? Math.round((a.correct / totalAttempted) * 100) : 0;
+          const formattedDate = new Date(a.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+          return `
+            <tr>
+              <td>${formattedDate}</td>
+              <td><strong>${escapeHtml(a.title)}</strong></td>
+              <td><span class="tag">${escapeHtml(a.category)}</span></td>
+              <td style="font-weight:700; color:var(--primary);">${Number(a.score).toFixed(2)} / ${a.maxMarks}</td>
+              <td><span class="tag ${accuracy >= 75 ? 'tag-success' : accuracy >= 50 ? 'tag-warning' : 'tag-danger'}">${accuracy}%</span></td>
+              <td>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn btn-outline btn-sm" onclick="window.reviewAttempt('${escapeHtml(a.id)}')">🔍 Review</button>
+                  <button class="btn btn-outline btn-sm" style="color:var(--danger);" onclick="window.deleteAttempt('${escapeHtml(a.id)}')" title="Delete Attempt">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
     }
 
+    window.discardActiveAttempt = async () => {
+      if (!confirm("Discard this in-progress exam?")) return;
+      state.activeAttempt = null;
+      await saveMeta();
+      renderDashboard();
+    };
+
+    window.deleteAttempt = async (attemptId) => {
+      if (!confirm("Delete this attempt history?")) return;
+      state.attempts = state.attempts.filter(a => a.id !== attemptId);
+      if (currentUser) {
+        await deleteDoc(doc(db, "users", currentUser.uid, "attempts", attemptId)).catch(console.error);
+      }
+      renderDashboard();
+    };
+
+    window.reviewAttempt = (attemptId) => {
+      const att = state.attempts.find(a => a.id === attemptId);
+      if (!att) return;
+      const paper = state.papers.find(p => p.id === att.paperId);
+      const questions = att.questionsSnapshot || (paper ? paper.questions : []);
+
+      document.getElementById('reviewModalTitle').textContent = `Review: ${att.title} (${Number(att.score).toFixed(2)} / ${att.maxMarks})`;
+      const body = document.getElementById('reviewModalBody');
+
+      if (!questions || questions.length === 0) {
+        body.innerHTML = `<p class="text-muted">Detailed question snapshot is not available for this attempt.</p>`;
+      } else {
+        body.innerHTML = questions.map((q, idx) => {
+          const userAns = att.responses ? att.responses[idx] : undefined;
+          const correctAns = q.answer ?? 0;
+          const isCorrect = userAns === correctAns;
+          const isSkipped = userAns === undefined;
+          const statusTag = isSkipped
+            ? `<span class="tag">Skipped</span>`
+            : isCorrect
+              ? `<span class="tag tag-success">✓ Correct</span>`
+              : `<span class="tag tag-danger">✕ Wrong</span>`;
+          const spent = att.timeSpent && att.timeSpent[idx] ? `${att.timeSpent[idx]}s` : '0s';
+
+          return `
+            <div class="card" style="padding:18px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <strong>Q${idx + 1}.</strong>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <span class="text-muted" style="font-size:0.8rem;">⏱ ${spent}</span>
+                  ${statusTag}
+                </div>
+              </div>
+              <div style="white-space:pre-wrap; font-weight:600; margin-bottom:12px;">${escapeHtml(q.question)}</div>
+              <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem;">
+                ${(q.options || []).map((opt, oi) => {
+                  let bg = 'var(--bg-body)';
+                  let border = 'var(--border)';
+                  if (oi === correctAns) { bg = 'var(--success-soft)'; border = 'var(--success)'; }
+                  else if (oi === userAns && !isCorrect) { bg = 'var(--danger-soft)'; border = 'var(--danger)'; }
+                  return `<div style="padding:8px 12px; border-radius:6px; background:${bg}; border:1px solid ${border};">
+                    <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
+                    ${oi === correctAns ? ' <strong style="color:var(--success); float:right;">✓ Answer</strong>' : ''}
+                    ${oi === userAns && !isCorrect ? ' <strong style="color:var(--danger); float:right;">Your Choice</strong>' : ''}
+                  </div>`;
+                }).join('')}
+              </div>
+              ${q.explanation ? `<div style="margin-top:12px; padding:10px; background:var(--primary-soft); border-radius:6px; font-size:0.85rem;"><strong>Explanation:</strong> ${escapeHtml(q.explanation)}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+      openModal('reviewModal');
+    };
+
     // =======================================================================
-    // CATEGORIES MANAGEMENT
+    // 5. CATEGORIES & PAPER LIBRARY
     // =======================================================================
     function renderCategories() {
       document.getElementById('catOverviewPanel').style.display = 'block';
       document.getElementById('catLibraryPanel').style.display = 'none';
-      document.getElementById('categoriesGrid').innerHTML = state.categories.map(c => `
-        <div class="card card-interactive" onclick="window.openCat('${c}')">
-          <h3 style="margin-bottom:8px;">${c}</h3><span class="tag">${state.papers.filter(p=>p.category===c).length} Papers</span>
-        </div>
-      `).join('');
+      document.getElementById('categoriesGrid').innerHTML = state.categories.map((c, idx) => {
+        const count = state.papers.filter(p => p.category === c).length;
+        return `
+          <div class="card card-interactive" onclick="window.openCatByIndex(${idx})">
+            <h3 style="margin-bottom:8px;">${escapeHtml(c)}</h3>
+            <span class="tag">${count} ${count === 1 ? 'Paper' : 'Papers'}</span>
+          </div>
+        `;
+      }).join('');
     }
 
+    window.openCatByIndex = (idx) => {
+      const c = state.categories[idx];
+      if (!c) return;
+      window.openCat(c);
+    };
+
+    window.openCat = (c) => {
+      state.activeCategoryView = c;
+      navTo('categories');
+      document.getElementById('catOverviewPanel').style.display = 'none';
+      document.getElementById('catLibraryPanel').style.display = 'block';
+      document.getElementById('activeCategoryTitle').textContent = c;
+
+      const catPapers = state.papers.filter(p => p.category === c);
+      document.getElementById('categoryPapersGrid').innerHTML = catPapers.map(p => `
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <h3 style="margin-bottom:8px;">${escapeHtml(p.title)}</h3>
+              <button class="btn btn-outline btn-sm" style="color:var(--danger); padding:4px 8px;" onclick="window.deletePaper('${escapeHtml(p.id)}')" title="Delete Paper">🗑️</button>
+            </div>
+            <p class="text-muted" style="margin-bottom:16px;">⏱ ${p.duration} min • 📝 ${p.questions.length} Qs • +${p.posMark} / -${p.negMark}</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.startExam('${escapeHtml(p.id)}')">▶ Start Exam</button>
+        </div>
+      `).join('') || `<div class="card" style="grid-column: 1 / -1; text-align:center; color:var(--text-muted);">No papers in this category yet. Click <strong>➕ Upload Paper</strong> to add one!</div>`;
+    };
+
+    window.closeCategoryFolder = () => {
+      state.activeCategoryView = null;
+      renderCategories();
+    };
+
+    window.deletePaper = async (paperId) => {
+      if (!confirm("Are you sure you want to delete this paper?")) return;
+      state.papers = state.papers.filter(p => p.id !== paperId);
+      if (currentUser) {
+        await deleteDoc(doc(db, "users", currentUser.uid, "papers", paperId)).catch(console.error);
+      }
+      if (state.activeCategoryView) window.openCat(state.activeCategoryView);
+      else renderCategories();
+    };
+
     function renderCategoryManager() {
-      document.getElementById('categoryManagerList').innerHTML = state.categories.map(c => `
-        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:10px 14px; border-radius:8px;">
-          <span>${c}</span>
-          <button class="btn btn-outline btn-sm" onclick="window.removeCategory('${c}')" style="color:var(--danger); border-color:var(--danger);">Remove</button>
+      document.getElementById('categoryManagerList').innerHTML = state.categories.map((c, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-body); border-radius:8px;">
+          <strong>${escapeHtml(c)}</strong>
+          <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="window.removeCategoryByIndex(${idx})">Remove</button>
         </div>
       `).join('');
     }
 
     window.addNewCategory = async () => {
-      const val = document.getElementById('newCategoryInput').value.trim();
-      if(val && !state.categories.includes(val)) {
-        state.categories.push(val);
-        document.getElementById('newCategoryInput').value = '';
-        renderCategoryManager();
-        await saveMeta();
+      const input = document.getElementById('newCategoryInput');
+      const val = input.value.trim();
+      if (!val) return;
+      if (state.categories.some(c => c.toLowerCase() === val.toLowerCase())) {
+        alert("Category already exists!");
+        return;
       }
+      state.categories.push(val);
+      input.value = '';
+      renderCategoryManager();
+      refreshActiveView();
+      await saveMeta();
     };
 
-    window.removeCategory = async (cat) => {
-      if (confirm(`Remove category "${cat}"? Papers inside will remain but need recategorization.`)) {
-        state.categories = state.categories.filter(c => c !== cat);
-        renderCategoryManager();
-        await saveMeta();
+    window.removeCategoryByIndex = async (idx) => {
+      const cat = state.categories[idx];
+      if (!cat) return;
+      if (state.categories.length <= 1) {
+        alert("You must keep at least one category.");
+        return;
       }
+      if (!confirm(`Remove category "${cat}"?`)) return;
+      state.categories.splice(idx, 1);
+      renderCategoryManager();
+      refreshActiveView();
+      await saveMeta();
     };
 
-    window.openCat = (c) => {
-      document.getElementById('catOverviewPanel').style.display = 'none';
-      document.getElementById('catLibraryPanel').style.display = 'block';
-      document.getElementById('activeCategoryTitle').textContent = c;
-      document.getElementById('categoryPapersGrid').innerHTML = state.papers.filter(p=>p.category===c).map(p => `
+    // =======================================================================
+    // 6. BOOKMARKS VIEW
+    // =======================================================================
+    function renderBookmarks() {
+      document.getElementById('bookmarkTotalTag').textContent = `${state.bookmarks.length} Saved`;
+      const listEl = document.getElementById('bookmarksList');
+      if (state.bookmarks.length === 0) {
+        listEl.innerHTML = `<div class="card" style="text-align:center; color:var(--text-muted);">No bookmarked questions yet. Click <strong>🔖 Bookmark</strong> during an exam to save tough questions here!</div>`;
+        return;
+      }
+      listEl.innerHTML = state.bookmarks.map((b, idx) => `
         <div class="card">
-          <h3 style="margin-bottom:8px;">${p.title}</h3>
-          <p class="text-muted" style="margin-bottom:16px;">${p.duration} min • ${p.questions.length} Qs</p>
-          <button class="btn btn-primary" onclick="window.startExam('${p.id}')">▶ Start Exam</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div>
+              <span class="tag tag-primary">${escapeHtml(b.category || 'Exam')}</span>
+              <span class="text-muted" style="margin-left:8px; font-size:0.85rem;">${escapeHtml(b.paperTitle || '')}</span>
+            </div>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);" onclick="window.removeBookmark(${idx})">✕ Remove</button>
+          </div>
+          ${b.passage ? `<div style="padding:12px; background:var(--warning-soft); border-left:4px solid var(--warning); margin-bottom:12px; font-size:0.9rem; border-radius:4px; white-space:pre-wrap;">${escapeHtml(b.passage)}</div>` : ''}
+          <div style="font-weight:600; white-space:pre-wrap; margin-bottom:14px;">${escapeHtml(b.question)}</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.9rem;">
+            ${(b.options || []).map((opt, oi) => `
+              <div style="padding:8px 12px; border-radius:6px; border:1px solid ${oi === b.answer ? 'var(--success)' : 'var(--border)'}; background:${oi === b.answer ? 'var(--success-soft)' : 'var(--bg-body)'};">
+                <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
+              </div>
+            `).join('')}
+          </div>
+          ${b.explanation ? `<div style="margin-top:12px; padding:10px; background:var(--primary-soft); border-radius:6px; font-size:0.85rem;"><strong>Explanation:</strong> ${escapeHtml(b.explanation)}</div>` : ''}
         </div>
-      `).join('') || `<div style="padding:20px; color:var(--text-muted);">No papers. Upload one via Studio.</div>`;
-      navTo('categories');
+      `).join('');
+    }
+
+    window.removeBookmark = async (idx) => {
+      state.bookmarks.splice(idx, 1);
+      renderBookmarks();
+      await saveMeta();
     };
-    window.closeCategoryFolder = () => renderCategories();
 
     // =======================================================================
-    // UPGRADED PDF PARSER
+    // 7. SMART PDF & JSON CONVERTER STUDIO
     // =======================================================================
-    document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0]; if(!file) return;
-      document.getElementById('studioStatus').textContent = "Reading PDF coordinates...";
-      const ab = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({data: ab}).promise;
-      state.rawPages = [];
-      for(let i=1; i<=pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const tc = await page.getTextContent();
-        state.rawPages.push(tc.items.map(it => ({ str: it.str, y: it.transform[5] })).filter(x => x.str.trim()));
+    const dropzone = document.getElementById('pdfDropzone');
+    const fileInput = document.getElementById('pdfFileInput');
+    const jsonTextarea = document.getElementById('studioJsonTextarea');
+
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleStudioFile(e.dataTransfer.files[0]);
       }
-      parsePdfData();
     });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleStudioFile(e.target.files[0]);
+      }
+    });
+
+    // Live-update count when user edits JSON textarea manually
+    jsonTextarea.addEventListener('input', () => {
+      try {
+        const parsed = JSON.parse(jsonTextarea.value);
+        if (Array.isArray(parsed)) {
+          document.getElementById('studioQCount').textContent = parsed.length;
+          document.getElementById('studioStatus').textContent = "Valid JSON format.";
+        }
+      } catch (_) {
+        document.getElementById('studioStatus').textContent = "Editing JSON... (check syntax before saving)";
+      }
+    });
+
+    async function handleStudioFile(file) {
+      document.getElementById('pdfFileName').textContent = file.name;
+      const baseTitle = file.name.replace(/\.(pdf|json)$/i, '');
+      document.getElementById('studioTitle').value = baseTitle;
+
+      if (file.name.toLowerCase().endsWith('.json') || file.type === 'application/json') {
+        const text = await file.text();
+        try {
+          const parsed = JSON.parse(text);
+          const qArr = Array.isArray(parsed) ? parsed : (parsed.questions || []);
+          state.studioQs = qArr;
+          jsonTextarea.value = JSON.stringify(qArr, null, 2);
+          document.getElementById('studioQCount').textContent = qArr.length;
+          document.getElementById('studioStatus').textContent = `Loaded ${qArr.length} questions from JSON file.`;
+        } catch (err) {
+          alert("Invalid JSON file: " + err.message);
+        }
+        return;
+      }
+
+      try {
+        document.getElementById('studioStatus').textContent = "Reading PDF coordinates...";
+        const ab = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+        state.rawPages = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const tc = await page.getTextContent();
+          state.rawPages.push(
+            tc.items
+              .map(it => ({ str: it.str, x: it.transform[4], y: it.transform[5] }))
+              .filter(x => x.str && x.str.trim())
+          );
+        }
+        parsePdfData();
+      } catch (err) {
+        document.getElementById('studioStatus').textContent = "Failed to read PDF: " + err.message;
+      }
+    }
 
     function parsePdfData() {
       const allLines = [];
       state.rawPages.forEach(pageItems => {
-        pageItems.sort((a,b) => b.y - a.y);
-        let curLine = "", curY = pageItems[0]?.y;
+        // Sort top-to-bottom by Y, then left-to-right by X on the same row
+        pageItems.sort((a, b) => Math.abs(b.y - a.y) < 5 ? a.x - b.x : b.y - a.y);
+        let curRow = [];
+        let curY = pageItems[0]?.y;
+
         pageItems.forEach(it => {
-          if(Math.abs(it.y - curY) < 5) curLine += " " + it.str;
-          else { allLines.push(curLine.replace(/\s+/g,' ').trim()); curLine = it.str; curY = it.y; }
+          if (Math.abs(it.y - curY) < 5) {
+            curRow.push(it);
+          } else {
+            curRow.sort((a, b) => a.x - b.x);
+            allLines.push(curRow.map(r => r.str).join(" ").replace(/\s+/g, ' ').trim());
+            curRow = [it];
+            curY = it.y;
+          }
         });
-        if(curLine) allLines.push(curLine.replace(/\s+/g,' ').trim());
+        if (curRow.length > 0) {
+          curRow.sort((a, b) => a.x - b.x);
+          allLines.push(curRow.map(r => r.str).join(" ").replace(/\s+/g, ' ').trim());
+        }
       });
 
-      const qStartRegex = /^\s*(?:Q\.?\s*)?([1-9][0-9]{0,2})\s*[.)\]-]\s*(.*)/i;
-      const optRegex = /^\s*(?:\([a-e]\)|[a-e]\))\s*(.*)/i;
-      
+      const qStartRegex = /^\s*(?:Q(?:uestion)?\.?\s*)?([1-9][0-9]{0,2})\s*[.)\]-]\s+(.+)/i;
+      const singleOptRegex = /^\s*(?:\(([a-e1-5])\)|\[([a-e1-5])\]|([a-e])\)|([a-e])\.)\s*(.+)/i;
+      const ansRegex = /^\s*(?:Ans(?:wer)?|Correct\s*Answer|Key)\s*[:\-]?\s*\(?([a-e1-5])\)?/i;
+      const expRegex = /^\s*(?:Sol(?:ution)?|Exp(?:lanation)?)\s*[:\-]\s*(.*)/i;
+
       const questions = [];
       let curQ = null;
+      let readingExplanation = false;
 
-      for(let line of allLines) {
-        line = line.trim(); if(!line) continue;
-        if(/testbook|adda247|subscribe|youtube|telegram/i.test(line)) continue;
+      for (let line of allLines) {
+        line = line.trim();
+        if (!line) continue;
+        if (/testbook|adda247|subscribe|youtube|telegram|www\.|https?:\/\//i.test(line)) continue;
 
         const qMatch = line.match(qStartRegex);
-        if(qMatch) {
-          if(curQ) pushQ(curQ, questions);
-          curQ = { id: parseInt(qMatch[1]), question: qMatch[2], options: [], answer: 0, explanation: "" };
+        if (qMatch && (!curQ || curQ.options.length >= 2 || parseInt(qMatch[1]) === questions.length + 1)) {
+          if (curQ) pushQ(curQ, questions);
+          curQ = { id: parseInt(qMatch[1]), question: qMatch[2].trim(), options: [], answer: 0, explanation: "" };
+          readingExplanation = false;
           continue;
         }
 
-        if(curQ) {
-          const oMatch = line.match(optRegex);
-          if(oMatch) curQ.options.push(oMatch[1]);
-          else if(curQ.options.length === 0) curQ.question += "\n" + line; 
-          else curQ.options[curQ.options.length-1] += " " + line; 
+        if (!curQ) continue;
+
+        // Check for Answer line
+        const ansMatch = line.match(ansRegex);
+        if (ansMatch) {
+          const rawAns = ansMatch[1].toLowerCase();
+          const map = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, '1': 0, '2': 1, '3': 2, '4': 3, '5': 4 };
+          if (map[rawAns] !== undefined) curQ.answer = map[rawAns];
+          continue;
+        }
+
+        // Check for Explanation / Solution line
+        const expMatch = line.match(expRegex);
+        if (expMatch) {
+          readingExplanation = true;
+          if (expMatch[1]) curQ.explanation += expMatch[1].trim();
+          continue;
+        }
+
+        if (readingExplanation) {
+          curQ.explanation += (curQ.explanation ? " " : "") + line;
+          continue;
+        }
+
+        // Check if multiple options exist on a single line: e.g., "(a) Opt1 (b) Opt2"
+        const inlineMatches = [...line.matchAll(/(?:^|\s)(?:\(([a-e1-5])\)|([a-e])\))\s*([^\n(]+?)(?=\s+(?:\([a-e1-5]\)|[a-e]\))|$)/gi)];
+        if (inlineMatches.length >= 2) {
+          inlineMatches.forEach(m => curQ.options.push(m[3].trim()));
+          continue;
+        }
+
+        // Check single option start
+        const oMatch = line.match(singleOptRegex);
+        if (oMatch) {
+          curQ.options.push(oMatch[5].trim());
+        } else if (curQ.options.length === 0) {
+          curQ.question += "\n" + line;
+        } else {
+          curQ.options[curQ.options.length - 1] += " " + line;
         }
       }
-      if(curQ) pushQ(curQ, questions);
+      if (curQ) pushQ(curQ, questions);
       
       state.studioQs = questions;
-      document.getElementById('studioJsonTextarea').value = JSON.stringify(questions, null, 2);
+      jsonTextarea.value = JSON.stringify(questions, null, 2);
       document.getElementById('studioQCount').textContent = questions.length;
       document.getElementById('studioStatus').textContent = `Success! Parsed ${questions.length} questions.`;
     }
 
     function pushQ(q, arr) {
-      while(q.options.length < 4) q.options.push("Option " + (q.options.length+1)); 
+      while (q.options.length < 4) q.options.push("Option " + String.fromCharCode(65 + q.options.length));
       arr.push(q);
     }
 
     window.saveStudioPaper = async () => {
       try {
-        const qs = JSON.parse(document.getElementById('studioJsonTextarea').value);
-        if (qs.length === 0) throw new Error("No valid questions parsed.");
+        const rawText = document.getElementById('studioJsonTextarea').value.trim();
+        if (!rawText) throw new Error("Question JSON cannot be empty.");
+        const qs = JSON.parse(rawText);
+        if (!Array.isArray(qs) || qs.length === 0) throw new Error("Please provide a non-empty array of questions.");
+
         const paper = {
-          id: 'paper_'+Date.now(),
-          title: document.getElementById('studioTitle').value || "Untitled Mock",
+          id: 'paper_' + Date.now(),
+          title: document.getElementById('studioTitle').value.trim() || "Untitled Mock Paper",
           category: document.getElementById('studioCategorySelect').value || state.categories[0],
-          duration: parseInt(document.getElementById('studioDuration').value),
-          posMark: parseFloat(document.getElementById('studioPosMark').value),
-          negMark: parseFloat(document.getElementById('studioNegMark').value),
+          duration: Math.max(1, parseInt(document.getElementById('studioDuration').value) || 60),
+          posMark: parseFloat(document.getElementById('studioPosMark').value) || 1,
+          negMark: parseFloat(document.getElementById('studioNegMark').value) || 0,
           questions: qs
         };
+
         state.papers.push(paper);
-        if(currentUser) await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
-        alert("Paper successfully saved to cloud!"); navTo('categories');
-      } catch(e) { alert("Data Error: " + e.message); }
+        if (currentUser) {
+          await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
+        }
+        alert("Paper saved successfully!");
+        window.openCat(paper.category);
+      } catch (e) {
+        alert("JSON Error: " + e.message);
+      }
     };
 
     // =======================================================================
-    // EXAM ENGINE
+    // 8. LIVE EXAM ENGINE
     // =======================================================================
     window.startExam = async (paperId) => {
-      const p = state.papers.find(x=>x.id===paperId);
-      const now = Date.now();
+      const p = state.papers.find(x => x.id === paperId);
+      if (!p || !p.questions || p.questions.length === 0) {
+        alert("This paper has no questions.");
+        return;
+      }
+      const totalSeconds = (parseInt(p.duration) || 60) * 60;
       state.activeAttempt = {
-        paperId: p.id, title: p.title, category: p.category, questions: p.questions,
-        posMark: p.posMark, negMark: p.negMark, startTime: now, deadline: now + (p.duration*60000),
-        currentIndex: 0, responses: {}, status: {}, timeSpent: {}
+        paperId: p.id,
+        title: p.title,
+        category: p.category,
+        questions: p.questions,
+        posMark: Number(p.posMark ?? 1),
+        negMark: Number(p.negMark ?? 0.25),
+        startTime: Date.now(),
+        remainingSeconds: totalSeconds,
+        currentIndex: 0,
+        responses: {},
+        status: {},
+        strikes: {},
+        timeSpent: {}
       };
-      p.questions.forEach((_,i) => { state.activeAttempt.status[i] = (i===0)?'unanswered':'not-visited'; state.activeAttempt.timeSpent[i] = 0; });
+      p.questions.forEach((_, i) => {
+        state.activeAttempt.status[i] = (i === 0) ? 'unanswered' : 'not-visited';
+        state.activeAttempt.timeSpent[i] = 0;
+      });
       await saveMeta();
       openExamUI();
     };
 
     window.resumeExam = () => {
-      if (state.activeAttempt) openExamUI();
+      if (!state.activeAttempt) return;
+      openExamUI();
+    };
+
+    window.pauseAndExitExam = async () => {
+      if (timerInt) clearInterval(timerInt);
+      document.getElementById('examOverlay').classList.remove('active');
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      await saveMeta();
+      navTo('dashboard');
     };
 
     function openExamUI() {
@@ -733,80 +1203,259 @@
       document.getElementById('liveTitle').textContent = state.activeAttempt.title;
       document.getElementById('liveMeta').textContent = state.activeAttempt.category;
       renderLiveQ();
-      if(timerInt) clearInterval(timerInt);
+      updateTimerDisplay();
+      if (timerInt) clearInterval(timerInt);
       timerInt = setInterval(tickTimer, 1000);
-      tickTimer(); // Call immediately
     }
 
     function tickTimer() {
       if (!state.activeAttempt) return;
-      const rem = Math.floor((state.activeAttempt.deadline - Date.now())/1000);
-      if(rem <= 0) { finalizeExam(); return; }
-      state.activeAttempt.timeSpent[state.activeAttempt.currentIndex]++;
-      
-      const h = Math.floor(rem/3600), m = Math.floor((rem%3600)/60), s = rem%60;
-      document.getElementById('liveTimer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      if(rem%10===0) saveMeta().catch(()=>{}); // Sync progress quietly
+      state.activeAttempt.remainingSeconds = Math.max(0, (state.activeAttempt.remainingSeconds || 0) - 1);
+      const curIdx = state.activeAttempt.currentIndex;
+      state.activeAttempt.timeSpent[curIdx] = (state.activeAttempt.timeSpent[curIdx] || 0) + 1;
+
+      updateTimerDisplay();
+
+      if (state.activeAttempt.remainingSeconds <= 0) {
+        finalizeExam();
+        return;
+      }
+      if (state.activeAttempt.remainingSeconds % 15 === 0) {
+        saveMeta();
+      }
+    }
+
+    function updateTimerDisplay() {
+      const rem = state.activeAttempt ? (state.activeAttempt.remainingSeconds || 0) : 0;
+      const h = Math.floor(rem / 3600);
+      const m = Math.floor((rem % 3600) / 60);
+      const s = rem % 60;
+      const timerEl = document.getElementById('liveTimer');
+      timerEl.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (rem < 300) timerEl.classList.add('low-time');
+      else timerEl.classList.remove('low-time');
     }
 
     function renderLiveQ() {
-      const a = state.activeAttempt, idx = a.currentIndex, q = a.questions[idx];
-      if(a.status[idx]==='not-visited') a.status[idx] = 'unanswered';
+      const a = state.activeAttempt;
+      if (!a) return;
+      const idx = a.currentIndex;
+      const q = a.questions[idx];
+      if (!a.strikes) a.strikes = {};
+      if (a.status[idx] === 'not-visited') a.status[idx] = 'unanswered';
       
-      document.getElementById('liveQNum').textContent = `Question ${idx+1}`;
+      document.getElementById('liveQNum').textContent = `Question ${idx + 1} of ${a.questions.length}`;
+      
+      // Render Passage if present
+      const passageEl = document.getElementById('livePassage');
+      if (q.passage && q.passage.trim()) {
+        passageEl.style.display = 'block';
+        passageEl.textContent = q.passage;
+      } else {
+        passageEl.style.display = 'none';
+      }
+
       document.getElementById('liveQText').textContent = q.question;
-      
-      document.getElementById('liveOptions').innerHTML = q.options.map((opt, oi) => `
-        <div class="option-card ${a.responses[idx]===oi?'selected':''}" onclick="window.selOpt(${oi})" oncontextmenu="window.strike(event, this)">
-          <div class="opt-letter">${String.fromCharCode(65+oi)}</div>
-          <div>${opt}</div>
-        </div>
-      `).join('');
-      
-      document.getElementById('livePalette').innerHTML = a.questions.map((_, i) => `<button class="p-btn ${a.status[i]||'not-visited'} ${i===idx?'current':''}" onclick="window.goToQ(${i})">${i+1}</button>`).join('');
+
+      // Update Bookmark button state
+      const isBookmarked = state.bookmarks.some(b => b.paperId === a.paperId && b.qIndex === idx);
+      const bmBtn = document.getElementById('liveBookmarkBtn');
+      bmBtn.textContent = isBookmarked ? '🔖 Bookmarked' : '🔖 Bookmark';
+      bmBtn.style.borderColor = isBookmarked ? 'var(--primary)' : 'var(--border)';
+      bmBtn.style.color = isBookmarked ? 'var(--primary)' : 'var(--text-main)';
+
+      // Render Options with persistent strike-through state
+      const qStrikes = a.strikes[idx] || [];
+      document.getElementById('liveOptions').innerHTML = (q.options || []).map((opt, oi) => {
+        const isSelected = a.responses[idx] === oi;
+        const isStruck = qStrikes.includes(oi);
+        return `
+          <div class="option-card ${isSelected ? 'selected' : ''} ${isStruck ? 'struck' : ''}" onclick="window.selOpt(${oi})" oncontextmenu="window.strike(event, ${oi})">
+            <div class="opt-letter">${String.fromCharCode(65 + oi)}</div>
+            <div>${escapeHtml(opt)}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Prev / Next button states
+      document.getElementById('prevQBtn').disabled = (idx === 0);
+      document.getElementById('nextQBtn').textContent = (idx === a.questions.length - 1) ? 'Save' : 'Save & Next →';
+
+      // Palette counts
+      let cAns = 0, cUnans = 0, cRev = 0, cNotVis = 0;
+      a.questions.forEach((_, i) => {
+        const st = a.status[i] || 'not-visited';
+        if (st === 'answered') cAns++;
+        else if (st === 'unanswered') cUnans++;
+        else if (st === 'review') cRev++;
+        else cNotVis++;
+      });
+      document.getElementById('countAnswered').textContent = cAns;
+      document.getElementById('countUnanswered').textContent = cUnans;
+      document.getElementById('countReview').textContent = cRev;
+      document.getElementById('countNotVisited').textContent = cNotVis;
+
+      document.getElementById('livePalette').innerHTML = a.questions.map((_, i) =>
+        `<button class="p-btn ${a.status[i] || 'not-visited'} ${i === idx ? 'current' : ''}" onclick="window.goToQ(${i})">${i + 1}</button>`
+      ).join('');
     }
 
-    window.selOpt = (oi) => { state.activeAttempt.responses[state.activeAttempt.currentIndex] = oi; state.activeAttempt.status[state.activeAttempt.currentIndex] = 'answered'; renderLiveQ(); };
-    window.strike = (e, el) => { e.preventDefault(); el.style.textDecoration = el.style.textDecoration==='line-through'?'none':'line-through'; el.style.opacity = el.style.textDecoration==='line-through'?'0.5':'1'; };
-    window.clearResponse = () => { delete state.activeAttempt.responses[state.activeAttempt.currentIndex]; state.activeAttempt.status[state.activeAttempt.currentIndex] = 'unanswered'; renderLiveQ(); };
-    window.markReview = () => { state.activeAttempt.status[state.activeAttempt.currentIndex] = 'review'; window.navQ(1); };
-    window.saveAndNext = () => { window.navQ(1); };
-    window.navQ = (dir) => { const n = state.activeAttempt.currentIndex + dir; if(n>=0 && n<state.activeAttempt.questions.length) { state.activeAttempt.currentIndex = n; renderLiveQ(); } };
-    window.goToQ = (idx) => { state.activeAttempt.currentIndex = idx; renderLiveQ(); };
-
-    window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else document.exitFullscreen().catch(()=>{}); };
-    
-    window.openSubmitModal = () => document.getElementById('submitModal').classList.add('active');
-
-    window.finalizeExam = async () => {
-      clearInterval(timerInt);
-      document.getElementById('submitModal').classList.remove('active');
-      document.getElementById('examOverlay').classList.remove('active');
-      if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-
+    window.selOpt = (oi) => {
       const a = state.activeAttempt;
-      let c=0, w=0;
-      a.questions.forEach((q,i) => { const r=a.responses[i]; if(r!==undefined){ if(r===q.answer)c++; else w++; } });
-      
-      const att = {
-        id: 'att_'+Date.now(), paperId: a.paperId, title: a.title, category: a.category, date: new Date().toISOString(),
-        score: (c*a.posMark)-(w*a.negMark), maxMarks: a.questions.length*a.posMark, correct: c, wrong: w,
-        timeTaken: Math.floor((Date.now()-a.startTime)/1000)
-      };
-      
-      state.attempts.push(att);
-      state.activeAttempt = null; // Clear active attempt
-      
-      if(currentUser) {
-        await setDoc(doc(db, "users", currentUser.uid, "attempts", att.id), att);
-        await saveMeta();
-      }
-      
-      alert(`Test Submitted Successfully!\nScore: ${att.score} / ${att.maxMarks}\nCorrect: ${att.correct} | Incorrect: ${att.wrong}`);
-      navTo('dashboard');
+      a.responses[a.currentIndex] = oi;
+      a.status[a.currentIndex] = 'answered';
+      renderLiveQ();
     };
 
-    // STARTUP
+    window.strike = (e, oi) => {
+      e.preventDefault();
+      const a = state.activeAttempt;
+      if (!a.strikes) a.strikes = {};
+      if (!a.strikes[a.currentIndex]) a.strikes[a.currentIndex] = [];
+      const arr = a.strikes[a.currentIndex];
+      const pos = arr.indexOf(oi);
+      if (pos > -1) arr.splice(pos, 1);
+      else arr.push(oi);
+      renderLiveQ();
+    };
+
+    window.clearResponse = () => {
+      const a = state.activeAttempt;
+      delete a.responses[a.currentIndex];
+      a.status[a.currentIndex] = 'unanswered';
+      renderLiveQ();
+    };
+
+    window.markReview = () => {
+      const a = state.activeAttempt;
+      a.status[a.currentIndex] = 'review';
+      if (a.currentIndex < a.questions.length - 1) window.navQ(1);
+      else renderLiveQ();
+    };
+
+    window.saveAndNext = () => {
+      const a = state.activeAttempt;
+      if (a.responses[a.currentIndex] !== undefined && a.status[a.currentIndex] !== 'review') {
+        a.status[a.currentIndex] = 'answered';
+      } else if (a.responses[a.currentIndex] === undefined && a.status[a.currentIndex] !== 'review') {
+        a.status[a.currentIndex] = 'unanswered';
+      }
+      if (a.currentIndex < a.questions.length - 1) window.navQ(1);
+      else renderLiveQ();
+    };
+
+    window.navQ = (dir) => {
+      const a = state.activeAttempt;
+      const n = a.currentIndex + dir;
+      if (n >= 0 && n < a.questions.length) {
+        a.currentIndex = n;
+        renderLiveQ();
+      }
+    };
+
+    window.goToQ = (idx) => {
+      state.activeAttempt.currentIndex = idx;
+      renderLiveQ();
+    };
+
+    window.toggleLiveBookmark = async () => {
+      const a = state.activeAttempt;
+      if (!a) return;
+      const idx = a.currentIndex;
+      const q = a.questions[idx];
+      const existingIdx = state.bookmarks.findIndex(b => b.paperId === a.paperId && b.qIndex === idx);
+
+      if (existingIdx > -1) {
+        state.bookmarks.splice(existingIdx, 1);
+      } else {
+        state.bookmarks.push({
+          id: 'bm_' + Date.now(),
+          paperId: a.paperId,
+          paperTitle: a.title,
+          category: a.category,
+          qIndex: idx,
+          question: q.question,
+          passage: q.passage || '',
+          options: q.options || [],
+          answer: q.answer ?? 0,
+          explanation: q.explanation || ''
+        });
+      }
+      renderLiveQ();
+      await saveMeta();
+    };
+
+    window.toggleFullScreen = () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    };
+
+    window.openSubmitModal = () => {
+      const a = state.activeAttempt;
+      if (!a) return;
+      const answeredCount = Object.keys(a.responses).length;
+      const reviewCount = Object.values(a.status).filter(s => s === 'review').length;
+      const skippedCount = a.questions.length - answeredCount;
+
+      document.getElementById('submitSummaryBox').innerHTML = `
+        <div><strong>Total Questions:</strong> ${a.questions.length}</div>
+        <div><strong style="color:var(--success);">Answered:</strong> ${answeredCount}</div>
+        <div><strong style="color:var(--danger);">Unanswered:</strong> ${skippedCount}</div>
+        <div><strong style="color:var(--purple);">Marked for Review:</strong> ${reviewCount}</div>
+      `;
+      document.getElementById('submitModal').classList.add('active');
+    };
+
+    window.finalizeExam = async () => {
+      if (timerInt) clearInterval(timerInt);
+      document.getElementById('submitModal').classList.remove('active');
+      document.getElementById('examOverlay').classList.remove('active');
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+
+      const a = state.activeAttempt;
+      if (!a) return;
+
+      let c = 0, w = 0;
+      a.questions.forEach((q, i) => {
+        const r = a.responses[i];
+        if (r !== undefined) {
+          if (r === (q.answer ?? 0)) c++;
+          else w++;
+        }
+      });
+
+      const rawScore = (c * a.posMark) - (w * a.negMark);
+      const totalTimeSpent = Object.values(a.timeSpent || {}).reduce((acc, v) => acc + v, 0);
+
+      const att = {
+        id: 'att_' + Date.now(),
+        paperId: a.paperId,
+        title: a.title,
+        category: a.category,
+        date: new Date().toISOString(),
+        score: Number(rawScore.toFixed(2)),
+        maxMarks: Number((a.questions.length * a.posMark).toFixed(2)),
+        correct: c,
+        wrong: w,
+        responses: a.responses,
+        timeSpent: a.timeSpent,
+        questionsSnapshot: a.questions,
+        timeTaken: totalTimeSpent
+      };
+
+      state.attempts.push(att);
+      state.activeAttempt = null;
+      
+      if (currentUser) {
+        await setDoc(doc(db, "users", currentUser.uid, "attempts", att.id), att).catch(console.error);
+        await saveMeta();
+      }
+
+      navTo('dashboard');
+      window.reviewAttempt(att.id);
+    };
+
+    // Initial render
     navTo('landing');
   </script>
 </body>
