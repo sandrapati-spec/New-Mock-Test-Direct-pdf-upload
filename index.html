@@ -995,34 +995,65 @@
       </div>
     </section>
 
-    <!-- ======================= 5. UPLOAD STUDIO (5-STEP WORKFLOW + MULTI-PASS PDF.JS) ======================= -->
+    <!-- ======================= 5. UPLOAD & DIRECT PASTE STUDIO ======================= -->
     <section id="view-studio" class="view-section">
       <div class="studio-grid">
-        <!-- LEFT SIDEBAR: STEPS 1, 2, 3 -->
+        <!-- LEFT SIDEBAR: STEPS 1, 2 (UPLOAD OR DIRECT PASTE), & STEP 3 -->
         <div class="card">
-          <h2 style="font-size: 1.05rem; margin-bottom: 12px;">Step 1 & 2 — Category & File Upload</h2>
-
-          <div style="margin-bottom: 12px;">
-            <label class="field-label">Select Exam Category</label>
+          <h2 style="font-size: 1.05rem; margin-bottom: 12px;">Step 1 — Select Exam Category</h2>
+          <div style="margin-bottom: 16px;">
             <select id="studioCategorySelect"></select>
           </div>
 
-          <label class="dropzone" id="pdfDropzone">
-            <input type="file" id="pdfFileInput" accept="application/pdf,.json,.csv,.txt" />
-            <div style="font-size: 1.9rem; margin-bottom: 4px;">📥</div>
-            <div style="font-weight: 700; font-size: 0.92rem; color: var(--primary);" id="pdfFileName">Drop Question PDF, JSON, or TXT</div>
-            <div style="font-size: 0.76rem; color: var(--muted); margin-top: 2px;">Extracts 20–200+ Qs • Adda247 • Testbook • GATE/ESE</div>
-          </label>
+          <h2 style="font-size: 1.05rem; margin-bottom: 10px;">Step 2 — Upload PDF or Paste Questions</h2>
 
-          <div style="margin-bottom: 14px;">
-            <label class="field-label">Optional: Upload Separate Answer Key / Solutions (PDF/TXT)</label>
-            <input type="file" id="ansKeyFileInput" accept="application/pdf,.txt,.json" onchange="handleSeparateAnswerKeyUpload(event)" style="font-size: 0.78rem; padding: 6px;" />
+          <!-- Input Mode Switcher: Upload PDF vs Paste Questions Directly -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+            <button class="btn btn-primary btn-sm" id="modeBtnPaste" onclick="switchInputSourceMode('paste')">📋 Paste Questions</button>
+            <button class="btn btn-outline btn-sm" id="modeBtnPdf" onclick="switchInputSourceMode('pdf')">📥 Upload PDF File</button>
           </div>
 
-          <h2 style="font-size: 1.02rem; margin: 14px 0 10px;">Step 3 — Paper Settings</h2>
+          <!-- OPTION A: DIRECT PASTE BOX (DEFAULT & PROMINENT) -->
+          <div id="inputModePastePanel" style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="field-label" style="margin: 0;">Paste Raw Questions or ChatGPT/Gemini Text</label>
+              <button class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 0.74rem;" onclick="openModal('promptModal')">🤖 Copy AI Prompt</button>
+            </div>
+            <textarea id="directPasteInput" rows="8" placeholder="Paste anything here:&#10;• Output from ChatGPT / Gemini&#10;• Raw copied questions (1. Question... (a) Opt A (b) Opt B...)&#10;• JSON array" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin-bottom: 8px;"></textarea>
+            <button class="btn btn-success" style="width: 100%;" onclick="parseDirectPastedQuestions()">⚡ Convert Pasted Questions Now</button>
+          </div>
+
+          <!-- OPTION B: PDF UPLOAD DROPZONE -->
+          <div id="inputModePdfPanel" style="display: none; margin-bottom: 16px;">
+            <label class="dropzone" id="pdfDropzone">
+              <input type="file" id="pdfFileInput" accept="application/pdf,.json,.csv,.txt" />
+              <div style="font-size: 1.9rem; margin-bottom: 4px;">📥</div>
+              <div style="font-weight: 700; font-size: 0.92rem; color: var(--primary);" id="pdfFileName">Drop Question PDF, JSON, or TXT</div>
+              <div style="font-size: 0.76rem; color: var(--muted); margin-top: 2px;">Extracts 20–200+ Qs • Adda247 • Testbook • GATE/ESE</div>
+            </label>
+
+            <div style="margin-bottom: 12px;">
+              <label class="field-label">Optional: Upload Separate Answer Key (PDF/TXT)</label>
+              <input type="file" id="ansKeyFileInput" accept="application/pdf,.txt,.json" onchange="handleSeparateAnswerKeyUpload(event)" style="font-size: 0.78rem; padding: 6px;" />
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--muted); margin-bottom: 10px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkTwoCol" checked /> Unmix 2-column newspaper layouts</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkFreqWatermark" checked /> Auto-strip repeating headers & watermarks</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkCoachingAds" checked /> Strip coaching URLs, app promos & codes</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkLinkPassages" checked /> Link "Directions (Q. X–Y)" passages</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkMergeAnswers" checked /> Merge Answer Key & Solutions automatically</label>
+            </div>
+            <input type="text" id="customBlacklistInput" placeholder="Custom words to strip (comma-separated)" style="margin-bottom: 8px;" />
+            <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="reRunPdfParser()">🔄 Re-Run Multi-Pass PDF Parser</button>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--border);margin: 14px 0;" />
+
+          <h2 style="font-size: 1.02rem; margin-bottom: 10px;">Step 3 — Paper Settings</h2>
           <div style="margin-bottom: 10px;">
             <label class="field-label">Paper Title</label>
-            <input type="text" id="studioTitle" placeholder="e.g., ESE 2025 — Electrical Engineering" value="New Uploaded Mock Paper" />
+            <input type="text" id="studioTitle" placeholder="e.g., UIIC AO — Full Mock 1" value="New Practice Mock Paper" />
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
@@ -1051,25 +1082,7 @@
             </div>
           </div>
 
-          <h2 style="font-size: 0.95rem; margin-bottom: 8px;">Smart PDF Hurdle Filters</h2>
-          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--muted); margin-bottom: 12px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkTwoCol" checked /> Unmix 2-column newspaper layouts</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkFreqWatermark" checked /> Auto-strip repeating headers & watermarks</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkCoachingAds" checked /> Strip coaching URLs, app promos & codes</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkLinkPassages" checked /> Link "Directions (Q. X–Y)" passages</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkMergeAnswers" checked /> Merge Answer Key & Solutions automatically</label>
-          </div>
-
-          <div style="margin-bottom: 10px;">
-            <label class="field-label">Custom Words to Strip (comma-separated)</label>
-            <input type="text" id="customBlacklistInput" placeholder="e.g., Adda247, Testbook, Use Code" />
-          </div>
-
-          <button class="btn btn-outline btn-sm" style="width: 100%; margin-bottom: 14px;" onclick="reRunPdfParser()">🔄 Re-Run Multi-Pass PDF Parser</button>
-
-          <hr style="border:none;border-top:1px solid var(--border);margin: 12px 0;" />
-
-          <label class="field-label">Optional: Free Gemini API Clean (For Broken Scanned Text)</label>
+          <label class="field-label">Optional: Free Gemini API Clean</label>
           <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key (AIzaSy...)" style="margin-bottom: 8px;" />
           <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="runGeminiFallback()">✨ Structure with Free Gemini API</button>
         </div>
@@ -1078,8 +1091,8 @@
         <div class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
             <div>
-              <strong style="font-size: 1rem;">Step 4 & 5 — Verify Extracted Questions & Save</strong>
-              <div id="studioStatusText" style="font-size: 0.82rem; color: var(--muted);">Upload any PDF or paste JSON/Text to verify all questions before saving.</div>
+              <strong style="font-size: 1rem;">Step 4 & 5 — Verify Questions & Save to Firebase</strong>
+              <div id="studioStatusText" style="font-size: 0.82rem; color: var(--muted);">Paste your questions on the left (or upload a PDF) to preview and verify them here.</div>
             </div>
             <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
               <span class="tag tag-primary" id="studioQCount">0 Questions</span>
@@ -1099,7 +1112,7 @@
           <div id="studio-tab-visual">
             <div class="q-list" id="studioVisualList">
               <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
-                Drop any PYQ PDF on the left (extracts all 20–200+ questions automatically), or click <b>"JSON Array"</b> to paste formatted output from ChatGPT/Gemini.
+                Paste your questions in <b>Step 2</b> on the left and click <b>"⚡ Convert Pasted Questions Now"</b>, or switch to <b>"📥 Upload PDF File"</b>.
               </div>
             </div>
           </div>
@@ -1107,9 +1120,9 @@
           <!-- STUDIO TAB 2: JSON IMPORTER -->
           <div id="studio-tab-json" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 0.82rem; color: var(--muted);">Paste JSON array from ChatGPT/Gemini or edit directly:</span>
+              <span style="font-size: 0.82rem; color: var(--muted);">Inspect or edit the raw JSON array directly:</span>
               <div style="display: flex; gap: 6px;">
-                <button class="btn btn-primary btn-sm" onclick="importFromJsonTextarea()">⚡ Load JSON into Visual Editor</button>
+                <button class="btn btn-primary btn-sm" onclick="importFromJsonTextarea()">⚡ Apply JSON Changes</button>
                 <button class="btn btn-outline btn-sm" onclick="copyStudioJson()">📋 Copy JSON</button>
               </div>
             </div>
@@ -1119,7 +1132,7 @@
           <!-- STUDIO TAB 3: CLEANED RAW TEXT -->
           <div id="studio-tab-raw" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 0.82rem; color: var(--muted);">Cleaned PDF text after 2-column unmixing & watermark removal:</span>
+              <span style="font-size: 0.82rem; color: var(--muted);">Cleaned text buffer (edit and click Re-Parse if needed):</span>
               <button class="btn btn-primary btn-sm" onclick="parseFromEditedRawText()">⚡ Re-Parse Questions from Text</button>
             </div>
             <textarea id="studioRawTextarea" rows="22" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"></textarea>
@@ -1127,6 +1140,8 @@
         </div>
       </div>
     </section>
+
+        
 
     <!-- ======================= 6. RESULTS & DETAILED ANALYSIS ======================= -->
     <section id="view-review" class="view-section">
@@ -3189,6 +3204,60 @@ Return ONLY valid JSON without markdown fences. Question Paper:</textarea>
       ["visual", "json", "raw"].forEach(t => {
         document.getElementById(`studio-tab-${t}`).style.display = t === tab ? "block" : "none";
       });
+    };
+
+    // Switch between "Paste Questions" and "Upload PDF File" in Step 2
+    window.switchInputSourceMode = (mode) => {
+      const isPaste = mode === "paste";
+      document.getElementById("inputModePastePanel").style.display = isPaste ? "block" : "none";
+      document.getElementById("inputModePdfPanel").style.display = isPaste ? "none" : "block";
+      document.getElementById("modeBtnPaste").className = isPaste ? "btn btn-primary btn-sm" : "btn btn-outline btn-sm";
+      document.getElementById("modeBtnPdf").className = !isPaste ? "btn btn-primary btn-sm" : "btn btn-outline btn-sm";
+    };
+
+    // Smart Auto-Detect Parser for Directly Pasted Questions (Handles ChatGPT/Gemini JSON, Markdown fences, or Raw Text)
+    window.parseDirectPastedQuestions = () => {
+      const rawInput = document.getElementById("directPasteInput").value.trim();
+      if (!rawInput) return alert("Please paste your questions or ChatGPT/Gemini output into the box first!");
+
+      // Strip markdown code fences (e.g. ```json ... ```) if ChatGPT or Gemini added them
+      const cleanedJsonCandidate = rawInput
+        .replace(/^```(?:json|javascript|text)?\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
+
+      // 1. Try parsing as JSON first (if user pasted ChatGPT/Gemini JSON output)
+      if (cleanedJsonCandidate.startsWith("[") || cleanedJsonCandidate.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(cleanedJsonCandidate);
+          const qList = Array.isArray(parsed) ? parsed : (parsed.questions || [parsed]);
+          appState.studioQuestions = qList.map((q, idx) => ({
+            id: q.id || (idx + 1),
+            section: q.section || document.getElementById("studioSubject").value || "General",
+            passage: q.passage || "",
+            question: q.question || "",
+            options: Array.isArray(q.options) && q.options.length >= 2 ? q.options : ["Option A", "Option B", "Option C", "Option D"],
+            answer: typeof q.answer === "number" ? q.answer : 0,
+            explanation: q.explanation || ""
+          }));
+          switchStudioTab("visual");
+          renderStudioQuestions();
+          document.getElementById("studioStatusText").textContent =
+            `✅ Loaded ${appState.studioQuestions.length} formatted questions from pasted JSON!`;
+          return;
+        } catch (err) {
+          // If JSON parse fails, fall through to the multi-pass raw question parser below
+        }
+      }
+
+      // 2. Otherwise, parse as Raw Unformatted Questions / Text!
+      document.getElementById("studioRawTextarea").value = rawInput;
+      const lines = rawInput.split("\n");
+      appState.studioQuestions = parseLinesIntoQuestions(lines);
+      switchStudioTab("visual");
+      renderStudioQuestions();
+      document.getElementById("studioStatusText").textContent =
+        `✅ Extracted ${appState.studioQuestions.length} questions directly from your pasted text!`;
     };
 
     window.parseFromEditedRawText = () => {
