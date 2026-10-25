@@ -1,1281 +1,404 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ExamForge — Personal GATE / ESE / Banking Exam Simulator</title>
+  <title>ExamForge — Personal Exam Lab</title>
 
-  <!-- Google Fonts -->
+  <!-- Fonts, PDF.js & Chart.js -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Mozilla PDF.js & Chart.js CDN (Zero IndexedDB / LocalForage) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
-    :root[data-theme="dark"] {
-      --bg: #080c14;
-      --bg-elevated: #0f172a;
-      --card: #151f32;
-      --card-hover: #1e293b;
-      --border: #26354d;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --primary-soft: rgba(59, 130, 246, 0.14);
-      --success: #10b981;
-      --success-soft: rgba(16, 185, 129, 0.14);
-      --warning: #f59e0b;
-      --warning-soft: rgba(245, 158, 11, 0.14);
-      --danger: #ef4444;
-      --danger-soft: rgba(239, 68, 68, 0.14);
-      --purple: #8b5cf6;
-      --purple-soft: rgba(139, 92, 246, 0.15);
-      --shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.65);
-    }
+    /* MEDICALLY PROVEN ERGONOMIC LIGHT THEME */
+    :root {
+      --bg-body: #F0F4F8;       /* Soft slate/blue-ish white to reduce glare */
+      --bg-card: #FFFFFF;       /* Pure white for reading areas */
+      --text-main: #2D3748;     /* Dark slate gray (easier on eyes than pure black) */
+      --text-muted: #718096;    /* Medium gray for secondary info */
+      --border: #E2E8F0;        /* Very soft border */
+      
+      --primary: #3182CE;       /* Calming blue */
+      --primary-hover: #2B6CB0;
+      --primary-soft: #EBF8FF;
+      
+      --success: #38A169;       /* Restful green */
+      --success-soft: #F0FFF4;
+      
+      --danger: #E53E3E;        /* Soft red */
+      --danger-soft: #FFF5F5;
+      
+      --warning: #DD6B20;       /* Soft orange */
+      --warning-soft: #FFFAF0;
+      
+      --purple: #805AD5;        /* Soft purple for review */
+      --purple-soft: #FAF5FF;
 
-    :root[data-theme="light"] {
-      --bg: #f1f5f9;
-      --bg-elevated: #ffffff;
-      --card: #ffffff;
-      --card-hover: #f8fafc;
-      --border: #cbd5e1;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-soft: rgba(37, 99, 235, 0.1);
-      --success: #059669;
-      --success-soft: rgba(5, 150, 105, 0.1);
-      --warning: #d97706;
-      --warning-soft: rgba(217, 119, 6, 0.1);
-      --danger: #dc2626;
-      --danger-soft: rgba(220, 38, 38, 0.1);
-      --purple: #7c3aed;
-      --purple-soft: rgba(124, 58, 237, 0.1);
-      --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05);
+      
+      --base-font: 16px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      line-height: 1.5;
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      font-size: var(--base-font);
       min-height: 100vh;
-      font-size: var(--base-font-size, 16px);
-      transition: background 0.2s, color 0.2s;
+      overflow-x: hidden;
     }
 
-    /* TOP NAVIGATION BAR */
-    .navbar {
+    /* TOP HEADER (Simplified) */
+    .top-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--bg-elevated);
+      background: var(--bg-card);
       border-bottom: 1px solid var(--border);
       padding: 12px 24px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-      box-shadow: var(--shadow);
-    }
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.22rem;
-      letter-spacing: -0.02em;
-      cursor: pointer;
+      box-shadow: var(--shadow-sm);
     }
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--primary), var(--purple));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.15rem;
-    }
-    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
-    .nav-btn {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid transparent;
-      padding: 8px 13px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.86rem;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    .nav-btn:hover { color: var(--text); background: var(--card-hover); }
-    .nav-btn.active {
-      background: var(--primary-soft);
-      color: var(--primary);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .section-pill {
-      display: flex;
-      align-items: center;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 4px 6px 4px 10px;
-      gap: 6px;
-    }
-    .section-pill select {
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    
+    .menu-toggle {
       background: transparent;
       border: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 0.84rem;
-      outline: none;
+      font-size: 1.5rem;
+      color: var(--text-main);
       cursor: pointer;
-      padding: 2px 4px;
+      padding: 4px;
+      border-radius: 6px;
+      transition: 0.2s;
     }
-    .section-pill select option { background: var(--card); color: var(--text); }
+    .menu-toggle:hover { background: var(--border); }
+    
+    .brand { font-weight: 800; font-size: 1.25rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
 
-    /* LAYOUT & CONTAINERS */
-    .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
-    .view-section { display: none; animation: fadeIn 0.18s ease; }
+    /* VERTICAL COLLAPSIBLE SIDEBAR */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 999;
+      opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .sidebar {
+      position: fixed; top: 0; left: -280px; bottom: 0; width: 280px;
+      background: var(--bg-card); box-shadow: var(--shadow-lg); z-index: 1000;
+      transition: left 0.3s ease; display: flex; flex-direction: column;
+    }
+    .sidebar.active { left: 0; }
+    .sidebar-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-menu { padding: 20px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      border-radius: 8px; color: var(--text-main); text-decoration: none;
+      font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; border: none; background: transparent; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: var(--bg-body); color: var(--primary); }
+    .nav-item.active { background: var(--primary-soft); color: var(--primary); }
+    .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+
+    /* LAYOUT CONTAINERS */
+    .main-content { padding: 32px 24px; max-width: 1200px; margin: 0 auto; transition: 0.3s; }
+    .view-section { display: none; animation: fadeIn 0.2s ease; }
     .view-section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    /* GRIDS & CARDS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    . grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
-    .studio-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
-    @media (max-width: 980px) {
-      .grid-2, .grid-3, .grid-4, .grid-5, .studio-grid { grid-template-columns: 1fr; }
-    }
-
+    @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+    
     .card {
-      background: var(--card);
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      transition: 0.18s;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: 0.2s;
     }
-    .card-interactive:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-      cursor: pointer;
-    }
+    .card-interactive:hover { box-shadow: var(--shadow-md); border-color: var(--primary); transform: translateY(-2px); cursor: pointer; }
 
-    /* TAGS & BADGES */
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: var(--border);
-      color: var(--text);
-    }
+    /* TYPOGRAPHY & TAGS */
+    h1, h2, h3 { color: var(--text-main); letter-spacing: -0.02em; }
+    .text-muted { color: var(--text-muted); font-size: 0.9rem; }
+    
+    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: var(--border); color: var(--text-main); }
     .tag-primary { background: var(--primary-soft); color: var(--primary); }
     .tag-success { background: var(--success-soft); color: var(--success); }
     .tag-warning { background: var(--warning-soft); color: var(--warning); }
-    .tag-danger { background: var(--danger-soft); color: var(--danger); }
-    .tag-purple { background: var(--purple-soft); color: var(--purple); }
 
     /* BUTTONS & INPUTS */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: 0.15s;
-      white-space: nowrap;
-    }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover { filter: brightness(1.08); }
-    .btn-warning { background: var(--warning); color: #fff; }
-    .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: rgba(239,68,68,0.3); }
-    .btn-danger:hover { background: var(--danger); color: #fff; }
-    .btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
-    .btn-outline:hover { background: var(--card-hover); border-color: var(--muted); }
-    .btn-sm { padding: 6px 11px; font-size: 0.78rem; }
-    .icon-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.15s;
-    }
-    .icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-outline { background: transparent; border-color: var(--border); color: var(--text-main); }
+    .btn-outline:hover { background: var(--bg-body); }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+    
+    input, select, textarea { width: 100%; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.95rem; font-family: inherit; outline: none; transition: 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
 
-    input[type="text"], input[type="number"], input[type="password"], input[type="search"], select, textarea {
-      width: 100%;
-      padding: 9px 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.88rem;
-      font-family: inherit;
-      outline: none;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-    label.field-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    /* TABLES */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; background: var(--bg-body); }
 
-    /* LANDING PAGE HERO */
-    .landing-hero {
-      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), rgba(139, 92, 246, 0.08), var(--card));
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 52px 32px;
-      text-align: center;
-      margin-bottom: 28px;
-      box-shadow: var(--shadow);
-    }
-    .landing-hero h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin: 12px 0;
-    }
-    .landing-hero p {
-      color: var(--muted);
-      max-width: 640px;
-      margin: 0 auto 24px;
-      font-size: 1.05rem;
-    }
-    .search-bar-wrap {
-      max-width: 540px;
-      margin: 0 auto 24px;
-      position: relative;
-    }
-    .search-bar-wrap input {
-      padding: 13px 18px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      background: var(--bg-elevated);
-    }
-
-    /* RESUME BANNER */
-    .resume-banner {
-      background: linear-gradient(90deg, var(--primary-soft), var(--card));
-      border: 1px solid var(--primary);
-      border-left: 5px solid var(--primary);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    /* FILTER PILLS */
-    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-    .filter-tab {
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--muted);
-      cursor: pointer;
-    }
-    .filter-tab.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    /* DROPZONE & QUESTION EDITOR */
-    .dropzone {
-      border: 2px dashed var(--primary);
-      background: var(--primary-soft);
-      border-radius: 12px;
-      padding: 24px 16px;
-      text-align: center;
-      cursor: pointer;
-      display: block;
-      margin-bottom: 14px;
-      transition: 0.2s;
-    }
-    .dropzone:hover { filter: brightness(1.1); }
+    /* DROPZONE */
+    .dropzone { border: 2px dashed var(--primary); background: var(--primary-soft); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .dropzone:hover { background: #dbeafe; }
     .dropzone input { display: none; }
 
-    .q-list { display: flex; flex-direction: column; gap: 14px; max-height: 68vh; overflow-y: auto; padding-right: 6px; }
-    .q-edit-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-    .q-passage-box {
-      background: var(--warning-soft);
-      border-left: 3px solid var(--warning);
-      padding: 8px 12px;
-      font-size: 0.82rem;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      white-space: pre-wrap;
-    }
-    .opt-edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-    @media (max-width: 640px) { .opt-edit-grid { grid-template-columns: 1fr; } }
-    .opt-edit-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 8px;
-    }
-    .opt-edit-item.correct { border-color: var(--success); background: var(--success-soft); }
-    .opt-edit-item input[type="text"] { border: none; background: transparent; padding: 2px; }
-
-    /* FULL-SCREEN GATE/ESE EXAM OVERLAY */
-    #examOverlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 500;
-      display: none;
-      flex-direction: column;
-    }
+    /* EXAM OVERLAY */
+    #examOverlay { position: fixed; inset: 0; background: var(--bg-body); z-index: 2000; display: none; flex-direction: column; }
     #examOverlay.active { display: flex; }
-    .exam-header {
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .timer-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .timer-box.urgent { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
-    @keyframes pulse { 50% { opacity: 0.55; } }
+    .exam-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .timer-box { background: var(--bg-body); border: 1px solid var(--border); padding: 6px 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+    
+    .exam-body { flex: 1; display: grid; grid-template-columns: 1fr 320px; overflow: hidden; }
+    .exam-main { display: flex; flex-direction: column; overflow-y: auto; padding: 30px; }
+    .question-pane { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: var(--shadow-sm); }
+    
+    .option-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 20px; margin-top: 12px; cursor: pointer; display: flex; align-items: center; gap: 16px; transition: 0.15s; font-size: 1rem; }
+    .option-card:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .option-card.selected { border-color: var(--primary); background: var(--primary-soft); font-weight: 600; box-shadow: 0 0 0 1px var(--primary); }
+    .opt-letter { width: 32px; height: 32px; border-radius: 6px; background: var(--bg-body); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .option-card.selected .opt-letter { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    .exam-body {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      overflow: hidden;
-      position: relative;
-    }
-    .exam-main {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border-right: 1px solid var(--border);
-    }
-    .exam-subtabs {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 20px;
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-    }
-    .exam-workspace {
-      flex: 1;
-      padding: 22px;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-    .exam-workspace.has-passage { grid-template-columns: 1fr 1fr; }
-    @media (max-width: 900px) { .exam-workspace.has-passage { grid-template-columns: 1fr; } }
-
-    .passage-pane {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      overflow-y: auto;
-      max-height: 62vh;
-      font-size: 0.92rem;
-      line-height: 1.65;
-      white-space: pre-wrap;
-    }
-    .question-pane {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .option-card {
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 13px 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: 0.15s;
-      font-size: 0.95rem;
-    }
-    .option-card:hover { border-color: var(--primary); background: var(--card-hover); }
-    .option-card.selected {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-      font-weight: 600;
-    }
-    .opt-letter {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.82rem;
-      flex-shrink: 0;
-    }
-    .option-card.selected .opt-letter {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .exam-footer {
-      background: var(--bg-elevated);
-      border-top: 1px solid var(--border);
-      padding: 14px 22px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    /* QUESTION PALETTE & MOBILE DRAWER */
-    .exam-sidebar {
-      background: var(--bg-elevated);
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      overflow-y: auto;
-      transition: transform 0.25s ease;
-    }
-    .mobile-palette-btn {
-      display: none;
-      position: fixed;
-      bottom: 78px;
-      right: 20px;
-      z-index: 520;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      font-size: 1.35rem;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-    }
-    @media (max-width: 900px) {
-      .exam-body { grid-template-columns: 1fr; }
-      .exam-sidebar {
-        position: fixed;
-        top: 60px;
-        right: 0;
-        bottom: 0;
-        width: 300px;
-        z-index: 515;
-        transform: translateX(100%);
-        border-left: 1px solid var(--border);
-        box-shadow: -8px 0 25px rgba(0,0,0,0.6);
-      }
-      .exam-sidebar.open { transform: translateX(0); }
-      .mobile-palette-btn { display: flex; align-items: center; justify-content: center; }
-    }
-
-    .palette-legend {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 0.76rem;
-      color: var(--muted);
-    }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-dot { width: 13px; height: 13px; border-radius: 4px; display: inline-block; }
-    .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .p-btn {
-      height: 38px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-weight: 700;
-      font-size: 0.84rem;
-      cursor: pointer;
-    }
+    .exam-sidebar { background: var(--bg-card); border-left: 1px solid var(--border); padding: 24px; overflow-y: auto; }
+    .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 16px; }
+    .p-btn { height: 42px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-weight: 700; font-size: 0.9rem; cursor: pointer; }
     .p-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
     .p-btn.answered { background: var(--success); color: #fff; border-color: var(--success); }
     .p-btn.unanswered { background: var(--danger); color: #fff; border-color: var(--danger); }
     .p-btn.review { background: var(--purple); color: #fff; border-color: var(--purple); }
-    .p-btn.ans-review { background: var(--purple); color: #fff; border: 2px solid var(--success); }
 
     /* MODALS */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-backdrop.active { display: flex; }
-    .modal {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      max-width: 600px;
-      width: 100%;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* KPI & TABLES */
-    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .kpi-val { font-size: 1.65rem; font-weight: 800; margin-top: 4px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
+    .modal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 600px; padding: 28px; box-shadow: var(--shadow-lg); }
   </style>
 </head>
 <body>
 
-  <!-- ======================= TOP NAVIGATION BAR ======================= -->
-  <nav class="navbar">
-    <div class="brand" onclick="switchView('landing')">
-      <div class="brand-icon">⚡</div>
-      <div>
-        <div>ExamForge</div>
-        <div style="font-size: 0.7rem; color: var(--muted); font-weight: 500;">Firebase Cloud Exam Simulator</div>
-      </div>
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="brand">⚡ ExamForge</div>
     </div>
-
-    <div class="nav-links">
-      <button class="nav-btn active" id="nav-landing" onclick="switchView('landing')">🏠 Home</button>
-      <button class="nav-btn" id="nav-dashboard" onclick="switchView('dashboard')">📊 Dashboard</button>
-      <button class="nav-btn" id="nav-categories" onclick="switchView('categories')">🗂️ Categories</button>
-      <button class="nav-btn" id="nav-studio" onclick="switchView('studio')">📄 Upload Studio</button>
-      <button class="nav-btn" id="nav-bookmarks" onclick="switchView('bookmarks')">🔖 Bookmarks <span id="bmBadge" class="tag" style="margin-left:4px;">0</span></button>
-      <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">⚙️ Settings</button>
+    <div class="header-actions">
+      <span class="tag tag-success" id="authStatusLabel">☁️ Connecting Firebase...</span>
     </div>
+  </header>
 
-    <div class="nav-actions">
-      <!-- Global Category / Section Dropdown Filter + Manager -->
-      <div class="section-pill" title="Filter by Exam Category / Section">
-        <span style="font-size: 0.8rem; color: var(--muted);">🗂️</span>
-        <select id="globalCategorySelect" onchange="onGlobalCategoryChange()"></select>
-        <button class="icon-btn" style="width:26px;height:26px;border:none;" onclick="openModal('categoryModal')" title="Manage Exam Categories">⚙️</button>
-      </div>
-
-      <!-- Firebase Google Sign-In Status Button -->
-      <button class="btn btn-outline btn-sm" id="googleAuthBtn" onclick="handleGoogleAuth()">
-        ☁️ <span id="authStatusLabel">Connecting Firebase...</span>
-      </button>
-
-      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light Theme">🌙</button>
+  <!-- COLLAPSIBLE SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">⚡ ExamForge</div>
+      <button class="menu-toggle" onclick="toggleSidebar()">✕</button>
     </div>
-  </nav>
+    <nav class="nav-menu">
+      <button class="nav-item active" id="nav-landing" onclick="navTo('landing')"><span class="nav-icon">🏠</span> Home</button>
+      <button class="nav-item" id="nav-dashboard" onclick="navTo('dashboard')"><span class="nav-icon">📊</span> Dashboard</button>
+      <button class="nav-item" id="nav-categories" onclick="navTo('categories')"><span class="nav-icon">🗂️</span> Paper Library</button>
+      <button class="nav-item" id="nav-studio" onclick="navTo('studio')"><span class="nav-icon">📄</span> Upload PDF</button>
+      <button class="nav-item" id="nav-bookmarks" onclick="navTo('bookmarks')"><span class="nav-icon">🔖</span> Bookmarks</button>
+      <hr style="border-top:1px solid var(--border); margin: 8px 0;" />
+      <button class="nav-item" onclick="handleGoogleAuth()"><span class="nav-icon">🔑</span> Google Sign-In</button>
+    </nav>
+  </aside>
 
-  <div class="container">
+  <main class="main-content">
 
-    <!-- ======================= 1. LANDING PAGE ======================= -->
+    <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="view-section active">
-      <div class="landing-hero">
-        <span class="tag tag-primary">YOUR PERSONAL EXAM LAB • FIREBASE CLOUD SYNCED</span>
-        <h1>Prepare Like It's Exam Day.</h1>
-        <p>Turn your coaching PDFs and question papers into realistic GATE, ESE, Banking, and Insurance timed examinations. Practice, review, retest, and improve.</p>
-
-        <div class="search-bar-wrap">
-          <input type="search" id="landingSearchInput" placeholder="🔍 Search ESE, GATE, UIIC AO, or any question paper..." oninput="handleLandingSearch(this.value)" />
-        </div>
-
-        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-          <button class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem;" onclick="switchView('dashboard')">Enter My Exam Dashboard →</button>
-          <button class="btn btn-outline" style="padding: 12px 20px;" onclick="switchView('studio')">📄 Upload & Convert PYQ PDF</button>
-          <button class="btn btn-outline" style="padding: 12px 20px;" onclick="openModal('promptModal')">🤖 Copy ChatGPT / Gemini Prompt</button>
-        </div>
+      <div class="card" style="text-align: center; padding: 60px 30px; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-body) 100%); margin-bottom: 30px;">
+        <span class="tag tag-primary" style="margin-bottom:16px;">YOUR PERSONAL EXAM LAB</span>
+        <h1 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 16px;">Prepare Like It's Exam Day.</h1>
+        <p class="text-muted" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px;">Turn your question PDFs into realistic timed examinations. Clean, distraction-free, and synced to the cloud.</p>
+        <button class="btn btn-primary" style="font-size: 1.1rem; padding: 14px 28px;" onclick="navTo('dashboard')">Enter Dashboard →</button>
       </div>
-
-      <!-- Unfinished Attempt Crash-Recovery Banner on Landing -->
-      <div id="landingResumeContainer"></div>
-
-      <!-- Search Results Preview (if searching) -->
-      <div id="landingSearchResults" style="display: none; margin-bottom: 28px;"></div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h2 style="font-size: 1.3rem;">Your Preparation, Organized</h2>
-        <button class="btn btn-outline btn-sm" onclick="openModal('categoryModal')">➕ Manage Categories</button>
-      </div>
-      <div class="grid-4" id="landingCategoryCards"></div>
+      <h2 style="margin-bottom: 20px;">Exam Categories</h2>
+      <div class="grid-4" id="landingCategories"></div>
     </section>
 
-    <!-- ======================= 2. DASHBOARD (CONTROL CENTRE) ======================= -->
+    <!-- VIEW 2: DASHBOARD -->
     <section id="view-dashboard" class="view-section">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-        <div>
-          <h2 style="font-size: 1.5rem;">📊 Preparation Control Centre</h2>
-          <p style="font-size: 0.88rem; color: var(--muted);" id="dashboardSubtext">All statistics calculated live from your Firebase Cloud database.</p>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm" onclick="switchView('studio')">➕ Upload New Paper</button>
-          <button class="btn btn-outline btn-sm" onclick="openModal('categoryModal')">🗂️ Create Category</button>
-          <button class="btn btn-outline btn-sm" onclick="switchView('categories')">📚 Browse Library</button>
-        </div>
-      </div>
-
-      <!-- Crash Recovery / Continue Unfinished Test Banner -->
+      <h2 style="font-size: 1.6rem; margin-bottom: 24px;">📊 Preparation Dashboard</h2>
+      
       <div id="dashboardResumeContainer"></div>
 
-      <!-- 5 Real-Time KPI Cards -->
-      <div class="grid-5" style="margin-bottom: 24px;">
-        <div class="kpi-card">
-          <div style="font-size: 0.78rem; color: var(--muted);">Exam Categories</div>
-          <div class="kpi-val" id="kpiCategories">0</div>
-        </div>
-        <div class="kpi-card">
-          <div style="font-size: 0.78rem; color: var(--muted);">Total Papers</div>
-          <div class="kpi-val" id="kpiPapers">0</div>
-        </div>
-        <div class="kpi-card">
-          <div style="font-size: 0.78rem; color: var(--muted);">Tests Attempted</div>
-          <div class="kpi-val" id="kpiAttempts">0</div>
-        </div>
-        <div class="kpi-card">
-          <div style="font-size: 0.78rem; color: var(--muted);">Average Score</div>
-          <div class="kpi-val" style="color: var(--primary);" id="kpiAvgScore">0%</div>
-        </div>
-        <div class="kpi-card">
-          <div style="font-size: 0.78rem; color: var(--muted);">Best Score</div>
-          <div class="kpi-val" style="color: var(--success);" id="kpiBestScore">0%</div>
-        </div>
+      <div class="grid-4" style="margin-bottom: 30px;">
+        <div class="card"><div class="text-muted">Total Papers</div><div style="font-size:2rem;font-weight:800;" id="kpiPapers">0</div></div>
+        <div class="card"><div class="text-muted">Tests Attempted</div><div style="font-size:2rem;font-weight:800;" id="kpiAttempts">0</div></div>
+        <div class="card"><div class="text-muted">Average Score</div><div style="font-size:2rem;font-weight:800;color:var(--primary);" id="kpiAvgScore">0%</div></div>
+        <div class="card"><div class="text-muted">Best Score</div><div style="font-size:2rem;font-weight:800;color:var(--success);" id="kpiBestScore">0%</div></div>
       </div>
 
-      <!-- Progression Line Chart & Marks Comparison Bar Chart -->
-      <div class="grid-2" style="margin-bottom: 24px;">
-        <div class="card">
-          <h3 style="font-size: 0.98rem; margin-bottom: 12px;">📈 Score & Accuracy Progression Line Chart</h3>
-          <div style="height: 260px;"><canvas id="dashLineChart"></canvas></div>
-        </div>
-        <div class="card">
-          <h3 style="font-size: 0.98rem; margin-bottom: 12px;">📊 Marks Comparison Bar Chart (Scored vs Max)</h3>
-          <div style="height: 260px;"><canvas id="dashBarChart"></canvas></div>
-        </div>
+      <div class="grid-2" style="margin-bottom: 30px;">
+        <div class="card"><h3 style="margin-bottom:16px; font-size:1rem;">📈 Score Progression</h3><div style="height: 260px;"><canvas id="dashLineChart"></canvas></div></div>
+        <div class="card"><h3 style="margin-bottom:16px; font-size:1rem;">📊 Marks Comparison</h3><div style="height: 260px;"><canvas id="dashBarChart"></canvas></div></div>
       </div>
 
-      <!-- Recent Activity Table -->
       <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="font-size: 1.05rem;">🕓 Recent Activity & Completed Attempts</h3>
-          <input type="search" placeholder="Filter activity..." style="max-width: 240px; padding: 6px 10px;" oninput="renderDashboardActivity(this.value)" />
-        </div>
+        <h3 style="margin-bottom: 16px;">🕓 Recent Activity</h3>
         <div style="overflow-x: auto;">
           <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Paper Title</th>
-                <th>Category</th>
-                <th>Score</th>
-                <th>Accuracy</th>
-                <th>Time Taken</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Paper</th><th>Category</th><th>Score</th><th>Accuracy</th><th>Action</th></tr></thead>
             <tbody id="dashActivityTableBody"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ======================= 3. EXAM CATEGORIES & PAPER LIBRARY ======================= -->
+    <!-- VIEW 3: CATEGORIES & LIBRARY -->
     <section id="view-categories" class="view-section">
-      <!-- Sub-View A: All Categories Grid -->
-      <div id="categoriesOverviewPanel">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-          <div>
-            <h2 style="font-size: 1.45rem;">🗂️ Exam Categories</h2>
-            <p style="font-size: 0.88rem; color: var(--muted);">Click any category to open its dedicated question paper library.</p>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="openModal('categoryModal')">➕ Add / Edit Categories</button>
+      <div id="catOverviewPanel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+          <h2>🗂️ Paper Library</h2>
+          <button class="btn btn-outline btn-sm" onclick="openModal('categoryModal')">⚙️ Manage Categories</button>
         </div>
-        <div class="grid-3" id="categoriesGridContainer"></div>
+        <div class="grid-3" id="categoriesGrid"></div>
       </div>
-
-      <!-- Sub-View B: Inside a Specific Category's Paper Library -->
-      <div id="categoryPaperLibraryPanel" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-          <div>
-            <button class="btn btn-outline btn-sm" onclick="closeCategoryFolder()" style="margin-bottom: 8px;">← Back to All Categories</button>
-            <h2 style="font-size: 1.45rem;" id="activeCategoryHeading">Category Papers</h2>
-            <p style="font-size: 0.86rem; color: var(--muted);" id="activeCategoryDesc"></p>
-          </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <input type="search" id="librarySearchInput" placeholder="Search papers in category..." style="width: 220px;" oninput="renderCategoryPapers()" />
-            <button class="btn btn-primary" onclick="openStudioForCurrentCategory()">➕ Upload Paper to Category</button>
-          </div>
+      
+      <div id="catLibraryPanel" style="display:none;">
+        <button class="btn btn-outline btn-sm" style="margin-bottom:16px;" onclick="closeCategoryFolder()">← Back to Categories</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+          <h2 id="activeCategoryTitle">Category</h2>
+          <button class="btn btn-primary" onclick="navTo('studio')">➕ Upload Paper</button>
         </div>
-
-        <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setPaperFilter('ALL', this)">All Papers</button>
-          <button class="filter-tab" onclick="setPaperFilter('NOT_ATTEMPTED', this)">Not Attempted</button>
-          <button class="filter-tab" onclick="setPaperFilter('IN_PROGRESS', this)">In Progress</button>
-          <button class="filter-tab" onclick="setPaperFilter('COMPLETED', this)">Completed</button>
-        </div>
-
         <div class="grid-3" id="categoryPapersGrid"></div>
       </div>
     </section>
 
-    <!-- ======================= 4. PAPER ATTEMPT HISTORY VIEW ======================= -->
-    <section id="view-history" class="view-section">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-        <div>
-          <span class="tag tag-primary" id="histCategoryBadge">Category</span>
-          <h2 style="font-size: 1.4rem; margin-top: 6px;" id="histPaperTitle">Paper Attempt History</h2>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <select id="histSortSelect" onchange="renderPaperHistoryTable()" style="width: auto;">
-            <option value="latest">Sort: Latest First</option>
-            <option value="highest">Sort: Highest Score</option>
-            <option value="fastest">Sort: Fastest Time</option>
-          </select>
-          <button class="btn btn-primary" id="histRetestBtn">🔄 Retest Options</button>
-          <button class="btn btn-outline" onclick="switchView('categories')">← Back to Library</button>
-        </div>
-      </div>
-
-      <div class="grid-3" style="margin-bottom: 20px;" id="histSummaryCards"></div>
-
-      <div class="card">
-        <div style="overflow-x: auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Attempt #</th>
-                <th>Mode</th>
-                <th>Date</th>
-                <th>Score</th>
-                <th>Accuracy</th>
-                <th>Correct / Wrong / Skipped</th>
-                <th>Time Taken</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="histTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================= 5. UPLOAD STUDIO (5-STEP WORKFLOW + PDF.JS) ======================= -->
+    <!-- VIEW 4: PDF UPLOAD STUDIO (WITH FIXED REGEX) -->
     <section id="view-studio" class="view-section">
-      <div class="studio-grid">
-        <!-- LEFT SIDEBAR: STEPS 1, 2, 3 -->
-        <div class="card">
-          <h2 style="font-size: 1.05rem; margin-bottom: 12px;">Step 1 & 2 — Category & File Upload</h2>
-
-          <div style="margin-bottom: 12px;">
-            <label class="field-label">Select Exam Category</label>
-            <select id="studioCategorySelect"></select>
-          </div>
-
-          <label class="dropzone" id="pdfDropzone">
-            <input type="file" id="pdfFileInput" accept="application/pdf,.json,.csv,.txt" />
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">📥</div>
-            <div style="font-weight: 700; font-size: 0.9rem;" id="pdfFileName">Drop Question PDF, JSON, or CSV</div>
-            <div style="font-size: 0.75rem; color: var(--muted); margin-top: 2px;">Adda247 • Testbook • GATE/ESE • Telegram PYQs</div>
-          </label>
-
-          <div style="margin-bottom: 14px;">
-            <label class="field-label">Optional: Upload Separate Official Answer Key (PDF/TXT)</label>
-            <input type="file" id="ansKeyFileInput" accept="application/pdf,.txt,.json" onchange="handleSeparateAnswerKeyUpload(event)" style="font-size: 0.78rem; padding: 6px;" />
-          </div>
-
-          <h2 style="font-size: 1.02rem; margin: 14px 0 10px;">Step 3 — Paper Settings</h2>
-          <div style="margin-bottom: 10px;">
-            <label class="field-label">Paper Title</label>
-            <input type="text" id="studioTitle" placeholder="e.g., ESE 2025 — Electrical Engineering" value="New Uploaded Mock Paper" />
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-            <div>
-              <label class="field-label">Exam Year</label>
-              <input type="number" id="studioYear" value="2026" />
-            </div>
-            <div>
-              <label class="field-label">Subject / Stream</label>
-              <input type="text" id="studioSubject" placeholder="e.g., General / EE" value="General" />
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px;">
-            <div>
-              <label class="field-label">Duration (Min)</label>
-              <input type="number" id="studioDuration" value="60" min="1" />
-            </div>
-            <div>
-              <label class="field-label">Correct (+)</label>
-              <input type="number" id="studioPosMark" value="1" step="0.25" />
-            </div>
-            <div>
-              <label class="field-label">Negative (-)</label>
-              <input type="number" id="studioNegMark" value="0.25" step="0.05" />
-            </div>
-          </div>
-
-          <h2 style="font-size: 0.95rem; margin-bottom: 8px;">Smart PDF Hurdle Filters</h2>
-          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--muted); margin-bottom: 12px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkTwoCol" checked /> Unmix 2-column newspaper layouts</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkFreqWatermark" checked /> Auto-strip repeating headers & watermarks</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkCoachingAds" checked /> Strip coaching URLs, app promos & codes</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkLinkPassages" checked /> Link "Directions (Q. X–Y)" passages</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="chkMergeAnswers" checked /> Merge Answer Key & Solutions automatically</label>
-          </div>
-
-          <div style="margin-bottom: 10px;">
-            <label class="field-label">Custom Words to Strip (comma-separated)</label>
-            <input type="text" id="customBlacklistInput" placeholder="e.g., Adda247, Testbook, Use Code" />
-          </div>
-
-          <button class="btn btn-outline btn-sm" style="width: 100%; margin-bottom: 14px;" onclick="reRunPdfParser()">🔄 Re-Run Coordinate Parser</button>
-
-          <hr style="border:none;border-top:1px solid var(--border);margin: 12px 0;" />
-
-          <label class="field-label">Optional: Free Gemini API Clean (For Broken OCR)</label>
-          <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key (AIzaSy...)" style="margin-bottom: 8px;" />
-          <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="runGeminiFallback()">✨ Structure with Free Gemini API</button>
-        </div>
-
-        <!-- RIGHT PANEL: STEPS 4 & 5 (EXTRACT, VERIFY & SAVE TO FIREBASE) -->
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
-            <div>
-              <strong style="font-size: 1rem;">Step 4 & 5 — Verify Questions & Save to Firebase</strong>
-              <div id="studioStatusText" style="font-size: 0.82rem; color: var(--muted);">Upload a file or paste JSON/Text to inspect questions before saving.</div>
-            </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span class="tag tag-primary" id="studioQCount">0 Questions</span>
-              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('visual')">🛠️ Visual Editor</button>
-              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('json')">📋 JSON / CSV</button>
-              <button class="btn btn-outline btn-sm" onclick="switchStudioTab('raw')">📝 Raw Text</button>
-            </div>
-          </div>
-
-          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
-            <button class="btn btn-success" style="flex: 2;" onclick="saveStudioPaperToFirebase(true)">🚀 Verify, Save to Firebase & Start Exam</button>
-            <button class="btn btn-primary" style="flex: 1;" onclick="saveStudioPaperToFirebase(false)">💾 Save Paper to Category</button>
-            <button class="btn btn-outline" onclick="addBlankStudioQuestion()">➕ Add Q</button>
-          </div>
-
-          <!-- STUDIO TAB 1: VISUAL VERIFICATION EDITOR -->
-          <div id="studio-tab-visual">
-            <div class="q-list" id="studioVisualList">
-              <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
-                Drop any PYQ PDF on the left, or click <b>"JSON / CSV"</b> to paste formatted questions from ChatGPT/Gemini.
-              </div>
-            </div>
-          </div>
-
-          <!-- STUDIO TAB 2: JSON IMPORTER -->
-          <div id="studio-tab-json" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 0.82rem; color: var(--muted);">Paste JSON array from ChatGPT/Gemini or edit directly:</span>
-              <div style="display: flex; gap: 6px;">
-                <button class="btn btn-primary btn-sm" onclick="importFromJsonTextarea()">⚡ Load JSON into Visual Editor</button>
-                <button class="btn btn-outline btn-sm" onclick="copyStudioJson()">📋 Copy JSON</button>
-              </div>
-            </div>
-            <textarea id="studioJsonTextarea" rows="22" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"></textarea>
-          </div>
-
-          <!-- STUDIO TAB 3: CLEANED RAW TEXT -->
-          <div id="studio-tab-raw" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 0.82rem; color: var(--muted);">Cleaned PDF text after 2-column unmixing & watermark removal:</span>
-              <button class="btn btn-primary btn-sm" onclick="parseFromEditedRawText()">⚡ Re-Parse Questions from Text</button>
-            </div>
-            <textarea id="studioRawTextarea" rows="22" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"></textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================= 6. RESULTS & DETAILED ANALYSIS ======================= -->
-    <section id="view-review" class="view-section">
-      <div class="card" style="margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <span class="tag tag-success" id="reviewCategoryBadge">Submitted</span>
-            <h2 id="reviewPaperTitle" style="font-size: 1.45rem; margin-top: 4px;">Test Completed</h2>
-            <p style="font-size: 0.84rem; color: var(--muted);" id="reviewComparisonSubtext"></p>
-          </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button class="btn btn-primary btn-sm" id="reviewRetestBtn">🔄 Retest Paper</button>
-            <button class="btn btn-outline btn-sm" id="reviewHistoryBtn">📜 Paper History</button>
-            <button class="btn btn-outline btn-sm" onclick="downloadResultReportCSV()">📥 Download CSV Report</button>
-            <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">📊 Dashboard</button>
-          </div>
-        </div>
-
-        <div class="grid-4" style="margin-top: 16px;" id="reviewKpiSummary"></div>
-      </div>
-
-      <!-- Time-Per-Question Scatter Plot -->
-      <div class="card" style="margin-bottom: 20px;">
-        <h3 style="font-size: 1rem; margin-bottom: 10px;">⏱️ Time Spent Per Question Scatter Plot (Green = Correct, Red = Wrong, Grey = Skipped)</h3>
-        <div style="height: 250px;"><canvas id="timeScatterChart"></canvas></div>
-      </div>
-
-      <!-- Question Review Filters -->
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
-        <h3 style="font-size: 1.15rem;">🔍 Question-by-Question Review & Solutions</h3>
-        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('all')">All</button>
-          <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('correct')">✅ Correct</button>
-          <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('wrong')">❌ Incorrect</button>
-          <button class="btn btn-outline btn-sm" onclick="filterReviewQuestions('skipped')">⚪ Unattempted</button>
-        </div>
-      </div>
-
-      <div id="reviewQuestionsList" class="q-list" style="max-height: none;"></div>
-    </section>
-
-    <!-- ======================= 7. BOOKMARKS VIEW ======================= -->
-    <section id="view-bookmarks" class="view-section">
-      <div style="margin-bottom: 18px;">
-        <h2 style="font-size: 1.4rem;">🔖 Bookmarked & Difficult Questions</h2>
-        <p style="font-size: 0.88rem; color: var(--muted);">Synced to Firebase Cloud so you can revise tricky questions before exam day.</p>
-      </div>
-      <div id="bookmarksContainer" class="q-list" style="max-height: none;"></div>
-    </section>
-
-    <!-- ======================= 8. SETTINGS & CLOUD BACKUP VIEW ======================= -->
-    <section id="view-settings" class="view-section">
-      <h2 style="font-size: 1.4rem; margin-bottom: 18px;">⚙️ Simulator Settings & Cloud Backup</h2>
+      <h2 style="margin-bottom: 24px;">📄 Smart PDF Converter</h2>
       <div class="grid-2">
         <div class="card">
-          <h3 style="font-size: 1.05rem; margin-bottom: 14px;">Default Exam & Accessibility Preferences</h3>
-          <div style="margin-bottom: 12px;">
-            <label class="field-label">Interface Text Size</label>
-            <select id="settingFontSize" onchange="saveUserSettings()">
-              <option value="15px">Compact (15px)</option>
-              <option value="16px" selected>Standard (16px)</option>
-              <option value="17.5px">Large Exam Text (17.5px)</option>
-            </select>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;">
-            <div>
-              <label class="field-label">Default Duration (m)</label>
-              <input type="number" id="settingDefDuration" value="60" onchange="saveUserSettings()" />
-            </div>
-            <div>
-              <label class="field-label">Default Correct (+)</label>
-              <input type="number" id="settingDefPos" value="1" step="0.25" onchange="saveUserSettings()" />
-            </div>
-            <div>
-              <label class="field-label">Default Negative (-)</label>
-              <input type="number" id="settingDefNeg" value="0.25" step="0.05" onchange="saveUserSettings()" />
-            </div>
-          </div>
-          <label style="display:flex;align-items:center;gap:8px;font-size:0.88rem;color:var(--muted);cursor:pointer;">
-            <input type="checkbox" id="settingAutoSubmit" checked onchange="saveUserSettings()" />
-            Auto-submit examination when deadline timer expires
+          <label class="dropzone" id="pdfDropzone">
+            <input type="file" id="pdfFileInput" accept="application/pdf,.json" />
+            <div style="font-size: 2rem; margin-bottom: 10px;">📥</div>
+            <div style="font-weight: 700; font-size:1.1rem;" id="pdfFileName">Drop Question PDF Here</div>
           </label>
-        </div>
-
-        <div class="card">
-          <h3 style="font-size: 1.05rem; margin-bottom: 14px;">Portable JSON Backup & Restore</h3>
-          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;">
-            All your data is automatically stored in your <b>Firebase Cloud Firestore</b> (`free-mock-test-by-srujan`). You can also download a portable JSON backup file at any time.
-          </p>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
-            <button class="btn btn-primary" onclick="exportFullBackupJSON()">📥 Export Complete Backup (.json)</button>
-            <label class="btn btn-outline">
-              📤 Restore Backup (.json)
-              <input type="file" accept=".json" style="display: none;" onchange="importFullBackupJSON(event)" />
-            </label>
+          <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+            <div><label>Paper Title</label><input type="text" id="studioTitle" value="New Mock Paper" /></div>
+            <div><label>Category</label><select id="studioCategorySelect"></select></div>
+            <div style="display:flex; gap:12px;">
+              <div style="flex:1"><label>Duration (m)</label><input type="number" id="studioDuration" value="60" /></div>
+              <div style="flex:1"><label>Correct (+)</label><input type="number" id="studioPosMark" value="1" /></div>
+              <div style="flex:1"><label>Negative (-)</label><input type="number" id="studioNegMark" value="0.25" /></div>
+            </div>
           </div>
-          <hr style="border:none;border-top:1px solid var(--border);margin: 14px 0;" />
-          <button class="btn btn-danger btn-sm" onclick="resetAttemptHistoryOnly()">⚠️ Reset All Attempt History (Keeps Uploaded Papers)</button>
+        </div>
+        <div class="card" style="display:flex; flex-direction:column;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <strong style="font-size:1.1rem;">Verified Questions: <span id="studioQCount" class="tag tag-primary">0</span></strong>
+            <button class="btn btn-success" onclick="saveStudioPaper()">💾 Save to Firebase</button>
+          </div>
+          <div style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;" id="studioStatus">Upload a PDF to parse...</div>
+          <textarea id="studioJsonTextarea" style="flex:1; min-height: 300px; font-family:monospace; font-size:0.85rem;"></textarea>
         </div>
       </div>
     </section>
 
-  </div>
+  </main>
 
-  <!-- ======================= PRE-EXAM INSTRUCTIONS MODAL ======================= -->
-  <div class="modal-backdrop" id="instructionsModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="instPaperTitle">Exam Instructions</h3>
-        <button class="icon-btn" onclick="closeModal('instructionsModal')">✕</button>
-      </div>
-      <div id="instDetailsBody" style="font-size: 0.9rem; color: var(--muted); display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;"></div>
-      <div style="background: var(--warning-soft); border-left: 3px solid var(--warning); padding: 10px 12px; border-radius: 6px; font-size: 0.82rem; margin-bottom: 18px;">
-        ⚠️ <b>Real Deadline Timer Rule:</b> Once you click <i>Start Examination</i>, the deadline timestamp is recorded in Firebase Cloud. The timer continues running accurately even if the browser tab is closed or refreshed.
-      </div>
-      <div style="display: flex; justify-content: flex-end; gap: 10px;">
-        <button class="btn btn-outline" onclick="closeModal('instructionsModal')">Cancel</button>
-        <button class="btn btn-success" id="confirmStartExamBtn">🚀 Confirm & Start Examination</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ======================= RETEST MODE SELECTION MODAL ======================= -->
-  <div class="modal-backdrop" id="retestModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>🔄 Choose Retest Mode</h3>
-        <button class="icon-btn" onclick="closeModal('retestModal')">✕</button>
-      </div>
-      <p style="font-size: 0.86rem; color: var(--muted); margin-bottom: 14px;">
-        Every retest creates a brand-new attempt record in Firebase without overwriting your previous scores:
-      </p>
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-primary" style="justify-content: flex-start; padding: 14px;" id="btnRetestStandard">
-          ▶️ <div><div style="text-align:left;">Retake Exact Same Paper</div><div style="font-size:0.75rem;opacity:0.8;font-weight:400;">Original question & option order to benchmark speed improvement.</div></div>
-        </button>
-        <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestRandom">
-          🔀 <div><div style="text-align:left;">Randomized Retest (Shuffled)</div><div style="font-size:0.75rem;color:var(--muted);font-weight:400;">Shuffles question order and option order while keeping answer keys mapped.</div></div>
-        </button>
-        <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestIncorrect">
-          🎯 <div><div style="text-align:left;">Retry Incorrect & Unanswered Questions Only</div><div style="font-size:0.75rem;color:var(--muted);font-weight:400;">Generates a focused practice session from your mistakes in the last attempt.</div></div>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ======================= FULL-SCREEN LIVE MOCK EXAM OVERLAY ======================= -->
+  <!-- EXAM OVERLAY -->
   <div id="examOverlay">
     <div class="exam-header">
       <div>
-        <div style="font-weight: 800; font-size: 1.05rem;" id="liveExamTitle">Mock Examination</div>
-        <div style="font-size: 0.78rem; color: var(--muted);" id="liveExamMeta">Category • +1 / -0.25</div>
+        <div style="font-weight:800; font-size:1.15rem;" id="liveTitle">Mock Exam</div>
+        <div style="font-size:0.85rem; color:var(--text-muted);" id="liveMeta">Category</div>
       </div>
-      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-        <span class="tag tag-success" id="liveCloudSaveBadge">☁️ Saved</span>
-        <div class="timer-box" id="liveTimerBox">
-          ⏱️ <span id="liveTimerText">00:00:00</span>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="toggleFullScreenExam()" title="Distraction-Free Fullscreen">⛶ Fullscreen</button>
-        <button class="btn btn-primary btn-sm" onclick="openSubmitConfirmationModal(false)">Submit Test</button>
+      <div style="display:flex; gap:16px; align-items:center;">
+        <button class="btn btn-outline btn-sm" onclick="toggleFullScreen()" title="Fullscreen">⛶ Fullscreen</button>
+        <div class="timer-box" id="liveTimer">00:00:00</div>
+        <button class="btn btn-success" onclick="openSubmitModal()">Submit Test</button>
       </div>
     </div>
-
     <div class="exam-body">
       <div class="exam-main">
-        <div class="exam-subtabs" id="examSubTabs"></div>
-
-        <div class="exam-workspace" id="examWorkspace">
-          <div class="passage-pane" id="livePassagePane" style="display: none;"></div>
-          <div class="question-pane">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-              <div>
-                <span style="font-weight: 800; color: var(--primary); font-size: 1rem;" id="liveQNumLabel">Question 1</span>
-                <span class="tag" id="liveQSubSection" style="margin-left: 8px;">General</span>
-              </div>
-              <button class="btn btn-outline btn-sm" id="liveBookmarkBtn" onclick="toggleLiveBookmark()">☆ Bookmark</button>
-            </div>
-
-            <div id="liveQuestionText" style="font-size: 1.02rem; font-weight: 500; white-space: pre-wrap;"></div>
-            <div id="liveOptionsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;"></div>
+        <div class="question-pane">
+          <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+            <strong style="color:var(--primary); font-size:1.1rem;" id="liveQNum">Question 1</strong>
+            <span class="tag" id="liveSaveStatus">Saved</span>
           </div>
+          <div id="livePassage" style="display:none; padding:16px; background:var(--warning-soft); border-left:4px solid var(--warning); margin-bottom:20px; font-size:0.95rem; border-radius:6px;"></div>
+          <div id="liveQText" style="white-space:pre-wrap; font-weight:600; font-size:1.1rem; margin-bottom:24px;"></div>
+          <div id="liveOptions" style="display:flex; flex-direction:column;"></div>
         </div>
-
-        <div class="exam-footer">
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn btn-outline" onclick="markForReviewAndNext()">🟣 Mark for Review & Next</button>
-            <button class="btn btn-outline" onclick="clearLiveResponse()">🧹 Clear Response</button>
+        <div style="display:flex; justify-content:space-between; margin-top:24px;">
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-outline" onclick="markReview()">🟣 Mark for Review</button>
+            <button class="btn btn-outline" onclick="clearResponse()">🧹 Clear</button>
           </div>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn btn-outline" onclick="navigateLiveQuestion(-1)">← Previous</button>
-            <button class="btn btn-success" id="liveNextBtn" onclick="saveAndNextLiveQuestion()">Save & Next →</button>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-outline" onclick="navQ(-1)">← Previous</button>
+            <button class="btn btn-primary" onclick="saveAndNext()">Save & Next →</button>
           </div>
         </div>
       </div>
-
-      <!-- Question Palette Sidebar / Mobile Drawer -->
-      <div class="exam-sidebar" id="examSidebarDrawer">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 700; font-size: 0.92rem;">Question Palette</span>
-          <button class="btn btn-outline btn-sm" onclick="document.getElementById('examSidebarDrawer').classList.remove('open')">✕</button>
+      <div class="exam-sidebar">
+        <div style="font-weight:700; margin-bottom:16px;">Question Palette</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.8rem; color:var(--text-muted); margin-bottom:20px;">
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--success);border-radius:3px;"></span> Answered</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--danger);border-radius:3px;"></span> Unanswered</div>
+          <div><span style="display:inline-block;width:12px;height:12px;background:var(--purple);border-radius:3px;"></span> Marked</div>
         </div>
-        <div class="palette-legend">
-          <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span> Answered</div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span> Unanswered</div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Marked Review</div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--card);border:1px solid var(--border)"></span> Not Visited</div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);" />
-        <div class="palette-grid" id="livePaletteGrid"></div>
+        <div class="palette-grid" id="livePalette"></div>
       </div>
-
-      <button class="mobile-palette-btn" onclick="document.getElementById('examSidebarDrawer').classList.toggle('open')" title="Toggle Question Palette">🔢</button>
     </div>
   </div>
 
-  <!-- ======================= LAST-QUESTION / SUBMIT CONFIRMATION MODAL ======================= -->
+  <!-- SUBMIT MODAL -->
   <div class="modal-backdrop" id="submitModal">
     <div class="modal">
-      <div class="modal-header">
-        <h3 id="submitModalTitle">🏁 Confirm Final Test Submission</h3>
-        <button class="icon-btn" onclick="closeModal('submitModal')">✕</button>
-      </div>
-      <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 16px;" id="submitModalSubtext">
-        Review your attempt summary before submitting:
-      </p>
-      <div class="grid-2" style="gap: 12px; margin-bottom: 20px;" id="submitSummaryGrid"></div>
-      <div style="display: flex; justify-content: flex-end; gap: 10px;">
-        <button class="btn btn-outline" onclick="closeModal('submitModal')">← Return to Exam</button>
-        <button class="btn btn-success" onclick="finalizeExamSubmission()">✅ Submit & View Analysis</button>
+      <h3 style="margin-bottom:16px;">Confirm Submission</h3>
+      <p class="text-muted" style="margin-bottom:24px;">Are you sure you want to submit? You cannot change answers after submission.</p>
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button class="btn btn-outline" onclick="closeModal('submitModal')">Cancel</button>
+        <button class="btn btn-success" onclick="finalizeExam()">Submit Final</button>
       </div>
     </div>
   </div>
 
-  <!-- ======================= CATEGORY / SECTION MANAGER MODAL ======================= -->
-  <div class="modal-backdrop" id="categoryModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>🗂️ Manage Exam Categories & Sections</h3>
-        <button class="icon-btn" onclick="closeModal('categoryModal')">✕</button>
-      </div>
-      <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 12px;">
-        Add, rename, or remove categories. Renaming a category automatically updates all papers and attempts under it in Firebase.
-      </p>
-      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-        <input type="text" id="newCatNameInput" placeholder="Category Name (e.g., GATE, ESE, UIIC AO)" />
-        <input type="text" id="newCatDescInput" placeholder="Short description..." />
-        <button class="btn btn-primary" onclick="addCategory()">➕ Add</button>
-      </div>
-      <div id="categoryManagerList" style="display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto;"></div>
-    </div>
-  </div>
-
-  <!-- ======================= CHATGPT / GEMINI PROMPT MODAL ======================= -->
-  <div class="modal-backdrop" id="promptModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>🤖 Copyable AI Formatting Prompt</h3>
-        <button class="icon-btn" onclick="closeModal('promptModal')">✕</button>
-      </div>
-      <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 10px;">
-        Copy this prompt into ChatGPT or Gemini along with any raw question text to generate ready-to-import JSON:
-      </p>
-      <textarea id="aiPromptText" rows="10" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-bottom: 12px;">Convert the following exam paper into a strict JSON array for my mock test simulator. Strip all coaching ads and watermarks.
-Follow this exact schema for every question:
-[
-  {
-    "id": 1,
-    "section": "Technical / Quant",
-    "passage": "Shared passage or Directions if applicable, else empty string",
-    "question": "Full question text",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "answer": 0,
-    "explanation": "Step-by-step solution (answer is 0-based index: 0=A, 1=B, 2=C, 3=D, 4=E)"
-  }
-]
-Return ONLY valid JSON without markdown fences. Question Paper:</textarea>
-      <button class="btn btn-primary" style="width: 100%;" onclick="navigator.clipboard.writeText(document.getElementById('aiPromptText').value);alert('Copied prompt!');">📋 Copy Prompt</button>
-    </div>
-  </div>
-
-  <!-- ======================= MAIN APPLICATION & FIREBASE SCRIPT ======================= -->
   <script type="module">
+    // =======================================================================
+    // 1. FIREBASE CONFIGURATION
+    // =======================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInAnonymously,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      collection,
-      getDocs,
-      deleteDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Configure PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // ============================================================================
-    // 1. HARDCODED FIREBASE CONFIGURATION (NO INDEXEDDB)
-    // ============================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBPhZrTBpQdy3iqgdliUuA9M0w-iMjBQEY",
       authDomain: "free-mock-test-by-srujan.firebaseapp.com",
       projectId: "free-mock-test-by-srujan",
       storageBucket: "free-mock-test-by-srujan.firebasestorage.app",
       messagingSenderId: "539838811940",
-      appId: "1:539838811940:web:3c0c4bd3987b9227c4edb1",
-      measurementId: "G-P68WSHTNTW"
+      appId: "1:539838811940:web:3c0c4bd3987b9227c4edb1"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -1283,1914 +406,298 @@ Return ONLY valid JSON without markdown fences. Question Paper:</textarea>
     const db = getFirestore(app);
     let currentUser = null;
 
-    // In-memory state synced directly with Firebase Cloud Firestore
-    const DEFAULT_CATEGORIES = [
-      { name: "ESE", desc: "Engineering Services Examination" },
-      { name: "GATE", desc: "Graduate Aptitude Test in Engineering" },
-      { name: "UPSC", desc: "Civil Services & Central Exams" },
-      { name: "SSC", desc: "SSC CGL, CHSL & JE Examinations" },
-      { name: "UIIC AO", desc: "Administrative Officer & Insurance Exams" }
-    ];
+    let state = { categories: ["ESE", "GATE", "SSC", "UIIC AO"], papers: [], attempts: [], activeAttempt: null, studioQs: [], rawPages: [] };
+    let timerInt = null;
 
-    let appState = {
-      categories: [...DEFAULT_CATEGORIES],
-      selectedGlobalCategory: "ALL",
-      activeCategoryFolder: null,
-      paperFilter: "ALL",
-      papers: [],
-      attempts: [],
-      bookmarks: [],
-      activeAttempt: null, // Crash-recovery live session stored in Firebase
-      settings: {
-        fontSize: "16px",
-        defDuration: 60,
-        defPos: 1,
-        defNeg: 0.25,
-        autoSubmit: true
-      },
-      studioQuestions: [],
-      rawPdfPages: [],
-      editingPaperId: null
+    // SIDEBAR TOGGLE
+    window.toggleSidebar = () => {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
     };
 
-    let timerInterval = null;
-    let currentReviewAttempt = null;
-    let currentHistoryPaperId = null;
-    let dashLineChart = null, dashBarChart = null, scatterChart = null;
+    // NAV ROUTING
+    window.navTo = (viewId) => {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.getElementById(`view-${viewId}`).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      if(document.getElementById(`nav-${viewId}`)) document.getElementById(`nav-${viewId}`).classList.add('active');
+      
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
 
-    // ============================================================================
-    // 2. FIREBASE AUTHENTICATION & PURE FIRESTORE CLOUD STORAGE
-    // ============================================================================
+      if(viewId === 'landing') renderLanding();
+      if(viewId === 'dashboard') renderDashboard();
+      if(viewId === 'categories') renderCategories();
+      if(viewId === 'studio') { document.getElementById('studioCategorySelect').innerHTML = state.categories.map(c=>`<option value="${c}">${c}</option>`).join(''); }
+    };
+
+    // AUTH
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
-        const label = user.isAnonymous
-          ? "Guest Cloud (Click for Google Sign-In)"
-          : `${user.displayName || user.email} (Synced)`;
-        document.getElementById("authStatusLabel").textContent = label;
-        await loadAllFromFirestore();
-      } else {
-        document.getElementById("authStatusLabel").textContent = "Google Sign-In";
-        try {
-          await signInAnonymously(auth);
-        } catch (err) {
-          console.warn("Anonymous fallback disabled in console; awaiting Google Sign-In.", err);
-          seedDemoPaperIfEmpty();
-          refreshAllViews();
-        }
-      }
+        document.getElementById("authStatusLabel").textContent = user.isAnonymous ? "Guest Mode" : "☁️ Synced";
+        await loadFromCloud();
+      } else { signInAnonymously(auth).catch(e => console.warn(e)); }
     });
 
     window.handleGoogleAuth = async () => {
-      if (currentUser && !currentUser.isAnonymous) {
-        if (confirm(`Signed in as ${currentUser.email}.\nSign out of Google?`)) {
-          await signOut(auth);
-        }
-        return;
-      }
-      try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        alert("Google Sign-In Error: " + err.message + "\n\nMake sure your GitHub Pages domain is added under Firebase Console → Authentication → Settings → Authorized domains.");
-      }
+      if (currentUser && !currentUser.isAnonymous) { if(confirm("Sign out?")) await signOut(auth); return; }
+      try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { alert(e.message); }
     };
 
-    async function loadAllFromFirestore() {
-      if (!currentUser) return;
-      try {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const snap = await getDoc(userDocRef);
+    async function loadFromCloud() {
+      if(!currentUser) return;
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      if(snap.exists() && snap.data().categories) state.categories = snap.data().categories;
+      if(snap.exists() && snap.data().activeAttempt) state.activeAttempt = snap.data().activeAttempt;
 
-        if (snap.exists()) {
-          const data = snap.data();
-          if (data.categories?.length) appState.categories = data.categories;
-          if (data.bookmarks) appState.bookmarks = data.bookmarks;
-          if (data.settings) appState.settings = { ...appState.settings, ...data.settings };
-          if (data.activeAttempt !== undefined) appState.activeAttempt = data.activeAttempt;
-        }
+      const pSnap = await getDocs(collection(db, "users", currentUser.uid, "papers"));
+      state.papers = []; pSnap.forEach(d => state.papers.push(d.data()));
 
-        // Load Papers subcollection
-        const papersSnap = await getDocs(collection(db, "users", currentUser.uid, "papers"));
-        const loadedPapers = [];
-        papersSnap.forEach(d => loadedPapers.push(d.data()));
+      const aSnap = await getDocs(collection(db, "users", currentUser.uid, "attempts"));
+      state.attempts = []; aSnap.forEach(d => state.attempts.push(d.data()));
 
-        // Load Attempts subcollection
-        const attemptsSnap = await getDocs(collection(db, "users", currentUser.uid, "attempts"));
-        const loadedAttempts = [];
-        attemptsSnap.forEach(d => loadedAttempts.push(d.data()));
-
-        appState.papers = loadedPapers.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        appState.attempts = loadedAttempts.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-
-        if (appState.papers.length === 0) {
-          await seedDemoPaperIfEmpty();
-        }
-
-        applySettingsToDOM();
-        refreshAllViews();
-      } catch (err) {
-        console.error("Firestore Load Error:", err);
-        seedDemoPaperIfEmpty();
-        refreshAllViews();
-      }
+      renderLanding();
+    }
+    
+    async function saveMeta() {
+      if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { categories: state.categories, activeAttempt: state.activeAttempt }, {merge:true});
     }
 
-    async function saveCoreMetadataToFirestore() {
-      if (!currentUser) return;
-      try {
-        await setDoc(doc(db, "users", currentUser.uid), {
-          categories: appState.categories,
-          bookmarks: appState.bookmarks,
-          settings: appState.settings,
-          activeAttempt: appState.activeAttempt,
-          updatedAt: new Date().toISOString()
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore Meta Sync Error:", err);
-      }
-    }
-
-    async function savePaperDocToFirestore(paper) {
-      if (!currentUser) return;
-      try {
-        await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
-      } catch (err) {
-        console.warn("Firestore Paper Save Error:", err);
-      }
-    }
-
-    async function deletePaperDocFromFirestore(paperId) {
-      if (!currentUser) return;
-      try {
-        await deleteDoc(doc(db, "users", currentUser.uid, "papers", paperId));
-      } catch (err) {
-        console.warn("Firestore Paper Delete Error:", err);
-      }
-    }
-
-    async function saveAttemptDocToFirestore(attempt) {
-      if (!currentUser) return;
-      try {
-        await setDoc(doc(db, "users", currentUser.uid, "attempts", attempt.id), attempt);
-      } catch (err) {
-        console.warn("Firestore Attempt Save Error:", err);
-      }
-    }
-
-    async function deleteAttemptDocFromFirestore(attemptId) {
-      if (!currentUser) return;
-      try {
-        await deleteDoc(doc(db, "users", currentUser.uid, "attempts", attemptId));
-      } catch (err) {
-        console.warn("Firestore Attempt Delete Error:", err);
-      }
-    }
-
-    // ============================================================================
-    // 3. NAVIGATION, VIEWS & GLOBAL SECTION DROPDOWN
-    // ============================================================================
-    window.switchView = (viewName) => {
-      document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
-      const target = document.getElementById(`view-${viewName}`);
-      if (target) target.classList.add("active");
-
-      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-      const navBtn = document.getElementById(`nav-${viewName}`);
-      if (navBtn) navBtn.classList.add("active");
-
-      if (viewName === "landing") renderLandingView();
-      if (viewName === "dashboard") renderDashboardView();
-      if (viewName === "categories") renderCategoriesView();
-      if (viewName === "bookmarks") renderBookmarksView();
-    };
-
-    function refreshAllViews() {
-      renderCategoryDropdowns();
-      renderLandingView();
-      renderDashboardView();
-      renderCategoriesView();
-      renderBookmarksView();
-      document.getElementById("bmBadge").textContent = appState.bookmarks.length;
-    }
-
-    function renderCategoryDropdowns() {
-      const globalSel = document.getElementById("globalCategorySelect");
-      const studioSel = document.getElementById("studioCategorySelect");
-
-      globalSel.innerHTML = `<option value="ALL">All Categories</option>` +
-        appState.categories.map(c => `<option value="${escapeHtml(c.name)}" ${appState.selectedGlobalCategory === c.name ? "selected" : ""}>${escapeHtml(c.name)}</option>`).join("");
-
-      studioSel.innerHTML = appState.categories.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("");
-    }
-
-    window.onGlobalCategoryChange = () => {
-      appState.selectedGlobalCategory = document.getElementById("globalCategorySelect").value;
-      if (appState.selectedGlobalCategory !== "ALL") {
-        openCategoryFolder(appState.selectedGlobalCategory);
-      } else {
-        renderDashboardView();
-        renderCategoriesView();
-      }
-    };
-
-    window.openModal = (id) => {
-      if (id === "categoryModal") renderCategoryManagerModal();
-      document.getElementById(id).classList.add("active");
-    };
-    window.closeModal = (id) => document.getElementById(id).classList.remove("active");
-
-    // ============================================================================
-    // 4. CATEGORY MANAGER (CREATE, RENAME, DELETE WITHOUT ORPHANING PAPERS)
-    // ============================================================================
-    function renderCategoryManagerModal() {
-      const list = document.getElementById("categoryManagerList");
-      list.innerHTML = appState.categories.map((c, idx) => `
-        <div style="display:flex;gap:8px;align-items:center;background:var(--bg);padding:8px 10px;border-radius:8px;border:1px solid var(--border);">
-          <input type="text" value="${escapeHtml(c.name)}" onchange="renameCategory(${idx}, this.value)" style="flex:1;font-weight:600;" />
-          <input type="text" value="${escapeHtml(c.desc || "")}" onchange="updateCategoryDesc(${idx}, this.value)" style="flex:1.4;font-size:0.8rem;" placeholder="Description" />
-          <button class="btn btn-danger btn-sm" onclick="deleteCategory(${idx})">🗑</button>
+    // DASHBOARD & CHARTS
+    let lineChart, barChart;
+    function renderLanding() {
+      document.getElementById('landingCategories').innerHTML = state.categories.map(c => `
+        <div class="card card-interactive" onclick="window.openCat('${c}')">
+          <h3 style="margin-bottom:8px;">${c}</h3>
+          <span class="tag">${state.papers.filter(p=>p.category===c).length} Papers</span>
         </div>
-      `).join("");
+      `).join('');
     }
 
-    window.addCategory = async () => {
-      const nameInp = document.getElementById("newCatNameInput");
-      const descInp = document.getElementById("newCatDescInput");
-      const name = nameInp.value.trim();
-      if (!name || appState.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) return;
-      appState.categories.push({ name, desc: descInp.value.trim() || "Custom Exam Collection" });
-      nameInp.value = "";
-      descInp.value = "";
-      await saveCoreMetadataToFirestore();
-      renderCategoryManagerModal();
-      refreshAllViews();
-    };
-
-    window.renameCategory = async (idx, newName) => {
-      const trimmed = newName.trim();
-      if (!trimmed) return;
-      const oldName = appState.categories[idx].name;
-      appState.categories[idx].name = trimmed;
-      for (const p of appState.papers) {
-        if (p.category === oldName) {
-          p.category = trimmed;
-          await savePaperDocToFirestore(p);
-        }
+    function renderDashboard() {
+      document.getElementById('kpiPapers').textContent = state.papers.length;
+      document.getElementById('kpiAttempts').textContent = state.attempts.length;
+      if(state.attempts.length > 0) {
+        const scores = state.attempts.map(a => (a.score/a.maxMarks)*100);
+        document.getElementById('kpiAvgScore').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) + '%';
+        document.getElementById('kpiBestScore').textContent = Math.round(Math.max(...scores)) + '%';
       }
-      for (const a of appState.attempts) {
-        if (a.category === oldName) {
-          a.category = trimmed;
-          await saveAttemptDocToFirestore(a);
-        }
-      }
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-    };
 
-    window.updateCategoryDesc = async (idx, newDesc) => {
-      appState.categories[idx].desc = newDesc.trim();
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-    };
-
-    window.deleteCategory = async (idx) => {
-      if (appState.categories.length <= 1) return alert("At least one category must remain.");
-      const catName = appState.categories[idx].name;
-      if (!confirm(`Delete category "${catName}"? Papers inside it will be moved to "${appState.categories[0].name}".`)) return;
-      appState.categories.splice(idx, 1);
-      const fallback = appState.categories[0].name;
-      for (const p of appState.papers) {
-        if (p.category === catName) {
-          p.category = fallback;
-          await savePaperDocToFirestore(p);
-        }
-      }
-      await saveCoreMetadataToFirestore();
-      renderCategoryManagerModal();
-      refreshAllViews();
-    };
-
-    // ============================================================================
-    // 5. LANDING PAGE & GLOBAL SEARCH
-    // ============================================================================
-    function renderLandingView() {
-      renderResumeBanner("landingResumeContainer");
-
-      const grid = document.getElementById("landingCategoryCards");
-      grid.innerHTML = appState.categories.map(c => {
-        const catPapers = appState.papers.filter(p => p.category === c.name);
-        const catAttempts = appState.attempts.filter(a => a.category === c.name);
-        return `
-          <div class="card card-interactive" onclick="openCategoryFolder('${escapeHtml(c.name)}')">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <span class="tag tag-primary">${escapeHtml(c.name)}</span>
-              <span style="font-size:0.78rem;color:var(--muted);">${catPapers.length} Papers</span>
-            </div>
-            <h3 style="font-size:1.1rem;margin-bottom:4px;">${escapeHtml(c.name)}</h3>
-            <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">${escapeHtml(c.desc || "Exam Paper Collection")}</p>
-            <div style="font-size:0.78rem;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
-              Attempts: <b>${catAttempts.length}</b> • Click to open library →
-            </div>
-          </div>
-        `;
-      }).join("");
+      if(lineChart) lineChart.destroy(); if(barChart) barChart.destroy();
+      const rec = state.attempts.slice(-10);
+      lineChart = new Chart(document.getElementById('dashLineChart'), {
+        type: 'line', data: { labels: rec.map((_,i)=>`#${i+1}`), datasets: [{ label: 'Score %', data: rec.map(a=>(a.score/a.maxMarks)*100), borderColor: '#3182CE', tension: 0.3 }] }
+      });
+      barChart = new Chart(document.getElementById('dashBarChart'), {
+        type: 'bar', data: { labels: rec.map((_,i)=>`#${i+1}`), datasets: [{ label: 'Marks', data: rec.map(a=>a.score), backgroundColor: '#805AD5' }] }
+      });
     }
 
-    window.handleLandingSearch = (query) => {
-      const box = document.getElementById("landingSearchResults");
-      const q = query.trim().toLowerCase();
-      if (!q) {
-        box.style.display = "none";
-        return;
-      }
-      const matchedPapers = appState.papers.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        (p.subject || "").toLowerCase().includes(q)
-      );
-      box.style.display = "block";
-      box.innerHTML = `
+    // CATEGORIES
+    function renderCategories() {
+      document.getElementById('catOverviewPanel').style.display = 'block';
+      document.getElementById('catLibraryPanel').style.display = 'none';
+      document.getElementById('categoriesGrid').innerHTML = state.categories.map(c => `
+        <div class="card card-interactive" onclick="window.openCat('${c}')">
+          <h3 style="margin-bottom:8px;">${c}</h3><span class="tag">${state.papers.filter(p=>p.category===c).length} Papers</span>
+        </div>
+      `).join('');
+    }
+
+    window.openCat = (c) => {
+      document.getElementById('catOverviewPanel').style.display = 'none';
+      document.getElementById('catLibraryPanel').style.display = 'block';
+      document.getElementById('activeCategoryTitle').textContent = c;
+      document.getElementById('categoryPapersGrid').innerHTML = state.papers.filter(p=>p.category===c).map(p => `
         <div class="card">
-          <h3 style="font-size:0.95rem;margin-bottom:10px;">Search Results (${matchedPapers.length})</h3>
-          ${matchedPapers.map(p => `
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-              <div>
-                <span class="tag tag-primary">${escapeHtml(p.category)}</span>
-                <strong style="margin-left:8px;">${escapeHtml(p.title)}</strong>
-                <span style="font-size:0.8rem;color:var(--muted);margin-left:8px;">${p.questions.length} Qs • ${p.duration} min</span>
-              </div>
-              <button class="btn btn-primary btn-sm" onclick="openInstructionsModal('${p.id}', 'STANDARD')">Start Test</button>
-            </div>
-          `).join("") || `<div style="color:var(--muted);font-size:0.86rem;">No matching question papers found.</div>`}
+          <h3 style="margin-bottom:8px;">${p.title}</h3>
+          <p class="text-muted" style="margin-bottom:16px;">${p.duration} min • ${p.questions.length} Qs</p>
+          <button class="btn btn-primary" onclick="window.startExam('${p.id}')">▶ Start Exam</button>
         </div>
-      `;
+      `).join('') || `<div style="padding:20px; color:var(--text-muted);">No papers. Upload one via Studio.</div>`;
+      navTo('categories');
     };
-
-    function renderResumeBanner(containerId) {
-      const el = document.getElementById(containerId);
-      if (!el) return;
-      const act = appState.activeAttempt;
-      if (!act) {
-        el.innerHTML = "";
-        return;
-      }
-      const answeredCount = Object.keys(act.responses || {}).length;
-      const remSec = Math.max(0, Math.floor((act.deadline - Date.now()) / 1000));
-      const remMin = Math.ceil(remSec / 60);
-
-      el.innerHTML = `
-        <div class="resume-banner">
-          <div>
-            <span class="tag tag-warning">⚡ UNFINISHED EXAM DETECTED</span>
-            <h3 style="font-size:1.1rem;margin-top:4px;">${escapeHtml(act.title)} (${escapeHtml(act.category)})</h3>
-            <p style="font-size:0.84rem;color:var(--muted);">
-              Question ${(act.currentIndex || 0) + 1} of ${act.questions.length} • ${answeredCount} answered • ${remSec > 0 ? `~${remMin} min remaining` : "Time expired (Ready to finalize)"}
-            </p>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-primary" onclick="resumeUnfinishedAttempt()">▶️ Resume Examination</button>
-            <button class="btn btn-danger btn-sm" onclick="discardUnfinishedAttempt()">✕ Discard</button>
-          </div>
-        </div>
-      `;
-    }
-
-    // ============================================================================
-    // 6. DASHBOARD CONTROL CENTRE & CHARTS
-    // ============================================================================
-    function renderDashboardView() {
-      renderResumeBanner("dashboardResumeContainer");
-
-      const filterCat = appState.selectedGlobalCategory;
-      const papers = filterCat === "ALL" ? appState.papers : appState.papers.filter(p => p.category === filterCat);
-      const attempts = filterCat === "ALL" ? appState.attempts : appState.attempts.filter(a => a.category === filterCat);
-
-      document.getElementById("kpiCategories").textContent = appState.categories.length;
-      document.getElementById("kpiPapers").textContent = papers.length;
-      document.getElementById("kpiAttempts").textContent = attempts.length;
-
-      if (attempts.length > 0) {
-        const pctList = attempts.map(a => Math.max(0, Math.round((a.score / (a.maxMarks || 1)) * 100)));
-        const avg = Math.round(pctList.reduce((s, v) => s + v, 0) / pctList.length);
-        const best = Math.max(...pctList);
-        document.getElementById("kpiAvgScore").textContent = `${avg}%`;
-        document.getElementById("kpiBestScore").textContent = `${best}%`;
-      } else {
-        document.getElementById("kpiAvgScore").textContent = "0%";
-        document.getElementById("kpiBestScore").textContent = "0%";
-      }
-
-      renderDashboardCharts(attempts);
-      renderDashboardActivity("");
-    }
-
-    function renderDashboardCharts(attempts) {
-      const ctxLine = document.getElementById("dashLineChart");
-      const ctxBar = document.getElementById("dashBarChart");
-      if (!ctxLine || !ctxBar) return;
-
-      if (dashLineChart) dashLineChart.destroy();
-      if (dashBarChart) dashBarChart.destroy();
-
-      const recent = attempts.slice(-12);
-      const labels = recent.map((a, i) => `#${i + 1} ${a.title.slice(0, 12)}`);
-      const pctScores = recent.map(a => Math.max(0, Math.round((a.score / (a.maxMarks || 1)) * 100)));
-      const accuracies = recent.map(a => a.accuracy || 0);
-      const rawScores = recent.map(a => a.score);
-      const maxScores = recent.map(a => a.maxMarks);
-
-      dashLineChart = new Chart(ctxLine, {
-        type: "line",
-        data: {
-          labels,
-          datasets: [
-            { label: "Score %", data: pctScores, borderColor: "#3b82f6", backgroundColor: "rgba(59,130,246,0.15)", tension: 0.35, fill: true },
-            { label: "Accuracy %", data: accuracies, borderColor: "#10b981", borderDash: [5, 5], tension: 0.35 }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
-      });
-
-      dashBarChart = new Chart(ctxBar, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            { label: "Marks Scored", data: rawScores, backgroundColor: "#8b5cf6", borderRadius: 6 },
-            { label: "Maximum Marks", data: maxScores, backgroundColor: "rgba(148,163,184,0.25)", borderRadius: 6 }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-    }
-
-    window.renderDashboardActivity = (searchQuery = "") => {
-      const q = searchQuery.trim().toLowerCase();
-      const filterCat = appState.selectedGlobalCategory;
-      let list = filterCat === "ALL" ? [...appState.attempts] : appState.attempts.filter(a => a.category === filterCat);
-      if (q) {
-        list = list.filter(a => a.title.toLowerCase().includes(q) || a.category.toLowerCase().includes(q));
-      }
-
-      const tbody = document.getElementById("dashActivityTableBody");
-      tbody.innerHTML = list.slice().reverse().slice(0, 15).map(a => `
-        <tr>
-          <td>${new Date(a.date).toLocaleDateString()}</td>
-          <td><strong>${escapeHtml(a.title)}</strong></td>
-          <td><span class="tag tag-primary">${escapeHtml(a.category)}</span></td>
-          <td><strong>${a.score}</strong> / ${a.maxMarks} (${Math.round((a.score / (a.maxMarks || 1)) * 100)}%)</td>
-          <td>${a.accuracy}%</td>
-          <td>${Math.floor(a.timeTaken / 60)}m ${a.timeTaken % 60}s</td>
-          <td>
-            <button class="btn btn-outline btn-sm" onclick="openAttemptReview('${a.id}')">🔍 Review</button>
-            <button class="btn btn-outline btn-sm" onclick="openRetestModal('${a.paperId}')">🔄 Retest</button>
-          </td>
-        </tr>
-      `).join("") || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;">No completed attempts yet. Start a paper from any category!</td></tr>`;
-    };
-
-    // ============================================================================
-    // 7. CATEGORIES PAGE & INDIVIDUAL CATEGORY PAPER LIBRARIES
-    // ============================================================================
-    function renderCategoriesView() {
-      if (appState.activeCategoryFolder) {
-        document.getElementById("categoriesOverviewPanel").style.display = "none";
-        document.getElementById("categoryPaperLibraryPanel").style.display = "block";
-        renderCategoryPapers();
-        return;
-      }
-
-      document.getElementById("categoriesOverviewPanel").style.display = "block";
-      document.getElementById("categoryPaperLibraryPanel").style.display = "none";
-
-      const grid = document.getElementById("categoriesGridContainer");
-      grid.innerHTML = appState.categories.map(c => {
-        const catPapers = appState.papers.filter(p => p.category === c.name);
-        const catAttempts = appState.attempts.filter(a => a.category === c.name);
-        const distinctAttempted = new Set(catAttempts.map(a => a.paperId)).size;
-        const avgPct = catAttempts.length
-          ? Math.round(catAttempts.reduce((s, a) => s + ((a.score / (a.maxMarks || 1)) * 100), 0) / catAttempts.length)
-          : 0;
-
-        return `
-          <div class="card card-interactive" onclick="openCategoryFolder('${escapeHtml(c.name)}')">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-              <span class="tag tag-primary">${escapeHtml(c.name)}</span>
-              <span style="font-size:0.8rem;color:var(--muted);">${catPapers.length} Papers</span>
-            </div>
-            <h3 style="font-size:1.2rem;margin-bottom:4px;">${escapeHtml(c.name)}</h3>
-            <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px;">${escapeHtml(c.desc || "")}</p>
-            <div class="grid-3" style="gap:8px;background:var(--bg);padding:10px;border-radius:8px;font-size:0.78rem;margin-bottom:12px;">
-              <div><div style="color:var(--muted);">Attempted</div><strong>${distinctAttempted}/${catPapers.length}</strong></div>
-              <div><div style="color:var(--muted);">Total Runs</div><strong>${catAttempts.length}</strong></div>
-              <div><div style="color:var(--muted);">Avg Score</div><strong style="color:var(--success);">${avgPct}%</strong></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:0.82rem;color:var(--primary);font-weight:600;">Open Paper Library →</span>
-              <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openStudioForCategory('${escapeHtml(c.name)}')">➕ Add Paper</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    window.openCategoryFolder = (catName) => {
-      appState.activeCategoryFolder = catName;
-      appState.paperFilter = "ALL";
-      switchView("categories");
-    };
-
-    window.closeCategoryFolder = () => {
-      appState.activeCategoryFolder = null;
-      appState.selectedGlobalCategory = "ALL";
-      document.getElementById("globalCategorySelect").value = "ALL";
-      renderCategoriesView();
-    };
-
-    window.setPaperFilter = (filter, btnEl) => {
-      appState.paperFilter = filter;
-      document.querySelectorAll(".filter-tab").forEach(b => b.classList.remove("active"));
-      if (btnEl) btnEl.classList.add("active");
-      renderCategoryPapers();
-    };
-
-    window.renderCategoryPapers = () => {
-      const catName = appState.activeCategoryFolder;
-      if (!catName) return;
-      const catObj = appState.categories.find(c => c.name === catName);
-      document.getElementById("activeCategoryHeading").textContent = `${catName} — Paper Library`;
-      document.getElementById("activeCategoryDesc").textContent = catObj?.desc || "";
-
-      const q = (document.getElementById("librarySearchInput")?.value || "").trim().toLowerCase();
-      let papers = appState.papers.filter(p => p.category === catName);
-      if (q) papers = papers.filter(p => p.title.toLowerCase().includes(q) || (p.subject || "").toLowerCase().includes(q));
-
-      papers = papers.filter(p => {
-        const atts = appState.attempts.filter(a => a.paperId === p.id);
-        const inProg = appState.activeAttempt && appState.activeAttempt.paperId === p.id;
-        if (appState.paperFilter === "NOT_ATTEMPTED") return atts.length === 0 && !inProg;
-        if (appState.paperFilter === "IN_PROGRESS") return inProg;
-        if (appState.paperFilter === "COMPLETED") return atts.length > 0;
-        return true;
-      });
-
-      const grid = document.getElementById("categoryPapersGrid");
-      if (!papers.length) {
-        grid.innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">No papers match this filter in ${escapeHtml(catName)}. Click "Upload Paper to Category" above!</div>`;
-        return;
-      }
-
-      grid.innerHTML = papers.map(p => {
-        const atts = appState.attempts.filter(a => a.paperId === p.id);
-        const inProg = appState.activeAttempt && appState.activeAttempt.paperId === p.id;
-        const maxM = p.questions.length * (p.posMark || 1);
-        const bestScore = atts.length ? Math.max(...atts.map(a => a.score)) : null;
-
-        let statusBadge = `<span class="tag">Not Attempted</span>`;
-        if (inProg) statusBadge = `<span class="tag tag-warning">⚡ In Progress</span>`;
-        else if (atts.length > 0) statusBadge = `<span class="tag tag-success">✓ Completed</span>`;
-
-        return `
-          <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:14px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                ${statusBadge}
-                <span style="font-size:0.78rem;color:var(--muted);">${p.year || 2026} • ${escapeHtml(p.subject || "General")}</span>
-              </div>
-              <h3 style="font-size:1.08rem;margin-bottom:4px;">${escapeHtml(p.title)}</h3>
-              <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
-                ${p.questions.length} Questions • ${p.duration} min • +${p.posMark || 1} / -${p.negMark || 0.25}
-              </p>
-
-              <div class="grid-2" style="gap:8px;background:var(--bg);padding:10px;border-radius:8px;font-size:0.8rem;">
-                <div>
-                  <div style="color:var(--muted);font-size:0.74rem;">Best Score</div>
-                  <strong style="color:var(--success);font-size:0.95rem;">${bestScore !== null ? `${bestScore} / ${maxM}` : "—"}</strong>
-                </div>
-                <div>
-                  <div style="color:var(--muted);font-size:0.74rem;">Attempts</div>
-                  <strong style="font-size:0.95rem;">${atts.length}</strong>
-                </div>
-              </div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              ${inProg
-                ? `<button class="btn btn-warning" onclick="resumeUnfinishedAttempt()">▶️ Resume In-Progress Test</button>`
-                : atts.length > 0
-                  ? `<button class="btn btn-primary" onclick="openRetestModal('${p.id}')">🔄 Retest Paper</button>`
-                  : `<button class="btn btn-primary" onclick="openInstructionsModal('${p.id}', 'STANDARD')">▶️ Start Test</button>`
-              }
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="openPaperHistory('${p.id}')">📜 History (${atts.length})</button>
-                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="editExistingPaperInStudio('${p.id}')">✏️ Edit / Preview</button>
-                <button class="btn btn-danger btn-sm" onclick="deletePaperWithWarning('${p.id}')">🗑</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-    };
-
-    window.openStudioForCurrentCategory = () => openStudioForCategory(appState.activeCategoryFolder || appState.categories[0].name);
-    window.openStudioForCategory = (catName) => {
-      appState.editingPaperId = null;
-      document.getElementById("studioCategorySelect").value = catName;
-      switchView("studio");
-    };
-
-    window.editExistingPaperInStudio = (paperId) => {
-      const p = appState.papers.find(x => x.id === paperId);
-      if (!p) return;
-      appState.editingPaperId = p.id;
-      document.getElementById("studioCategorySelect").value = p.category;
-      document.getElementById("studioTitle").value = p.title;
-      document.getElementById("studioYear").value = p.year || 2026;
-      document.getElementById("studioSubject").value = p.subject || "General";
-      document.getElementById("studioDuration").value = p.duration || 60;
-      document.getElementById("studioPosMark").value = p.posMark || 1;
-      document.getElementById("studioNegMark").value = p.negMark ?? 0.25;
-      appState.studioQuestions = JSON.parse(JSON.stringify(p.questions));
-      renderStudioQuestions();
-      switchView("studio");
-    };
-
-    window.deletePaperWithWarning = async (paperId) => {
-      const p = appState.papers.find(x => x.id === paperId);
-      if (!p) return;
-      const linkedAttempts = appState.attempts.filter(a => a.paperId === paperId);
-      const msg = linkedAttempts.length > 0
-        ? `Warning: "${p.title}" has ${linkedAttempts.length} saved attempt(s).\nClick OK to delete this paper and its attempt history from Firebase (or Cancel to export a backup first).`
-        : `Delete "${p.title}" permanently from Firebase?`;
-
-      if (!confirm(msg)) return;
-
-      appState.papers = appState.papers.filter(x => x.id !== paperId);
-      await deletePaperDocFromFirestore(paperId);
-
-      for (const a of linkedAttempts) {
-        await deleteAttemptDocFromFirestore(a.id);
-      }
-      appState.attempts = appState.attempts.filter(a => a.paperId !== paperId);
-      refreshAllViews();
-    };
-
-    // ============================================================================
-    // 8. PAPER ATTEMPT HISTORY & RETEST SYSTEM
-    // ============================================================================
-    window.openPaperHistory = (paperId) => {
-      currentHistoryPaperId = paperId;
-      const p = appState.papers.find(x => x.id === paperId);
-      if (!p) return;
-
-      document.getElementById("histCategoryBadge").textContent = p.category;
-      document.getElementById("histPaperTitle").textContent = `${p.title} — Attempt History`;
-      document.getElementById("histRetestBtn").onclick = () => openRetestModal(paperId);
-
-      renderPaperHistoryTable();
-      switchView("history");
-    };
-
-    window.renderPaperHistoryTable = () => {
-      const p = appState.papers.find(x => x.id === currentHistoryPaperId);
-      if (!p) return;
-      const atts = appState.attempts.filter(a => a.paperId === p.id);
-      const maxM = p.questions.length * (p.posMark || 1);
-
-      const best = atts.length ? Math.max(...atts.map(a => a.score)) : 0;
-      const latest = atts.length ? atts[atts.length - 1].score : 0;
-
-      document.getElementById("histSummaryCards").innerHTML = `
-        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Total Attempts</div><div class="kpi-val">${atts.length}</div></div>
-        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Best Score</div><div class="kpi-val" style="color:var(--success);">${best} / ${maxM}</div></div>
-        <div class="kpi-card"><div style="font-size:0.78rem;color:var(--muted);">Latest Score</div><div class="kpi-val" style="color:var(--primary);">${latest} / ${maxM}</div></div>
-      `;
-
-      const sortMode = document.getElementById("histSortSelect").value;
-      const sorted = atts.map((a, idx) => ({ ...a, attemptNumber: idx + 1 }));
-      if (sortMode === "latest") sorted.reverse();
-      else if (sortMode === "highest") sorted.sort((a, b) => b.score - a.score);
-      else if (sortMode === "fastest") sorted.sort((a, b) => a.timeTaken - b.timeTaken);
-
-      document.getElementById("histTableBody").innerHTML = sorted.map(a => `
-        <tr>
-          <td><strong>Attempt #${a.attemptNumber}</strong></td>
-          <td><span class="tag">${escapeHtml(a.mode || "Standard")}</span></td>
-          <td>${new Date(a.date).toLocaleString()}</td>
-          <td><strong>${a.score}</strong> / ${a.maxMarks}</td>
-          <td>${a.accuracy}%</td>
-          <td>${a.correct} / ${a.wrong} / ${a.skipped}</td>
-          <td>${Math.floor(a.timeTaken / 60)}m ${a.timeTaken % 60}s</td>
-          <td><button class="btn btn-outline btn-sm" onclick="openAttemptReview('${a.id}')">🔍 Review Solutions</button></td>
-        </tr>
-      `).join("") || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">No attempts recorded for this paper yet.</td></tr>`;
-    };
-
-    window.openRetestModal = (paperId) => {
-      document.getElementById("btnRetestStandard").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "STANDARD");
-      };
-      document.getElementById("btnRetestRandom").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "RANDOMIZED");
-      };
-      document.getElementById("btnRetestIncorrect").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "INCORRECT_ONLY");
-      };
-      openModal("retestModal");
-    };
-
-    // ============================================================================
-    // 9. INSTRUCTIONS MODAL & REAL DEADLINE-TIMESTAMP EXAM ENGINE
-    // ============================================================================
-    window.openInstructionsModal = (paperId, mode = "STANDARD") => {
-      const p = appState.papers.find(x => x.id === paperId);
-      if (!p) return;
-
-      let questionsToRun = JSON.parse(JSON.stringify(p.questions));
-
-      if (mode === "INCORRECT_ONLY") {
-        const past = appState.attempts.filter(a => a.paperId === paperId);
-        if (!past.length) return alert("Complete at least one attempt first to use Retry Incorrect mode.");
-        const lastAttempt = past[past.length - 1];
-        questionsToRun = lastAttempt.questions.filter((q, idx) => lastAttempt.responses?.[idx] !== q.answer);
-        if (!questionsToRun.length) return alert("You answered every question correctly on your last attempt!");
-      } else if (mode === "RANDOMIZED") {
-        questionsToRun = shuffleArray(questionsToRun).map(q => {
-          const correctText = q.options[q.answer];
-          const shuffledOpts = shuffleArray([...q.options]);
-          return {
-            ...q,
-            options: shuffledOpts,
-            answer: shuffledOpts.indexOf(correctText)
-          };
-        });
-      }
-
-      const maxMarks = questionsToRun.length * (p.posMark || 1);
-      document.getElementById("instPaperTitle").textContent = `${p.title} (${mode})`;
-      document.getElementById("instDetailsBody").innerHTML = `
-        <div><b>Exam Category:</b> ${escapeHtml(p.category)} • <b>Subject:</b> ${escapeHtml(p.subject || "General")}</div>
-        <div><b>Total Questions:</b> ${questionsToRun.length} Questions</div>
-        <div><b>Total Duration:</b> ${p.duration} Minutes</div>
-        <div><b>Marking Scheme:</b> +${p.posMark || 1} for Correct • -${p.negMark ?? 0.25} for Incorrect • 0 for Unanswered (Max: ${maxMarks} Marks)</div>
-      `;
-
-      document.getElementById("confirmStartExamBtn").onclick = () => {
-        closeModal("instructionsModal");
-        launchLiveExamSession(p, questionsToRun, mode);
-      };
-      openModal("instructionsModal");
-    };
-
-    async function launchLiveExamSession(paper, questionsList, mode) {
-      const now = Date.now();
-      const durationSeconds = (parseInt(paper.duration, 10) || 60) * 60;
-
-      const statusMap = {};
-      const timeSpentMap = {};
-      questionsList.forEach((_, idx) => {
-        statusMap[idx] = idx === 0 ? "unanswered" : "not-visited";
-        timeSpentMap[idx] = 0;
-      });
-
-      appState.activeAttempt = {
-        paperId: paper.id,
-        title: paper.title,
-        category: paper.category,
-        mode,
-        questions: questionsList,
-        posMark: parseFloat(paper.posMark) || 1,
-        negMark: parseFloat(paper.negMark) ?? 0.25,
-        startTime: now,
-        deadline: now + durationSeconds * 1000,
-        currentIndex: 0,
-        responses: {},
-        status: statusMap,
-        timeSpent: timeSpentMap
-      };
-
-      await saveCoreMetadataToFirestore();
-      openExamOverlayUI();
-    }
-
-    window.resumeUnfinishedAttempt = () => {
-      if (!appState.activeAttempt) return;
-      openExamOverlayUI();
-    };
-
-    window.discardUnfinishedAttempt = async () => {
-      if (!confirm("Discard your unfinished exam attempt?")) return;
-      appState.activeAttempt = null;
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-    };
-
-    function openExamOverlayUI() {
-      const act = appState.activeAttempt;
-      if (!act) return;
-
-      document.getElementById("liveExamTitle").textContent = `${act.title} (${act.mode || "Standard"})`;
-      document.getElementById("liveExamMeta").textContent = `${act.category} • Marking: +${act.posMark} / -${act.negMark}`;
-      document.getElementById("examOverlay").classList.add("active");
-
-      renderExamSubSectionTabs();
-      renderLiveQuestion();
-      startDeadlineTimer();
-    }
-
-    function startDeadlineTimer() {
-      clearInterval(timerInterval);
-      tickDeadlineTimer();
-      timerInterval = setInterval(tickDeadlineTimer, 1000);
-    }
-
-    function tickDeadlineTimer() {
-      const act = appState.activeAttempt;
-      if (!act) return;
-      const remSec = Math.floor((act.deadline - Date.now()) / 1000);
-
-      if (remSec <= 0) {
-        clearInterval(timerInterval);
-        document.getElementById("liveTimerText").textContent = "00:00:00";
-        if (appState.settings.autoSubmit) {
-          finalizeExamSubmission();
-        } else {
-          openSubmitConfirmationModal(true);
-        }
-        return;
-      }
-
-      act.timeSpent[act.currentIndex] = (act.timeSpent[act.currentIndex] || 0) + 1;
-
-      const hrs = Math.floor(remSec / 3600);
-      const mins = Math.floor((remSec % 3600) / 60);
-      const secs = remSec % 60;
-      document.getElementById("liveTimerText").textContent =
-        `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-      document.getElementById("liveTimerBox").classList.toggle("urgent", remSec <= 300);
-
-      // Sync active progress to Firebase every 10 seconds
-      if (remSec % 10 === 0) {
-        saveCoreMetadataToFirestore();
-      }
-    }
-
-    function renderExamSubSectionTabs() {
-      const act = appState.activeAttempt;
-      const secs = [...new Set(act.questions.map(q => q.section || "General"))];
-      document.getElementById("examSubTabs").innerHTML = secs.map(s => `
-        <button class="btn btn-outline btn-sm" onclick="jumpToExamSection('${escapeHtml(s)}')">${escapeHtml(s)}</button>
-      `).join("");
-    }
-
-    window.jumpToExamSection = (secName) => {
-      const idx = appState.activeAttempt.questions.findIndex(q => (q.section || "General") === secName);
-      if (idx !== -1) goToLiveQuestion(idx);
-    };
-
-    function renderLiveQuestion() {
-      const act = appState.activeAttempt;
-      const idx = act.currentIndex;
-      const q = act.questions[idx];
-      if (act.status[idx] === "not-visited") act.status[idx] = "unanswered";
-
-      document.getElementById("liveQNumLabel").textContent = `Question ${idx + 1} of ${act.questions.length}`;
-      document.getElementById("liveQSubSection").textContent = q.section || act.category;
-      document.getElementById("liveQuestionText").textContent = q.question;
-
-      const ws = document.getElementById("examWorkspace");
-      const pPane = document.getElementById("livePassagePane");
-      if (q.passage && q.passage.trim()) {
-        ws.classList.add("has-passage");
-        pPane.style.display = "block";
-        pPane.innerHTML = `<div style="font-weight:700;color:var(--warning);margin-bottom:8px;">📖 Passage / Directions</div>` + escapeHtml(q.passage);
-      } else {
-        ws.classList.remove("has-passage");
-        pPane.style.display = "none";
-      }
-
-      const isBm = appState.bookmarks.some(b => b.question === q.question);
-      document.getElementById("liveBookmarkBtn").textContent = isBm ? "⭐ Bookmarked" : "☆ Bookmark";
-
-      const selectedOpt = act.responses[idx];
-      document.getElementById("liveOptionsContainer").innerHTML = q.options.map((opt, oi) => `
-        <div class="option-card ${selectedOpt === oi ? "selected" : ""}" onclick="selectLiveOption(${oi})">
-          <div class="opt-letter">${String.fromCharCode(65 + oi)}</div>
-          <div>${escapeHtml(opt)}</div>
-        </div>
-      `).join("");
-
-      const isLast = idx === act.questions.length - 1;
-      document.getElementById("liveNextBtn").textContent = isLast ? "Save & Finish 🏁" : "Save & Next →";
-
-      renderLivePalette();
-    }
-
-    window.selectLiveOption = (oi) => {
-      const act = appState.activeAttempt;
-      const idx = act.currentIndex;
-      act.responses[idx] = oi;
-      act.status[idx] = (act.status[idx] === "review" || act.status[idx] === "ans-review") ? "ans-review" : "answered";
-      triggerImmediateCloudSave();
-      renderLiveQuestion();
-    };
-
-    window.clearLiveResponse = () => {
-      const act = appState.activeAttempt;
-      const idx = act.currentIndex;
-      delete act.responses[idx];
-      act.status[idx] = "unanswered";
-      triggerImmediateCloudSave();
-      renderLiveQuestion();
-    };
-
-    window.markForReviewAndNext = () => {
-      const act = appState.activeAttempt;
-      const idx = act.currentIndex;
-      act.status[idx] = act.responses[idx] !== undefined ? "ans-review" : "review";
-      triggerImmediateCloudSave();
-      if (idx === act.questions.length - 1) openSubmitConfirmationModal(true);
-      else goToLiveQuestion(idx + 1);
-    };
-
-    window.saveAndNextLiveQuestion = () => {
-      const act = appState.activeAttempt;
-      const idx = act.currentIndex;
-      if (act.responses[idx] !== undefined && act.status[idx] !== "ans-review") {
-        act.status[idx] = "answered";
-      }
-      triggerImmediateCloudSave();
-      if (idx === act.questions.length - 1) openSubmitConfirmationModal(true);
-      else goToLiveQuestion(idx + 1);
-    };
-
-    window.navigateLiveQuestion = (delta) => {
-      const next = appState.activeAttempt.currentIndex + delta;
-      if (next >= 0 && next < appState.activeAttempt.questions.length) goToLiveQuestion(next);
-    };
-
-    window.goToLiveQuestion = (idx) => {
-      appState.activeAttempt.currentIndex = idx;
-      renderLiveQuestion();
-    };
-
-    function renderLivePalette() {
-      const act = appState.activeAttempt;
-      document.getElementById("livePaletteGrid").innerHTML = act.questions.map((_, i) => {
-        const st = act.status[i] || "not-visited";
-        return `<button class="p-btn ${st} ${i === act.currentIndex ? "current" : ""}" onclick="goToLiveQuestion(${i})">${i + 1}</button>`;
-      }).join("");
-    }
-
-    function triggerImmediateCloudSave() {
-      const badge = document.getElementById("liveCloudSaveBadge");
-      badge.textContent = "⏳ Saving...";
-      saveCoreMetadataToFirestore().then(() => {
-        badge.textContent = "☁️ Saved";
-      });
-    }
-
-    window.toggleFullScreenExam = () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-      else document.exitFullscreen();
-    };
-
-    window.openSubmitConfirmationModal = (fromLastQuestion = false) => {
-      const act = appState.activeAttempt;
-      if (!act) return;
-      let ans = 0, unans = 0, rev = 0, notVis = 0;
-      act.questions.forEach((_, i) => {
-        const st = act.status[i];
-        if (st === "answered" || st === "ans-review") ans++;
-        else if (st === "review") rev++;
-        else if (st === "unanswered") unans++;
-        else notVis++;
-      });
-
-      document.getElementById("submitModalTitle").textContent = fromLastQuestion
-        ? "🏁 Last Question Reached — Submit Examination?"
-        : "🏁 Confirm Examination Submission";
-
-      document.getElementById("submitSummaryGrid").innerHTML = `
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">✅ Answered</div><div class="kpi-val" style="color:var(--success);">${ans}</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">❌ Unanswered</div><div class="kpi-val" style="color:var(--danger);">${unans}</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">🟣 Marked for Review</div><div class="kpi-val" style="color:var(--purple);">${rev}</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">⚪ Not Visited</div><div class="kpi-val">${notVis}</div></div>
-      `;
-      openModal("submitModal");
-    };
-
-    window.finalizeExamSubmission = async () => {
-      clearInterval(timerInterval);
-      closeModal("submitModal");
-      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-      document.getElementById("examOverlay").classList.remove("active");
-
-      const act = appState.activeAttempt;
-      if (!act) return;
-
-      let correct = 0, wrong = 0, skipped = 0;
-      act.questions.forEach((q, i) => {
-        const uAns = act.responses[i];
-        if (uAns === undefined) skipped++;
-        else if (uAns === q.answer) correct++;
-        else wrong++;
-      });
-
-      const maxMarks = Number((act.questions.length * act.posMark).toFixed(2));
-      const score = Number(((correct * act.posMark) - (wrong * act.negMark)).toFixed(2));
-      const attempted = correct + wrong;
-      const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
-      const timeTaken = Math.max(1, Math.floor((Date.now() - act.startTime) / 1000));
-
-      const attemptDoc = {
-        id: "att_" + Date.now(),
-        paperId: act.paperId,
-        title: act.title,
-        category: act.category,
-        mode: act.mode || "STANDARD",
-        date: new Date().toISOString(),
-        score,
-        maxMarks,
-        correct,
-        wrong,
-        skipped,
-        accuracy,
-        timeTaken,
-        questions: act.questions,
-        responses: act.responses,
-        timeSpent: act.timeSpent
-      };
-
-      appState.attempts.push(attemptDoc);
-      appState.activeAttempt = null;
-
-      await saveAttemptDocToFirestore(attemptDoc);
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-      openAttemptReview(attemptDoc.id);
-    };
-
-    // Keyboard shortcuts during live exam
-    window.addEventListener("keydown", e => {
-      if (!document.getElementById("examOverlay").classList.contains("active")) return;
-      if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
-      const k = e.key.toUpperCase();
-      if (k >= "1" && k <= "5") selectLiveOption(parseInt(k, 10) - 1);
-      else if (k >= "A" && k <= "E") selectLiveOption(k.charCodeAt(0) - 65);
-      else if (e.key === "ArrowRight") saveAndNextLiveQuestion();
-      else if (e.key === "ArrowLeft") navigateLiveQuestion(-1);
-    });
-
-    // ============================================================================
-    // 10. RESULTS ANALYSIS, SCATTER PLOT, SOLUTIONS & CSV EXPORT
-    // ============================================================================
-    window.openAttemptReview = (attemptId) => {
-      const att = appState.attempts.find(a => a.id === attemptId);
-      if (!att) return;
-      currentReviewAttempt = att;
-
-      switchView("review");
-      document.getElementById("reviewCategoryBadge").textContent = `${att.category} • ${att.mode || "Standard"}`;
-      document.getElementById("reviewPaperTitle").textContent = att.title;
-      document.getElementById("reviewRetestBtn").onclick = () => openRetestModal(att.paperId);
-      document.getElementById("reviewHistoryBtn").onclick = () => openPaperHistory(att.paperId);
-
-      // Compare with previous attempts of the same paper
-      const paperAttempts = appState.attempts.filter(a => a.paperId === att.paperId);
-      const bestScore = Math.max(...paperAttempts.map(a => a.score));
-      document.getElementById("reviewComparisonSubtext").textContent =
-        `Attempt #${paperAttempts.findIndex(a => a.id === att.id) + 1} of ${paperAttempts.length} • Paper Best Score: ${bestScore} / ${att.maxMarks}`;
-
-      const pct = Math.round((att.score / (att.maxMarks || 1)) * 100);
-      document.getElementById("reviewKpiSummary").innerHTML = `
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">Your Score</div><div class="kpi-val" style="color:var(--primary);">${att.score} / ${att.maxMarks} (${pct}%)</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">Accuracy</div><div class="kpi-val" style="color:var(--success);">${att.accuracy}%</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">Correct / Incorrect / Unattempted</div><div class="kpi-val" style="font-size:1.3rem;">${att.correct} / ${att.wrong} / ${att.skipped}</div></div>
-        <div class="kpi-card"><div style="font-size:0.76rem;color:var(--muted);">Time Taken</div><div class="kpi-val">${Math.floor(att.timeTaken / 60)}m ${att.timeTaken % 60}s</div></div>
-      `;
-
-      renderTimeScatterChart(att);
-      filterReviewQuestions("all");
-    };
-
-    function renderTimeScatterChart(att) {
-      const ctx = document.getElementById("timeScatterChart");
-      if (!ctx) return;
-      if (scatterChart) scatterChart.destroy();
-
-      const points = att.questions.map((q, idx) => {
-        const uAns = att.responses?.[idx];
-        let color = "#94a3b8";
-        if (uAns !== undefined) color = uAns === q.answer ? "#10b981" : "#ef4444";
-        return { x: idx + 1, y: att.timeSpent?.[idx] || 0, color };
-      });
-
-      scatterChart = new Chart(ctx, {
-        type: "scatter",
-        data: {
-          datasets: [{
-            label: "Seconds Spent on Question",
-            data: points,
-            pointBackgroundColor: points.map(p => p.color),
-            pointRadius: 6,
-            pointHoverRadius: 9
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: "Question Number" }, min: 0, max: att.questions.length + 1 },
-            y: { title: { display: true, text: "Seconds Spent" }, beginAtZero: true }
-          }
-        }
-      });
-    }
-
-    window.filterReviewQuestions = (filter) => {
-      if (!currentReviewAttempt) return;
-      const att = currentReviewAttempt;
-      const list = document.getElementById("reviewQuestionsList");
-
-      const html = att.questions.map((q, idx) => {
-        const uAns = att.responses?.[idx];
-        const isCorrect = uAns === q.answer;
-        const isSkipped = uAns === undefined;
-        if (filter === "correct" && !isCorrect) return "";
-        if (filter === "wrong" && (isSkipped || isCorrect)) return "";
-        if (filter === "skipped" && !isSkipped) return "";
-
-        const statusBadge = isSkipped
-          ? `<span class="tag">⚪ Unattempted</span>`
-          : isCorrect
-            ? `<span class="tag tag-success">✅ Correct</span>`
-            : `<span class="tag tag-danger">❌ Incorrect</span>`;
-
-        return `
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-              <div><strong>Question ${idx + 1}</strong> • ${statusBadge} <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">⏱️ ${att.timeSpent?.[idx] || 0}s</span></div>
-              <button class="btn btn-outline btn-sm" onclick="bookmarkReviewQuestion(${idx})">🔖 Bookmark</button>
-            </div>
-            ${q.passage ? `<div class="q-passage-box">${escapeHtml(q.passage)}</div>` : ""}
-            <div style="font-weight:600;margin-bottom:12px;white-space:pre-wrap;">${escapeHtml(q.question)}</div>
-            <div class="grid-2" style="gap:8px;margin-bottom:12px;">
-              ${q.options.map((opt, oi) => {
-                let border = "var(--border)", bg = "var(--bg)";
-                if (oi === q.answer) { border = "var(--success)"; bg = "var(--success-soft)"; }
-                else if (oi === uAns && uAns !== q.answer) { border = "var(--danger)"; bg = "var(--danger-soft)"; }
-                return `<div style="padding:10px 12px;border-radius:8px;border:1.5px solid ${border};background:${bg};font-size:0.88rem;">
-                  <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
-                  ${oi === q.answer ? ' <b style="color:var(--success);float:right;">✓ Correct Answer</b>' : ""}
-                  ${oi === uAns && uAns !== q.answer ? ' <b style="color:var(--danger);float:right;">✗ Your Answer</b>' : ""}
-                </div>`;
-              }).join("")}
-            </div>
-            ${q.explanation ? `<div style="background:var(--bg);border:1px solid var(--border);padding:10px 14px;border-radius:8px;font-size:0.85rem;color:var(--muted);white-space:pre-wrap;"><b style="color:var(--text);">💡 Solution:</b> ${escapeHtml(q.explanation)}</div>` : ""}
-          </div>
-        `;
-      }).filter(Boolean).join("");
-
-      list.innerHTML = html || `<div class="card" style="text-align:center;color:var(--muted);">No questions match this filter.</div>`;
-    };
-
-    window.downloadResultReportCSV = () => {
-      if (!currentReviewAttempt) return;
-      const att = currentReviewAttempt;
-      const rows = [["Q#", "Section", "Question", "Your Answer", "Correct Answer", "Status", "Time Spent (s)"]];
-      att.questions.forEach((q, idx) => {
-        const u = att.responses?.[idx];
-        const status = u === undefined ? "Unattempted" : (u === q.answer ? "Correct" : "Incorrect");
-        rows.push([
-          idx + 1,
-          `"${(q.section || "").replace(/"/g, '""')}"`,
-          `"${(q.question || "").replace(/"/g, '""')}"`,
-          u !== undefined ? String.fromCharCode(65 + u) : "-",
-          String.fromCharCode(65 + q.answer),
-          status,
-          att.timeSpent?.[idx] || 0
-        ]);
-      });
-      const csv = rows.map(r => r.join(",")).join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `${att.title.replace(/\s+/g, "_")}_Report.csv`;
-      a.click();
-    };
-
-    // ============================================================================
-    // 11. COORDINATE-AWARE PDF.JS CONVERTER & UPLOAD STUDIO
-    // ============================================================================
-    const COACHING_AD_PATTERNS = [
-      /https?:\/\/\S+/gi,
-      /www\.[a-z0-9.-]+\.[a-z]{2,}/gi,
-      /\b(adda247|testbook|oliveboard|practicemock|guidely|smartkeeda|bankersadda|sscadda|gradeup|byju'?s|ixambee|affairscloud|careerpower)\b/gi,
-      /download\s+(our\s+)?app/gi,
-      /join\s+(our\s+)?telegram/gi,
-      /subscribe\s+to\s+our\s+youtube/gi,
-      /use\s+code\s+[a-z0-9]+/gi,
-      /all\s+rights\s+reserved/gi,
-      /page\s+\d+\s*(of\s*\d+)?/gi,
-      /^\s*\d+\s*\|\s*p\s*a\s*g\s*e\s*$/gi
-    ];
-
-    const dz = document.getElementById("pdfDropzone");
-    const fInput = document.getElementById("pdfFileInput");
-    dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.filter = "brightness(1.18)"; });
-    dz.addEventListener("dragleave", () => { dz.style.filter = ""; });
-    dz.addEventListener("drop", e => {
-      e.preventDefault();
-      dz.style.filter = "";
-      if (e.dataTransfer.files.length) handleStudioFileUpload(e.dataTransfer.files[0]);
-    });
-    fInput.addEventListener("change", e => {
-      if (e.target.files.length) handleStudioFileUpload(e.target.files[0]);
-    });
-
-    async function handleStudioFileUpload(file) {
-      document.getElementById("pdfFileName").textContent = file.name;
-      document.getElementById("studioTitle").value = file.name.replace(/\.(pdf|json|csv|txt)$/i, "");
-
-      if (file.name.endsWith(".json")) {
-        const text = await file.text();
-        document.getElementById("studioJsonTextarea").value = text;
-        importFromJsonTextarea();
-        return;
-      }
-      if (file.name.endsWith(".csv") || file.name.endsWith(".txt")) {
-        const text = await file.text();
-        document.getElementById("studioRawTextarea").value = text;
-        parseFromEditedRawText();
-        return;
-      }
-
-      document.getElementById("studioStatusText").textContent = `Extracting coordinates from "${file.name}"...`;
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      appState.rawPdfPages = [];
-
-      for (let p = 1; p <= pdf.numPages; p++) {
-        document.getElementById("studioStatusText").textContent = `Reading PDF Page ${p} of ${pdf.numPages}...`;
-        const page = await pdf.getPage(p);
-        const vp = page.getViewport({ scale: 1.0 });
+    window.closeCategoryFolder = () => renderCategories();
+
+    // =======================================================================
+    // UPGRADED PDF PARSER (FIXED 4-5 QUESTION LIMIT BUG)
+    // =======================================================================
+    document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0]; if(!file) return;
+      document.getElementById('studioStatus').textContent = "Reading PDF coordinates...";
+      const ab = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: ab}).promise;
+      state.rawPages = [];
+      for(let i=1; i<=pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
         const tc = await page.getTextContent();
-
-        const items = tc.items.map(it => ({
-          str: it.str,
-          x: it.transform[4],
-          y: it.transform[5],
-          w: it.width || 0
-        })).filter(i => i.str && i.str.trim().length > 0);
-
-        appState.rawPdfPages.push({ pageNum: p, width: vp.width, height: vp.height, items });
+        state.rawPages.push(tc.items.map(it => ({ str: it.str, y: it.transform[5] })).filter(x => x.str.trim()));
       }
+      parsePdfData();
+    });
 
-      reRunPdfParser();
+    function parsePdfData() {
+      // Group by roughly same Y coordinate to form proper lines
+      const allLines = [];
+      state.rawPages.forEach(pageItems => {
+        pageItems.sort((a,b) => b.y - a.y);
+        let curLine = "", curY = pageItems[0]?.y;
+        pageItems.forEach(it => {
+          if(Math.abs(it.y - curY) < 5) curLine += " " + it.str;
+          else { allLines.push(curLine.replace(/\s+/g,' ').trim()); curLine = it.str; curY = it.y; }
+        });
+        if(curLine) allLines.push(curLine.replace(/\s+/g,' ').trim());
+      });
+
+      // UPGRADED REGEX: Extremely forgiving, captures any line starting with numbers 1 to 200
+      const qStartRegex = /^\s*(?:Q\.?\s*)?([1-9][0-9]{0,2})\s*[.)\]-]\s*(.*)/i;
+      const optRegex = /^\s*(?:\([a-e]\)|[a-e]\))\s*(.*)/i;
+      
+      const questions = [];
+      let curQ = null;
+
+      for(let line of allLines) {
+        line = line.trim(); if(!line) continue;
+        
+        // Strip common ads
+        if(/testbook|adda247|subscribe|youtube|telegram/i.test(line)) continue;
+
+        const qMatch = line.match(qStartRegex);
+        if(qMatch) {
+          if(curQ) pushQ(curQ, questions);
+          curQ = { id: parseInt(qMatch[1]), question: qMatch[2], options: [], answer: 0, explanation: "" };
+          continue;
+        }
+
+        if(curQ) {
+          const oMatch = line.match(optRegex);
+          if(oMatch) curQ.options.push(oMatch[1]);
+          else if(curQ.options.length === 0) curQ.question += "\n" + line; // Append multi-line question
+          else curQ.options[curQ.options.length-1] += " " + line; // Append multi-line option
+        }
+      }
+      if(curQ) pushQ(curQ, questions);
+      
+      state.studioQs = questions;
+      document.getElementById('studioJsonTextarea').value = JSON.stringify(questions, null, 2);
+      document.getElementById('studioQCount').textContent = questions.length;
+      document.getElementById('studioStatus').textContent = `Success! Parsed ${questions.length} questions.`;
     }
 
-    window.handleSeparateAnswerKeyUpload = async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      let keyText = "";
-      if (file.name.endsWith(".pdf")) {
-        const ab = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
-        for (let p = 1; p <= pdf.numPages; p++) {
-          const page = await pdf.getPage(p);
-          const tc = await page.getTextContent();
-          keyText += tc.items.map(i => i.str).join(" ") + "\n";
-        }
-      } else {
-        keyText = await file.text();
-      }
-      document.getElementById("studioRawTextarea").value += "\nAnswer Key\n" + keyText;
-      parseFromEditedRawText();
+    function pushQ(q, arr) {
+      while(q.options.length < 4) q.options.push("Option " + (q.options.length+1)); // Fallback
+      arr.push(q);
+    }
+
+    window.saveStudioPaper = async () => {
+      try {
+        const qs = JSON.parse(document.getElementById('studioJsonTextarea').value);
+        const paper = {
+          id: 'paper_'+Date.now(),
+          title: document.getElementById('studioTitle').value,
+          category: document.getElementById('studioCategorySelect').value,
+          duration: parseInt(document.getElementById('studioDuration').value),
+          posMark: parseFloat(document.getElementById('studioPosMark').value),
+          negMark: parseFloat(document.getElementById('studioNegMark').value),
+          questions: qs
+        };
+        state.papers.push(paper);
+        if(currentUser) await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
+        alert("Paper saved!"); navTo('categories');
+      } catch(e) { alert("JSON Error: " + e.message); }
     };
 
-    window.reRunPdfParser = () => {
-      if (!appState.rawPdfPages.length) {
-        if (document.getElementById("studioRawTextarea").value.trim()) parseFromEditedRawText();
-        return;
-      }
-
-      const useTwoCol = document.getElementById("chkTwoCol").checked;
-      const useFreqWatermark = document.getElementById("chkFreqWatermark").checked;
-      const useCoachingAds = document.getElementById("chkCoachingAds").checked;
-      const customBlacklist = document.getElementById("customBlacklistInput").value
-        .split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
-
-      const pagesLines = appState.rawPdfPages.map(page => {
-        let items = [...page.items];
-        if (useFreqWatermark) {
-          items = items.filter(it => it.y < page.height * 0.955 && it.y > page.height * 0.045);
-        }
-        if (useTwoCol && detectTwoColumnPage(items, page.width)) {
-          const midX = page.width / 2;
-          const left = items.filter(it => it.x < midX - 8);
-          const right = items.filter(it => it.x >= midX - 8);
-          return [...itemsToLines(left), ...itemsToLines(right)];
-        }
-        return itemsToLines(items);
-      });
-
-      const freqMap = {};
-      if (useFreqWatermark && pagesLines.length >= 3) {
-        pagesLines.forEach(lines => {
-          const unique = new Set(lines.map(l => l.toLowerCase().replace(/\d+/g, "#").trim()));
-          unique.forEach(norm => { if (norm.length > 4) freqMap[norm] = (freqMap[norm] || 0) + 1; });
-        });
-      }
-      const repeatCut = Math.max(3, Math.ceil(pagesLines.length * 0.35));
-
-      const cleanedLines = [];
-      pagesLines.forEach(lines => {
-        lines.forEach(line => {
-          let txt = line.trim();
-          if (!txt) return;
-          const norm = txt.toLowerCase().replace(/\d+/g, "#").trim();
-          if (useFreqWatermark && freqMap[norm] >= repeatCut) return;
-          if (customBlacklist.some(bad => txt.toLowerCase().includes(bad))) return;
-          if (useCoachingAds) {
-            COACHING_AD_PATTERNS.forEach(rx => { txt = txt.replace(rx, ""); });
-            txt = txt.trim();
-            if (!txt) return;
-          }
-          cleanedLines.push(txt);
-        });
-      });
-
-      document.getElementById("studioRawTextarea").value = cleanedLines.join("\n");
-      appState.studioQuestions = parseLinesIntoQuestions(cleanedLines);
-      renderStudioQuestions();
-      document.getElementById("studioStatusText").textContent = `Extracted & verified ${appState.studioQuestions.length} questions!`;
+    // =======================================================================
+    // EXAM ENGINE
+    // =======================================================================
+    window.startExam = async (paperId) => {
+      const p = state.papers.find(x=>x.id===paperId);
+      const now = Date.now();
+      state.activeAttempt = {
+        paperId: p.id, title: p.title, category: p.category, questions: p.questions,
+        posMark: p.posMark, negMark: p.negMark, startTime: now, deadline: now + (p.duration*60000),
+        currentIndex: 0, responses: {}, status: {}, timeSpent: {}
+      };
+      p.questions.forEach((_,i) => { state.activeAttempt.status[i] = (i===0)?'unanswered':'not-visited'; state.activeAttempt.timeSpent[i] = 0; });
+      await saveMeta();
+      openExamUI();
     };
 
-    function detectTwoColumnPage(items, pageWidth) {
-      if (items.length < 25) return false;
-      const mid = pageWidth / 2;
-      let leftStarts = 0, rightStarts = 0, crossesMid = 0;
-      items.forEach(it => {
-        if (it.x < mid * 0.35) leftStarts++;
-        if (it.x > mid * 0.92 && it.x < mid * 1.35) rightStarts++;
-        if (it.x < mid - 15 && (it.x + it.w) > mid + 15) crossesMid++;
-      });
-      return leftStarts > 8 && rightStarts > 8 && crossesMid < items.length * 0.08;
+    function openExamUI() {
+      document.getElementById('examOverlay').classList.add('active');
+      document.getElementById('liveTitle').textContent = state.activeAttempt.title;
+      document.getElementById('liveMeta').textContent = state.activeAttempt.category;
+      renderLiveQ();
+      timerInt = setInterval(tickTimer, 1000);
     }
 
-    function itemsToLines(items) {
-      if (!items.length) return [];
-      const sorted = [...items].sort((a, b) => (Math.abs(b.y - a.y) > 4 ? b.y - a.y : a.x - b.x));
-      const lines = [];
-      let cur = [sorted[0]], curY = sorted[0].y;
-      for (let i = 1; i < sorted.length; i++) {
-        if (Math.abs(sorted[i].y - curY) <= 4.5) {
-          cur.push(sorted[i]);
-        } else {
-          cur.sort((a, b) => a.x - b.x);
-          lines.push(cur.map(x => x.str).join(" ").replace(/\s+/g, " ").trim());
-          cur = [sorted[i]];
-          curY = sorted[i].y;
-        }
-      }
-      if (cur.length) {
-        cur.sort((a, b) => a.x - b.x);
-        lines.push(cur.map(x => x.str).join(" ").replace(/\s+/g, " ").trim());
-      }
-      return lines;
+    function tickTimer() {
+      const rem = Math.floor((state.activeAttempt.deadline - Date.now())/1000);
+      if(rem <= 0) { finalizeExam(); return; }
+      state.activeAttempt.timeSpent[state.activeAttempt.currentIndex]++;
+      
+      const h = Math.floor(rem/3600), m = Math.floor((rem%3600)/60), s = rem%60;
+      document.getElementById('liveTimer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      if(rem%10===0) saveMeta();
     }
 
-    function parseLinesIntoQuestions(lines) {
-      const linkPassages = document.getElementById("chkLinkPassages").checked;
-      const mergeAnswers = document.getElementById("chkMergeAnswers").checked;
-      const defaultSec = document.getElementById("studioSubject").value.trim() || "General";
-
-      const qArray = [], qMap = new Map(), passageRanges = [], ansKeyMap = {};
-      const dirRx = /^(?:directions?|instructions?)\s*(?:\(?q?(?:uestions?)?\.?\s*(\d+)\s*(?:to|[-–—])\s*(\d+)\)?)\s*[:.-]?(.*)/i;
-      const qStartRx = /^(?:Q(?:uestion)?\.?\s*(\d+)|(\d+)\s*[.)]|\[(\d+)\])\s+(.+)/i;
-      const solStartRx = /^(?:S(?:ol(?:ution)?)?\.?\s*(\d+)|Ans(?:wer)?\.?\s*(\d+))\s*[:.)-]*\s*(.*)/i;
-      const inlineAnsRx = /^(?:Ans(?:wer)?|Correct\s+Ans(?:wer)?|Correct\s+Option)\s*[:.-]?\s*\(?([a-eA-E1-5])\)?(?:\s*[:.-]?\s*(.*))?$/i;
-      const tablePairRx = /\b(\d{1,3})\s*[-–:=\s]\s*\(?([a-eA-E1-5])\)?/g;
-
-      let mode = "QUESTIONS", curQ = null, curPassage = null, curSolNum = null, curSec = defaultSec;
-
-      for (let line of lines) {
-        line = line.trim();
-        if (!line) continue;
-
-        if (/^(?:section\s*[:.-]?\s*)?(reasoning\s+ability|quantitative\s+aptitude|english\s+language|general\s+awareness|computer\s+knowledge|electrical\s+engineering)/i.test(line) && line.length < 42) {
-          curSec = line.replace(/^section\s*[:.-]?\s*/i, "").trim();
-          continue;
-        }
-
-        if (/^(?:answer\s+key|answers?\s+(?:and|&)\s+solutions?|solutions?\s*(?:and|&)?\s*explanations?|detailed\s+solutions?)$/i.test(line)) {
-          if (curQ) { pushQ(curQ); curQ = null; }
-          mode = "SOLUTIONS";
-          continue;
-        }
-
-        const solMatch = line.match(solStartRx);
-        if (solMatch && (mode === "SOLUTIONS" || /^S\d+\./i.test(line))) {
-          if (curQ) { pushQ(curQ); curQ = null; }
-          mode = "SOLUTIONS";
-          curSolNum = parseInt(solMatch[1] || solMatch[2], 10);
-          const rest = solMatch[3] || "";
-          if (!ansKeyMap[curSolNum]) ansKeyMap[curSolNum] = { idx: -1, exp: "" };
-          const letM = rest.match(/(?:ans(?:wer)?\.?\s*)?\(?([a-eA-E1-5])\)?/i);
-          if (letM) ansKeyMap[curSolNum].idx = charToIdx(letM[1]);
-          ansKeyMap[curSolNum].exp += rest + "\n";
-          continue;
-        }
-
-        if (mode === "SOLUTIONS") {
-          let pm, found = false;
-          while ((pm = tablePairRx.exec(line)) !== null) {
-            found = true;
-            const n = parseInt(pm[1], 10);
-            if (!ansKeyMap[n]) ansKeyMap[n] = { idx: charToIdx(pm[2]), exp: "" };
-          }
-          if (!found && curSolNum && ansKeyMap[curSolNum]) ansKeyMap[curSolNum].exp += line + "\n";
-          continue;
-        }
-
-        if (linkPassages) {
-          const dm = line.match(dirRx);
-          if (dm) {
-            if (curQ) { pushQ(curQ); curQ = null; }
-            curPassage = { start: parseInt(dm[1], 10), end: parseInt(dm[2], 10), text: line + "\n" };
-            passageRanges.push(curPassage);
-            mode = "PASSAGE";
-            continue;
-          }
-        }
-
-        const inAns = line.match(inlineAnsRx);
-        if (inAns && curQ) {
-          curQ.answer = charToIdx(inAns[1]);
-          if (inAns[2]) curQ.explanation = inAns[2].trim();
-          continue;
-        }
-
-        const opts = extractInlineOptions(line);
-        if (opts.length > 0 && curQ) {
-          curQ.options.push(...opts);
-          continue;
-        }
-
-        const qm = line.match(qStartRx);
-        if (qm) {
-          if (curQ) pushQ(curQ);
-          mode = "QUESTIONS";
-          const qNum = parseInt(qm[1] || qm[2] || qm[3], 10);
-          const split = splitQTextAndOpts(qm[4].trim());
-          curQ = {
-            id: qNum,
-            section: curSec,
-            passage: "",
-            question: split.qText,
-            options: split.opts,
-            answer: 0,
-            explanation: ""
-          };
-          continue;
-        }
-
-        if (mode === "PASSAGE" && curPassage) {
-          curPassage.text += line + "\n";
-        } else if (curQ) {
-          if (curQ.options.length === 0) {
-            const split = splitQTextAndOpts(line);
-            curQ.question += " " + split.qText;
-            if (split.opts.length) curQ.options.push(...split.opts);
-          } else {
-            curQ.options[curQ.options.length - 1] += " " + line;
-          }
-        }
-      }
-
-      if (curQ) pushQ(curQ);
-
-      function pushQ(q) {
-        q.question = q.question.replace(/\s+/g, " ").trim();
-        q.options = q.options.map(o => o.replace(/\s+/g, " ").trim()).filter(Boolean);
-        while (q.options.length < 4) q.options.push(`Option ${String.fromCharCode(65 + q.options.length)}`);
-        qArray.push(q);
-        qMap.set(q.id, q);
-      }
-
-      if (linkPassages) {
-        passageRanges.forEach(pr => {
-          for (let n = pr.start; n <= pr.end; n++) {
-            if (qMap.get(n)) qMap.get(n).passage = pr.text.trim();
-          }
-        });
-      }
-
-      if (mergeAnswers) {
-        Object.keys(ansKeyMap).forEach(k => {
-          const q = qMap.get(parseInt(k, 10));
-          const data = ansKeyMap[k];
-          if (q && data) {
-            if (data.idx >= 0 && data.idx < q.options.length) q.answer = data.idx;
-            if (data.exp && !q.explanation) q.explanation = data.exp.trim();
-          }
-        });
-      }
-
-      return qArray;
-    }
-
-    function extractInlineOptions(line) {
-      if (!/^(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+/.test(line)) return [];
-      return line.split(/(?=(?:^|\s+)(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+)/)
-        .map(p => p.trim().replace(/^(?:\([a-eA-E1-5]\)|\[[a-eA-E1-5]\]|[a-eA-E][.)])\s+/, "").trim())
-        .filter(Boolean);
-    }
-
-    function splitQTextAndOpts(txt) {
-      const idx = txt.search(/\s+(?=(?:\([a-eA-E]\)|[a-eA-E][.)])\s+)/);
-      if (idx === -1) return { qText: txt, opts: [] };
-      return { qText: txt.slice(0, idx).trim(), opts: extractInlineOptions(txt.slice(idx).trim()) };
-    }
-
-    function charToIdx(c) {
-      const up = c.toUpperCase();
-      if (up >= "A" && up <= "E") return up.charCodeAt(0) - 65;
-      if (up >= "1" && up <= "5") return parseInt(up, 10) - 1;
-      return 0;
-    }
-
-    function renderStudioQuestions() {
-      const list = document.getElementById("studioVisualList");
-      document.getElementById("studioQCount").textContent = `${appState.studioQuestions.length} Questions`;
-      document.getElementById("studioJsonTextarea").value = JSON.stringify(appState.studioQuestions, null, 2);
-
-      if (!appState.studioQuestions.length) {
-        list.innerHTML = `<div style="text-align:center;padding:50px;color:var(--muted);">No questions loaded yet. Upload a PDF/JSON or add a question manually.</div>`;
-        return;
-      }
-
-      list.innerHTML = appState.studioQuestions.map((q, qi) => `
-        <div class="q-edit-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-weight:700;color:var(--primary);font-size:0.88rem;">Q${qi + 1} • <input type="text" value="${escapeHtml(q.section || "General")}" onchange="updateStudioQField(${qi}, 'section', this.value)" style="width:150px;padding:3px 6px;font-size:0.78rem;" /></span>
-            <div style="display:flex;gap:6px;">
-              <button class="btn btn-outline btn-sm" onclick="addFifthOptionStudio(${qi})">+ Opt E</button>
-              <button class="btn btn-danger btn-sm" onclick="removeStudioQuestion(${qi})">🗑</button>
-            </div>
-          </div>
-          ${q.passage ? `<div class="q-passage-box"><b>Directions / Passage:</b>\n${escapeHtml(q.passage)}</div>` : ""}
-          <textarea rows="2" onchange="updateStudioQField(${qi}, 'question', this.value)" style="margin-bottom:8px;">${escapeHtml(q.question)}</textarea>
-          <div class="opt-edit-grid">
-            ${q.options.map((opt, oi) => `
-              <div class="opt-edit-item ${q.answer === oi ? "correct" : ""}">
-                <input type="radio" name="st_ans_${qi}" ${q.answer === oi ? "checked" : ""} onchange="setStudioAnswer(${qi}, ${oi})" />
-                <strong style="font-size:0.8rem;color:var(--muted);">${String.fromCharCode(65 + oi)}.</strong>
-                <input type="text" value="${escapeHtml(opt)}" onchange="updateStudioOpt(${qi}, ${oi}, this.value)" />
-              </div>
-            `).join("")}
-          </div>
-          <input type="text" placeholder="Detailed Solution / Explanation" value="${escapeHtml(q.explanation || "")}" onchange="updateStudioQField(${qi}, 'explanation', this.value)" style="font-size:0.8rem;" />
+    function renderLiveQ() {
+      const a = state.activeAttempt, idx = a.currentIndex, q = a.questions[idx];
+      if(a.status[idx]==='not-visited') a.status[idx] = 'unanswered';
+      
+      document.getElementById('liveQNum').textContent = `Question ${idx+1}`;
+      document.getElementById('liveQText').textContent = q.question;
+      
+      document.getElementById('liveOptions').innerHTML = q.options.map((opt, oi) => `
+        <div class="option-card ${a.responses[idx]===oi?'selected':''}" onclick="window.selOpt(${oi})" oncontextmenu="window.strike(event, this)">
+          <div class="opt-letter">${String.fromCharCode(65+oi)}</div>
+          <div>${opt}</div>
         </div>
-      `).join("");
+      `).join('');
+      
+      document.getElementById('livePalette').innerHTML = a.questions.map((_, i) => `<button class="p-btn ${a.status[i]||'not-visited'} ${i===idx?'current':''}" onclick="window.goToQ(${i})">${i+1}</button>`).join('');
     }
 
-    window.updateStudioQField = (qi, field, val) => {
-      appState.studioQuestions[qi][field] = val;
-      document.getElementById("studioJsonTextarea").value = JSON.stringify(appState.studioQuestions, null, 2);
-    };
-    window.updateStudioOpt = (qi, oi, val) => {
-      appState.studioQuestions[qi].options[oi] = val;
-      document.getElementById("studioJsonTextarea").value = JSON.stringify(appState.studioQuestions, null, 2);
-    };
-    window.setStudioAnswer = (qi, oi) => {
-      appState.studioQuestions[qi].answer = oi;
-      renderStudioQuestions();
-    };
-    window.addFifthOptionStudio = (qi) => {
-      if (appState.studioQuestions[qi].options.length < 5) {
-        appState.studioQuestions[qi].options.push("Option E");
-        renderStudioQuestions();
-      }
-    };
-    window.removeStudioQuestion = (qi) => {
-      appState.studioQuestions.splice(qi, 1);
-      renderStudioQuestions();
-    };
-    window.addBlankStudioQuestion = () => {
-      appState.studioQuestions.push({
-        id: appState.studioQuestions.length + 1,
-        section: document.getElementById("studioSubject").value || "General",
-        passage: "",
-        question: "New Question Text...",
-        options: ["Option A", "Option B", "Option C", "Option D"],
-        answer: 0,
-        explanation: ""
-      });
-      switchStudioTab("visual");
-      renderStudioQuestions();
-    };
+    window.selOpt = (oi) => { state.activeAttempt.responses[state.activeAttempt.currentIndex] = oi; state.activeAttempt.status[state.activeAttempt.currentIndex] = 'answered'; renderLiveQ(); };
+    window.strike = (e, el) => { e.preventDefault(); el.style.textDecoration = el.style.textDecoration==='line-through'?'none':'line-through'; el.style.opacity = el.style.textDecoration==='line-through'?'0.5':'1'; };
+    window.clearResponse = () => { delete state.activeAttempt.responses[state.activeAttempt.currentIndex]; state.activeAttempt.status[state.activeAttempt.currentIndex] = 'unanswered'; renderLiveQ(); };
+    window.markReview = () => { state.activeAttempt.status[state.activeAttempt.currentIndex] = 'review'; window.navQ(1); };
+    window.saveAndNext = () => { window.navQ(1); };
+    window.navQ = (dir) => { const n = state.activeAttempt.currentIndex + dir; if(n>=0 && n<state.activeAttempt.questions.length) { state.activeAttempt.currentIndex = n; renderLiveQ(); } };
+    window.goToQ = (idx) => { state.activeAttempt.currentIndex = idx; renderLiveQ(); };
 
-    window.switchStudioTab = (tab) => {
-      ["visual", "json", "raw"].forEach(t => {
-        document.getElementById(`studio-tab-${t}`).style.display = t === tab ? "block" : "none";
-      });
-    };
+    window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else document.exitFullscreen(); };
+    window.openSubmitModal = () => document.getElementById('submitModal').classList.add('active');
+    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
-    window.parseFromEditedRawText = () => {
-      const lines = document.getElementById("studioRawTextarea").value.split("\n");
-      appState.studioQuestions = parseLinesIntoQuestions(lines);
-      switchStudioTab("visual");
-      renderStudioQuestions();
-    };
+    window.finalizeExam = async () => {
+      clearInterval(timerInt);
+      document.getElementById('submitModal').classList.remove('active');
+      document.getElementById('examOverlay').classList.remove('active');
+      if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
 
-    window.importFromJsonTextarea = () => {
-      try {
-        const parsed = JSON.parse(document.getElementById("studioJsonTextarea").value.trim());
-        if (!Array.isArray(parsed)) throw new Error("JSON must be an array of question objects.");
-        appState.studioQuestions = parsed;
-        switchStudioTab("visual");
-        renderStudioQuestions();
-      } catch (e) {
-        alert("Invalid JSON: " + e.message);
-      }
-    };
-
-    window.copyStudioJson = () => {
-      navigator.clipboard.writeText(JSON.stringify(appState.studioQuestions, null, 2));
-      alert("Copied JSON to clipboard!");
-    };
-
-    window.runGeminiFallback = async () => {
-      const key = document.getElementById("geminiApiKeyInput").value.trim();
-      const rawText = document.getElementById("studioRawTextarea").value.trim();
-      if (!key) return alert("Paste a free Google AI Studio (Gemini) API Key first.");
-      if (!rawText) return alert("Upload a PDF or paste raw text first.");
-
-      document.getElementById("studioStatusText").textContent = "✨ Structuring with Gemini 2.5 Flash API...";
-      try {
-        const prompt = `Convert the following exam paper text into a strict JSON array of question objects. Strip all coaching ads or watermarks.
-Each object must follow: {"id":number,"section":string,"passage":string,"question":string,"options":[string,string,string,string],"answer":number,"explanation":string}.
-Return ONLY valid JSON.\n\nTEXT:\n${rawText.slice(0, 85000)}`;
-
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
-        });
-        const data = await res.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error(data.error?.message || "Empty response");
-        appState.studioQuestions = JSON.parse(text);
-        switchStudioTab("visual");
-        renderStudioQuestions();
-        document.getElementById("studioStatusText").textContent = `✨ Gemini structured ${appState.studioQuestions.length} questions!`;
-      } catch (err) {
-        alert("Gemini API Error: " + err.message);
-      }
-    };
-
-    window.saveStudioPaperToFirebase = async (startImmediately) => {
-      if (!appState.studioQuestions.length) return alert("Extract or add at least 1 verified question before saving.");
-
-      const paperId = appState.editingPaperId || ("paper_" + Date.now());
-      const paperObj = {
-        id: paperId,
-        title: document.getElementById("studioTitle").value.trim() || "Untitled Exam Paper",
-        category: document.getElementById("studioCategorySelect").value || appState.categories[0].name,
-        year: parseInt(document.getElementById("studioYear").value, 10) || 2026,
-        subject: document.getElementById("studioSubject").value.trim() || "General",
-        duration: parseInt(document.getElementById("studioDuration").value, 10) || 60,
-        posMark: parseFloat(document.getElementById("studioPosMark").value) || 1,
-        negMark: parseFloat(document.getElementById("studioNegMark").value) ?? 0.25,
-        createdAt: new Date().toISOString(),
-        questions: JSON.parse(JSON.stringify(appState.studioQuestions))
+      const a = state.activeAttempt;
+      let c=0, w=0;
+      a.questions.forEach((q,i) => { const r=a.responses[i]; if(r!==undefined){ if(r===q.answer)c++; else w++; } });
+      
+      const att = {
+        id: 'att_'+Date.now(), paperId: a.paperId, title: a.title, category: a.category, date: new Date().toISOString(),
+        score: (c*a.posMark)-(w*a.negMark), maxMarks: a.questions.length*a.posMark, correct: c, wrong: w,
+        timeTaken: Math.floor((Date.now()-a.startTime)/1000)
       };
-
-      const existingIdx = appState.papers.findIndex(p => p.id === paperId);
-      if (existingIdx >= 0) appState.papers[existingIdx] = paperObj;
-      else appState.papers.unshift(paperObj);
-
-      appState.editingPaperId = null;
-      await savePaperDocToFirestore(paperObj);
-      refreshAllViews();
-
-      if (startImmediately) {
-        openInstructionsModal(paperObj.id, "STANDARD");
-      } else {
-        openCategoryFolder(paperObj.category);
+      state.attempts.push(att);
+      state.activeAttempt = null;
+      
+      if(currentUser) {
+        await setDoc(doc(db, "users", currentUser.uid, "attempts", att.id), att);
+        await saveMeta();
       }
+      alert(`Submitted! Score: ${att.score} / ${att.maxMarks}`);
+      navTo('dashboard');
     };
 
-    // ============================================================================
-    // 12. BOOKMARKS, SETTINGS & PORTABLE CLOUD BACKUP
-    // ============================================================================
-    window.toggleLiveBookmark = async () => {
-      const act = appState.activeAttempt;
-      const q = act.questions[act.currentIndex];
-      await toggleBookmarkItem(q);
-      renderLiveQuestion();
-    };
-
-    window.bookmarkReviewQuestion = async (idx) => {
-      if (!currentReviewAttempt) return;
-      await toggleBookmarkItem(currentReviewAttempt.questions[idx]);
-      alert("Updated question in your Firebase Cloud Bookmarks!");
-    };
-
-    async function toggleBookmarkItem(q) {
-      const idx = appState.bookmarks.findIndex(b => b.question === q.question);
-      if (idx >= 0) appState.bookmarks.splice(idx, 1);
-      else appState.bookmarks.unshift({ ...q, savedAt: new Date().toISOString() });
-      await saveCoreMetadataToFirestore();
-      document.getElementById("bmBadge").textContent = appState.bookmarks.length;
-    }
-
-    function renderBookmarksView() {
-      const container = document.getElementById("bookmarksContainer");
-      if (!appState.bookmarks.length) {
-        container.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--muted);">No bookmarked questions yet. Star tricky questions during an exam or solution review!</div>`;
-        return;
-      }
-      container.innerHTML = appState.bookmarks.map((q, idx) => `
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-            <span class="tag tag-primary">${escapeHtml(q.section || "Bookmark")}</span>
-            <button class="btn btn-danger btn-sm" onclick="removeBookmarkAtIndex(${idx})">🗑 Remove</button>
-          </div>
-          ${q.passage ? `<div class="q-passage-box">${escapeHtml(q.passage)}</div>` : ""}
-          <div style="font-weight:600;margin-bottom:10px;">${escapeHtml(q.question)}</div>
-          <div class="grid-2" style="gap:8px;margin-bottom:10px;">
-            ${q.options.map((opt, oi) => `
-              <div style="padding:8px 12px;border-radius:8px;border:1px solid ${oi === q.answer ? "var(--success)" : "var(--border)"};background:${oi === q.answer ? "var(--success-soft)" : "var(--bg)"};font-size:0.86rem;">
-                <strong>${String.fromCharCode(65 + oi)}.</strong> ${escapeHtml(opt)}
-              </div>
-            `).join("")}
-          </div>
-          ${q.explanation ? `<div style="font-size:0.84rem;color:var(--muted);"><b>💡 Solution:</b> ${escapeHtml(q.explanation)}</div>` : ""}
-        </div>
-      `).join("");
-    }
-
-    window.removeBookmarkAtIndex = async (idx) => {
-      appState.bookmarks.splice(idx, 1);
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-    };
-
-    window.saveUserSettings = async () => {
-      appState.settings = {
-        fontSize: document.getElementById("settingFontSize").value,
-        defDuration: parseInt(document.getElementById("settingDefDuration").value, 10) || 60,
-        defPos: parseFloat(document.getElementById("settingDefPos").value) || 1,
-        defNeg: parseFloat(document.getElementById("settingDefNeg").value) ?? 0.25,
-        autoSubmit: document.getElementById("settingAutoSubmit").checked
-      };
-      applySettingsToDOM();
-      await saveCoreMetadataToFirestore();
-    };
-
-    function applySettingsToDOM() {
-      document.documentElement.style.setProperty("--base-font-size", appState.settings.fontSize || "16px");
-      document.getElementById("settingFontSize").value = appState.settings.fontSize || "16px";
-      document.getElementById("settingDefDuration").value = appState.settings.defDuration || 60;
-      document.getElementById("settingDefPos").value = appState.settings.defPos || 1;
-      document.getElementById("settingDefNeg").value = appState.settings.defNeg ?? 0.25;
-      document.getElementById("settingAutoSubmit").checked = appState.settings.autoSubmit !== false;
-    }
-
-    window.exportFullBackupJSON = () => {
-      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `ExamForge_Firebase_Backup_${Date.now()}.json`;
-      a.click();
-    };
-
-    window.importFullBackupJSON = async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      try {
-        const imported = JSON.parse(await file.text());
-        if (imported.categories) appState.categories = imported.categories;
-        if (imported.papers) {
-          appState.papers = imported.papers;
-          for (const p of appState.papers) await savePaperDocToFirestore(p);
-        }
-        if (imported.attempts) {
-          appState.attempts = imported.attempts;
-          for (const a of appState.attempts) await saveAttemptDocToFirestore(a);
-        }
-        if (imported.bookmarks) appState.bookmarks = imported.bookmarks;
-        await saveCoreMetadataToFirestore();
-        refreshAllViews();
-        alert("Backup restored and synced to Firebase Cloud!");
-      } catch (err) {
-        alert("Restore failed: " + err.message);
-      }
-    };
-
-    window.resetAttemptHistoryOnly = async () => {
-      if (!confirm("Are you sure you want to delete all past attempt scores from Firebase? Your uploaded question papers will NOT be deleted.")) return;
-      for (const a of appState.attempts) {
-        await deleteAttemptDocFromFirestore(a.id);
-      }
-      appState.attempts = [];
-      appState.activeAttempt = null;
-      await saveCoreMetadataToFirestore();
-      refreshAllViews();
-    };
-
-    window.toggleTheme = () => {
-      const cur = document.documentElement.getAttribute("data-theme");
-      const next = cur === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      document.getElementById("themeBtn").textContent = next === "dark" ? "🌙" : "☀️";
-      renderDashboardView();
-    };
-
-    // ============================================================================
-    // 13. STARTER DEMO PAPER & UTILITIES
-    // ============================================================================
-    async function seedDemoPaperIfEmpty() {
-      if (appState.papers.length > 0) return;
-      const samplePaper = {
-        id: "paper_demo_ese_uiic",
-        title: "UIIC AO & Technical Prelims — Benchmark Mock 1",
-        category: "UIIC AO",
-        year: 2026,
-        subject: "General & Technical",
-        duration: 15,
-        posMark: 1,
-        negMark: 0.25,
-        createdAt: new Date().toISOString(),
-        questions: [
-          {
-            id: 1,
-            section: "Reasoning Ability",
-            passage: "Directions (Q. 1-2): Eight boxes A, B, C, D, E, F, G, and H are stacked one above another. Box A is kept immediately above Box C. Only two boxes are kept between Box C and Box F. Box D is at the bottommost position.",
-            question: "If Box F is above Box C, how many boxes are kept between Box A and Box F?",
-            options: ["One", "Two", "Three", "Four", "None"],
-            answer: 0,
-            explanation: "Since A is immediately above C and two boxes are between C and F, there is exactly 1 box between A and F."
-          },
-          {
-            id: 2,
-            section: "Reasoning Ability",
-            passage: "Directions (Q. 1-2): Eight boxes A, B, C, D, E, F, G, and H are stacked one above another. Box A is kept immediately above Box C. Only two boxes are kept between Box C and Box F. Box D is at the bottommost position.",
-            question: "Which box is kept at the bottommost position?",
-            options: ["Box A", "Box C", "Box D", "Box F", "Cannot be determined"],
-            answer: 2,
-            explanation: "Directly stated in the passage: Box D is at the bottommost position."
-          },
-          {
-            id: 3,
-            section: "Electrical / Technical",
-            passage: "",
-            question: "A three-phase induction motor operates at a supply frequency of 50 Hz and has 4 poles. What is its synchronous speed?",
-            options: ["750 rpm", "1000 rpm", "1500 rpm", "3000 rpm"],
-            answer: 2,
-            explanation: "Ns = (120 × f) / P = (120 × 50) / 4 = 1500 rpm."
-          },
-          {
-            id: 4,
-            section: "Quantitative Aptitude",
-            passage: "",
-            question: "A sum of ₹12,500 amounts to ₹15,500 in 4 years at simple interest. What is the annual rate of interest?",
-            options: ["4%", "5%", "6%", "6.5%", "8%"],
-            answer: 2,
-            explanation: "SI = 3000. Rate = (3000 × 100) / (12500 × 4) = 6%."
-          }
-        ]
-      };
-      appState.papers.push(samplePaper);
-      await savePaperDocToFirestore(samplePaper);
-    }
-
-    function shuffleArray(arr) {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    function escapeHtml(str = "") {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
+    window.onload = () => navTo('landing');
   </script>
 </body>
 </html>
