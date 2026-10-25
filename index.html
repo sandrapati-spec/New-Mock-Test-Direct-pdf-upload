@@ -151,6 +151,7 @@
     .btn-outline { background: transparent; border-color: var(--border); color: var(--text-main); }
     .btn-outline:hover { background: var(--bg-body); }
     .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+    .btn-danger { background: var(--danger); color: #fff; }
     
     input, select, textarea { width: 100%; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.95rem; font-family: inherit; outline: none; transition: 0.2s; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
@@ -221,7 +222,6 @@
       <button class="nav-item" id="nav-dashboard" onclick="navTo('dashboard')"><span class="nav-icon">📊</span> Dashboard</button>
       <button class="nav-item" id="nav-categories" onclick="navTo('categories')"><span class="nav-icon">🗂️</span> Paper Library</button>
       <button class="nav-item" id="nav-studio" onclick="navTo('studio')"><span class="nav-icon">📄</span> Upload PDF</button>
-      <button class="nav-item" id="nav-bookmarks" onclick="navTo('bookmarks')"><span class="nav-icon">🔖</span> Bookmarks</button>
       <hr style="border-top:1px solid var(--border); margin: 8px 0;" />
       <button class="nav-item" onclick="handleGoogleAuth()"><span class="nav-icon">🔑</span> Google Sign-In</button>
     </nav>
@@ -263,8 +263,10 @@
         <h3 style="margin-bottom: 16px;">🕓 Recent Activity</h3>
         <div style="overflow-x: auto;">
           <table>
-            <thead><tr><th>Date</th><th>Paper</th><th>Category</th><th>Score</th><th>Accuracy</th><th>Action</th></tr></thead>
-            <tbody id="dashActivityTableBody"></tbody>
+            <thead><tr><th>Date</th><th>Paper</th><th>Category</th><th>Score</th><th>Max</th><th>Action</th></tr></thead>
+            <tbody id="dashActivityTableBody">
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No activity recorded yet.</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -290,7 +292,7 @@
       </div>
     </section>
 
-    <!-- VIEW 4: PDF UPLOAD STUDIO (WITH FIXED REGEX) -->
+    <!-- VIEW 4: PDF UPLOAD STUDIO -->
     <section id="view-studio" class="view-section">
       <h2 style="margin-bottom: 24px;">📄 Smart PDF Converter</h2>
       <div class="grid-2">
@@ -323,6 +325,21 @@
 
   </main>
 
+  <!-- CATEGORY MANAGEMENT MODAL -->
+  <div class="modal-backdrop" id="categoryModal">
+    <div class="modal">
+      <h3 style="margin-bottom:16px;">Manage Categories</h3>
+      <div style="display:flex; gap:10px; margin-bottom: 20px;">
+        <input type="text" id="newCategoryInput" placeholder="Enter new category name..." />
+        <button class="btn btn-primary" onclick="addNewCategory()">Add</button>
+      </div>
+      <div id="categoryManagerList" style="display:flex; flex-direction:column; gap:12px; max-height: 300px; overflow-y:auto; margin-bottom:20px;"></div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="closeModal('categoryModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- EXAM OVERLAY -->
   <div id="examOverlay">
     <div class="exam-header">
@@ -341,7 +358,7 @@
         <div class="question-pane">
           <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
             <strong style="color:var(--primary); font-size:1.1rem;" id="liveQNum">Question 1</strong>
-            <span class="tag" id="liveSaveStatus">Saved</span>
+            <span class="tag" id="liveSaveStatus">Live</span>
           </div>
           <div id="livePassage" style="display:none; padding:16px; background:var(--warning-soft); border-left:4px solid var(--warning); margin-bottom:20px; font-size:0.95rem; border-radius:6px;"></div>
           <div id="liveQText" style="white-space:pre-wrap; font-weight:600; font-size:1.1rem; margin-bottom:24px;"></div>
@@ -392,13 +409,15 @@
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+    // Updated with User's requested credentials
     const firebaseConfig = {
       apiKey: "AIzaSyBPhZrTBpQdy3iqgdliUuA9M0w-iMjBQEY",
       authDomain: "free-mock-test-by-srujan.firebaseapp.com",
       projectId: "free-mock-test-by-srujan",
       storageBucket: "free-mock-test-by-srujan.firebasestorage.app",
       messagingSenderId: "539838811940",
-      appId: "1:539838811940:web:3c0c4bd3987b9227c4edb1"
+      appId: "1:539838811940:web:3c0c4bd3987b9227c4edb1",
+      measurementId: "G-P68WSHTNTW"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -409,13 +428,15 @@
     let state = { categories: ["ESE", "GATE", "SSC", "UIIC AO"], papers: [], attempts: [], activeAttempt: null, studioQs: [], rawPages: [] };
     let timerInt = null;
 
-    // SIDEBAR TOGGLE
+    // =======================================================================
+    // EXPOSING FUNCTIONS TO WINDOW FOR INLINE HTML EVENT HANDLERS
+    // =======================================================================
+    
     window.toggleSidebar = () => {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('sidebarOverlay').classList.toggle('active');
     };
 
-    // NAV ROUTING
     window.navTo = (viewId) => {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.getElementById(`view-${viewId}`).classList.add('active');
@@ -430,6 +451,12 @@
       if(viewId === 'categories') renderCategories();
       if(viewId === 'studio') { document.getElementById('studioCategorySelect').innerHTML = state.categories.map(c=>`<option value="${c}">${c}</option>`).join(''); }
     };
+
+    window.openModal = (id) => {
+      document.getElementById(id).classList.add('active');
+      if (id === 'categoryModal') renderCategoryManager();
+    };
+    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
     // AUTH
     onAuthStateChanged(auth, async (user) => {
@@ -457,6 +484,7 @@
       const aSnap = await getDocs(collection(db, "users", currentUser.uid, "attempts"));
       state.attempts = []; aSnap.forEach(d => state.attempts.push(d.data()));
 
+      // Refresh Current View
       renderLanding();
     }
     
@@ -464,7 +492,9 @@
       if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { categories: state.categories, activeAttempt: state.activeAttempt }, {merge:true});
     }
 
+    // =======================================================================
     // DASHBOARD & CHARTS
+    // =======================================================================
     let lineChart, barChart;
     function renderLanding() {
       document.getElementById('landingCategories').innerHTML = state.categories.map(c => `
@@ -476,25 +506,71 @@
     }
 
     function renderDashboard() {
-      document.getElementById('kpiPapers').textContent = state.papers.length;
-      document.getElementById('kpiAttempts').textContent = state.attempts.length;
-      if(state.attempts.length > 0) {
-        const scores = state.attempts.map(a => (a.score/a.maxMarks)*100);
-        document.getElementById('kpiAvgScore').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) + '%';
-        document.getElementById('kpiBestScore').textContent = Math.round(Math.max(...scores)) + '%';
+      // Resume Container Logic
+      const rc = document.getElementById('dashboardResumeContainer');
+      if (state.activeAttempt) {
+        rc.innerHTML = `
+          <div class="card" style="margin-bottom: 24px; border-color: var(--primary); background: var(--primary-soft); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="color:var(--primary); margin-bottom:4px;">⚠️ Active Exam in Progress</h3>
+              <p class="text-muted">Resume your attempt for <strong>${state.activeAttempt.title}</strong>.</p>
+            </div>
+            <button class="btn btn-primary" onclick="window.resumeExam()">Resume Exam</button>
+          </div>`;
+      } else {
+        rc.innerHTML = '';
       }
 
-      if(lineChart) lineChart.destroy(); if(barChart) barChart.destroy();
-      const rec = state.attempts.slice(-10);
+      document.getElementById('kpiPapers').textContent = state.papers.length;
+      document.getElementById('kpiAttempts').textContent = state.attempts.length;
+      
+      let chartLabels = [], chartLineData = [], chartBarData = [];
+
+      if(state.attempts.length > 0) {
+        const validAttempts = state.attempts.filter(a => a.maxMarks > 0);
+        if (validAttempts.length > 0) {
+           const scores = validAttempts.map(a => (a.score/a.maxMarks)*100);
+           document.getElementById('kpiAvgScore').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) + '%';
+           document.getElementById('kpiBestScore').textContent = Math.round(Math.max(...scores)) + '%';
+        }
+        
+        // Activity Table Populating
+        const recActivity = [...state.attempts].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,5);
+        document.getElementById('dashActivityTableBody').innerHTML = recActivity.map(a => `
+          <tr>
+            <td>${new Date(a.date).toLocaleDateString()}</td>
+            <td><strong>${a.title}</strong></td>
+            <td><span class="tag">${a.category}</span></td>
+            <td style="color:var(--primary); font-weight:700;">${a.score.toFixed(2)}</td>
+            <td>${a.maxMarks}</td>
+            <td><span class="tag tag-success">Completed</span></td>
+          </tr>
+        `).join('');
+
+        // Chart Data Prep
+        const recCharts = [...validAttempts].sort((a,b) => new Date(a.date) - new Date(b.date)).slice(-10);
+        chartLabels = recCharts.map((_,i)=>`#${i+1}`);
+        chartLineData = recCharts.map(a=>(a.score/a.maxMarks)*100);
+        chartBarData = recCharts.map(a=>a.score);
+      } else {
+        document.getElementById('dashActivityTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No activity recorded yet.</td></tr>`;
+      }
+
+      // Chart Generation (Safe Destroy)
+      if(lineChart) { lineChart.destroy(); lineChart = null; }
+      if(barChart) { barChart.destroy(); barChart = null; }
+      
       lineChart = new Chart(document.getElementById('dashLineChart'), {
-        type: 'line', data: { labels: rec.map((_,i)=>`#${i+1}`), datasets: [{ label: 'Score %', data: rec.map(a=>(a.score/a.maxMarks)*100), borderColor: '#3182CE', tension: 0.3 }] }
+        type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Score %', data: chartLineData, borderColor: '#3182CE', tension: 0.3 }] }
       });
       barChart = new Chart(document.getElementById('dashBarChart'), {
-        type: 'bar', data: { labels: rec.map((_,i)=>`#${i+1}`), datasets: [{ label: 'Marks', data: rec.map(a=>a.score), backgroundColor: '#805AD5' }] }
+        type: 'bar', data: { labels: chartLabels, datasets: [{ label: 'Marks', data: chartBarData, backgroundColor: '#805AD5' }] }
       });
     }
 
-    // CATEGORIES
+    // =======================================================================
+    // CATEGORIES MANAGEMENT
+    // =======================================================================
     function renderCategories() {
       document.getElementById('catOverviewPanel').style.display = 'block';
       document.getElementById('catLibraryPanel').style.display = 'none';
@@ -504,6 +580,33 @@
         </div>
       `).join('');
     }
+
+    function renderCategoryManager() {
+      document.getElementById('categoryManagerList').innerHTML = state.categories.map(c => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:10px 14px; border-radius:8px;">
+          <span>${c}</span>
+          <button class="btn btn-outline btn-sm" onclick="window.removeCategory('${c}')" style="color:var(--danger); border-color:var(--danger);">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    window.addNewCategory = async () => {
+      const val = document.getElementById('newCategoryInput').value.trim();
+      if(val && !state.categories.includes(val)) {
+        state.categories.push(val);
+        document.getElementById('newCategoryInput').value = '';
+        renderCategoryManager();
+        await saveMeta();
+      }
+    };
+
+    window.removeCategory = async (cat) => {
+      if (confirm(`Remove category "${cat}"? Papers inside will remain but need recategorization.`)) {
+        state.categories = state.categories.filter(c => c !== cat);
+        renderCategoryManager();
+        await saveMeta();
+      }
+    };
 
     window.openCat = (c) => {
       document.getElementById('catOverviewPanel').style.display = 'none';
@@ -521,7 +624,7 @@
     window.closeCategoryFolder = () => renderCategories();
 
     // =======================================================================
-    // UPGRADED PDF PARSER (FIXED 4-5 QUESTION LIMIT BUG)
+    // UPGRADED PDF PARSER
     // =======================================================================
     document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
       const file = e.target.files[0]; if(!file) return;
@@ -538,7 +641,6 @@
     });
 
     function parsePdfData() {
-      // Group by roughly same Y coordinate to form proper lines
       const allLines = [];
       state.rawPages.forEach(pageItems => {
         pageItems.sort((a,b) => b.y - a.y);
@@ -550,7 +652,6 @@
         if(curLine) allLines.push(curLine.replace(/\s+/g,' ').trim());
       });
 
-      // UPGRADED REGEX: Extremely forgiving, captures any line starting with numbers 1 to 200
       const qStartRegex = /^\s*(?:Q\.?\s*)?([1-9][0-9]{0,2})\s*[.)\]-]\s*(.*)/i;
       const optRegex = /^\s*(?:\([a-e]\)|[a-e]\))\s*(.*)/i;
       
@@ -559,8 +660,6 @@
 
       for(let line of allLines) {
         line = line.trim(); if(!line) continue;
-        
-        // Strip common ads
         if(/testbook|adda247|subscribe|youtube|telegram/i.test(line)) continue;
 
         const qMatch = line.match(qStartRegex);
@@ -573,8 +672,8 @@
         if(curQ) {
           const oMatch = line.match(optRegex);
           if(oMatch) curQ.options.push(oMatch[1]);
-          else if(curQ.options.length === 0) curQ.question += "\n" + line; // Append multi-line question
-          else curQ.options[curQ.options.length-1] += " " + line; // Append multi-line option
+          else if(curQ.options.length === 0) curQ.question += "\n" + line; 
+          else curQ.options[curQ.options.length-1] += " " + line; 
         }
       }
       if(curQ) pushQ(curQ, questions);
@@ -586,17 +685,18 @@
     }
 
     function pushQ(q, arr) {
-      while(q.options.length < 4) q.options.push("Option " + (q.options.length+1)); // Fallback
+      while(q.options.length < 4) q.options.push("Option " + (q.options.length+1)); 
       arr.push(q);
     }
 
     window.saveStudioPaper = async () => {
       try {
         const qs = JSON.parse(document.getElementById('studioJsonTextarea').value);
+        if (qs.length === 0) throw new Error("No valid questions parsed.");
         const paper = {
           id: 'paper_'+Date.now(),
-          title: document.getElementById('studioTitle').value,
-          category: document.getElementById('studioCategorySelect').value,
+          title: document.getElementById('studioTitle').value || "Untitled Mock",
+          category: document.getElementById('studioCategorySelect').value || state.categories[0],
           duration: parseInt(document.getElementById('studioDuration').value),
           posMark: parseFloat(document.getElementById('studioPosMark').value),
           negMark: parseFloat(document.getElementById('studioNegMark').value),
@@ -604,8 +704,8 @@
         };
         state.papers.push(paper);
         if(currentUser) await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
-        alert("Paper saved!"); navTo('categories');
-      } catch(e) { alert("JSON Error: " + e.message); }
+        alert("Paper successfully saved to cloud!"); navTo('categories');
+      } catch(e) { alert("Data Error: " + e.message); }
     };
 
     // =======================================================================
@@ -624,22 +724,29 @@
       openExamUI();
     };
 
+    window.resumeExam = () => {
+      if (state.activeAttempt) openExamUI();
+    };
+
     function openExamUI() {
       document.getElementById('examOverlay').classList.add('active');
       document.getElementById('liveTitle').textContent = state.activeAttempt.title;
       document.getElementById('liveMeta').textContent = state.activeAttempt.category;
       renderLiveQ();
+      if(timerInt) clearInterval(timerInt);
       timerInt = setInterval(tickTimer, 1000);
+      tickTimer(); // Call immediately
     }
 
     function tickTimer() {
+      if (!state.activeAttempt) return;
       const rem = Math.floor((state.activeAttempt.deadline - Date.now())/1000);
       if(rem <= 0) { finalizeExam(); return; }
       state.activeAttempt.timeSpent[state.activeAttempt.currentIndex]++;
       
       const h = Math.floor(rem/3600), m = Math.floor((rem%3600)/60), s = rem%60;
       document.getElementById('liveTimer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      if(rem%10===0) saveMeta();
+      if(rem%10===0) saveMeta().catch(()=>{}); // Sync progress quietly
     }
 
     function renderLiveQ() {
@@ -667,9 +774,9 @@
     window.navQ = (dir) => { const n = state.activeAttempt.currentIndex + dir; if(n>=0 && n<state.activeAttempt.questions.length) { state.activeAttempt.currentIndex = n; renderLiveQ(); } };
     window.goToQ = (idx) => { state.activeAttempt.currentIndex = idx; renderLiveQ(); };
 
-    window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else document.exitFullscreen(); };
+    window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else document.exitFullscreen().catch(()=>{}); };
+    
     window.openSubmitModal = () => document.getElementById('submitModal').classList.add('active');
-    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
     window.finalizeExam = async () => {
       clearInterval(timerInt);
@@ -686,18 +793,21 @@
         score: (c*a.posMark)-(w*a.negMark), maxMarks: a.questions.length*a.posMark, correct: c, wrong: w,
         timeTaken: Math.floor((Date.now()-a.startTime)/1000)
       };
+      
       state.attempts.push(att);
-      state.activeAttempt = null;
+      state.activeAttempt = null; // Clear active attempt
       
       if(currentUser) {
         await setDoc(doc(db, "users", currentUser.uid, "attempts", att.id), att);
         await saveMeta();
       }
-      alert(`Submitted! Score: ${att.score} / ${att.maxMarks}`);
+      
+      alert(`Test Submitted Successfully!\nScore: ${att.score} / ${att.maxMarks}\nCorrect: ${att.correct} | Incorrect: ${att.wrong}`);
       navTo('dashboard');
     };
 
-    window.onload = () => navTo('landing');
+    // STARTUP
+    navTo('landing');
   </script>
 </body>
 </html>
