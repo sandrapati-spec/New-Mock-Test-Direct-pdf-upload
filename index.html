@@ -85,9 +85,10 @@
     mjx-container[display="true"] {
       display: block !important;
       margin: 10px 0 !important;
+      overflow-x: auto;
     }
 
-    /* High-Precision Vector SVG Diagram Container */
+    /* High-Precision Vector SVG / Cropped Diagram Container */
     .svg-diagram-box {
       background: #FFFFFF;
       border: 1.5px solid var(--border-strong);
@@ -116,7 +117,8 @@
       background: #FFFFFF;
       cursor: zoom-in;
     }
-    .svg-diagram-render svg {
+    .svg-diagram-render svg,
+    .svg-diagram-render img {
       max-width: 100%;
       max-height: 380px;
       width: auto;
@@ -354,7 +356,7 @@
     }
 
     /* MAIN CONTAINER & VIEWS */
-    .container { max-width: 1260px; margin: 0 auto; padding: 26px 24px; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 26px 24px; }
     .view-section { display: none; animation: fadeIn 0.2s ease; }
     .view-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -364,7 +366,7 @@
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
-    .studio-grid { display: grid; grid-template-columns: 400px 1fr; gap: 22px; }
+    .studio-grid { display: grid; grid-template-columns: 380px 1fr; gap: 22px; }
     @media (max-width: 980px) {
       .grid-2, .grid-3, .grid-4, .grid-5, .studio-grid { grid-template-columns: 1fr; }
     }
@@ -422,6 +424,8 @@
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); color: #fff; }
     .btn-success:hover { filter: brightness(0.95); }
+    .btn-purple { background: var(--purple); color: #fff; }
+    .btn-purple:hover { filter: brightness(0.95); }
     .btn-warning { background: var(--warning); color: #fff; }
     .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: rgba(220, 38, 38, 0.25); }
     .btn-danger:hover { background: var(--danger); color: #fff; }
@@ -554,7 +558,6 @@
       border-radius: 8px;
     }
     .opt-edit-item.correct { border-color: var(--success); background: var(--success-soft); }
-    .opt-edit-item input[type="text"] { border: none; background: transparent; padding: 2px; box-shadow: none; }
 
     /* FULL-SCREEN GATE/ESE EXAM OVERLAY (CLINICAL DAYLIGHT MODE) */
     #examOverlay {
@@ -789,7 +792,7 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      max-width: 650px;
+      max-width: 680px;
       width: 100%;
       padding: 24px;
       box-shadow: var(--shadow-lg);
@@ -833,14 +836,12 @@
     </div>
 
     <div class="header-right">
-      <!-- Global Category / Section Dropdown Filter + Manager -->
       <div class="section-pill" title="Switch or Filter Exam Category">
         <span style="font-size: 0.82rem; color: var(--muted);">🗂️ Category:</span>
         <select id="globalCategorySelect" onchange="onGlobalCategoryChange()"></select>
         <button class="icon-btn" style="width:26px;height:26px;border:none;" onclick="openModal('categoryModal')" title="Manage Exam Categories">⚙️</button>
       </div>
 
-      <!-- Firebase Google Sign-In Status Button -->
       <button class="btn btn-outline btn-sm" id="googleAuthBtn" onclick="handleGoogleAuth()">
         ☁️ <span id="authStatusLabel">Connecting Firebase...</span>
       </button>
@@ -870,7 +871,7 @@
         <span class="tag tag-primary" id="libCountBadge">0</span>
       </button>
       <button class="sidebar-link" id="nav-studio" onclick="switchView('studio')">
-        <span class="sidebar-link-left"><span>📄</span> <span>Create / Paste Mock Test</span></span>
+        <span class="sidebar-link-left"><span>📄</span> <span>Create / Merge Mock Test</span></span>
       </button>
       <button class="sidebar-link" id="nav-bookmarks" onclick="switchView('bookmarks')">
         <span class="sidebar-link-left"><span>🔖</span> <span>Bookmarked Questions</span></span>
@@ -886,13 +887,13 @@
         <span class="sidebar-link-left"><span>➕</span> <span>Manage Categories</span></span>
       </button>
       <button class="sidebar-link" onclick="closeVerticalSidebar();openModal('promptModal')">
-        <span class="sidebar-link-left"><span>🤖</span> <span>Engineered AI Prompt</span></span>
+        <span class="sidebar-link-left"><span>🤖</span> <span>2-Step AI Prompts</span></span>
       </button>
     </nav>
 
     <div class="sidebar-footer">
       <div><b>Firebase Project:</b> free-mock-test-by-srujan</div>
-      <div style="margin-top:4px;">LaTeX Math • Full SVG • MCQ/MSQ/NAT</div>
+      <div style="margin-top:4px;">Dual Auto-Merge • PDF Cropper • LaTeX</div>
     </div>
   </aside>
 
@@ -904,23 +905,20 @@
       <div class="landing-hero">
         <span class="tag tag-primary">YOUR PERSONAL EXAM LAB • FIREBASE CLOUD SYNCED</span>
         <h1>Prepare Like It's Exam Day.</h1>
-        <p>Convert any question paper into realistic GATE, ESE, Banking, and Insurance timed exams with <b>MathJax LaTeX equations</b>, <b>High-Precision Vector SVG Diagrams</b>, and full support for <b>MCQ, MSQ &amp; NAT</b> questions.</p>
+        <p>Extract all questions &amp; tables in one shot with <b>Prompt 1 (Questions + LaTeX)</b>, link SVGs or use the built-in <b>✂️ PDF Figure Cropper</b>, and practice with real GATE/ESE analytics!</p>
 
         <div class="search-bar-wrap">
           <input type="search" id="landingSearchInput" placeholder="🔍 Search ESE, GATE, UIIC AO, or any question paper..." oninput="handleLandingSearch(this.value)" />
         </div>
 
         <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-          <button class="btn btn-primary" style="padding: 12px 24px; font-size: 0.98rem;" onclick="switchView('studio')">➕ Create / Paste New Mock Test →</button>
+          <button class="btn btn-primary" style="padding: 12px 24px; font-size: 0.98rem;" onclick="switchView('studio')">➕ Create / Merge New Mock Test →</button>
           <button class="btn btn-outline" style="padding: 12px 20px;" onclick="switchView('dashboard')">📊 Open Control Dashboard</button>
-          <button class="btn btn-outline" style="padding: 12px 20px;" onclick="openModal('promptModal')">🤖 Copy Prompt-Engineered AI Prompt</button>
+          <button class="btn btn-outline" style="padding: 12px 20px;" onclick="openModal('promptModal')">🤖 Copy 2-Step AI Prompts</button>
         </div>
       </div>
 
-      <!-- Unfinished Attempt Crash-Recovery Banner -->
       <div id="landingResumeContainer"></div>
-
-      <!-- Instant Search Results Preview -->
       <div id="landingSearchResults" style="display: none; margin-bottom: 28px;"></div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -938,16 +936,14 @@
           <p style="font-size: 0.88rem; color: var(--muted);">Live metrics, score trends, and recent activity synced from Firebase Cloud.</p>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm" onclick="switchView('studio')">➕ Create / Paste New Paper</button>
+          <button class="btn btn-primary btn-sm" onclick="switchView('studio')">➕ Create / Merge New Paper</button>
           <button class="btn btn-outline btn-sm" onclick="openModal('categoryModal')">🗂️ Create Category</button>
           <button class="btn btn-outline btn-sm" onclick="switchView('categories')">📚 Browse Library</button>
         </div>
       </div>
 
-      <!-- Crash Recovery / Continue Unfinished Test Banner -->
       <div id="dashboardResumeContainer"></div>
 
-      <!-- 5 Real-Time KPI Cards -->
       <div class="grid-5" style="margin-bottom: 24px;">
         <div class="kpi-card">
           <div style="font-size: 0.78rem; color: var(--muted); font-weight: 600;">Exam Categories</div>
@@ -971,7 +967,6 @@
         </div>
       </div>
 
-      <!-- Progression Line Chart & Marks Comparison Bar Chart -->
       <div class="grid-2" style="margin-bottom: 24px;">
         <div class="card">
           <h3 style="font-size: 0.98rem; margin-bottom: 12px;">📈 Score & Accuracy Progression Line Chart</h3>
@@ -983,7 +978,6 @@
         </div>
       </div>
 
-      <!-- Recent Activity Table -->
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
           <h3 style="font-size: 1.05rem;">🕓 Recent Activity & Completed Attempts</h3>
@@ -1010,7 +1004,6 @@
 
     <!-- ======================= 3. EXAM CATEGORIES & PAPER LIBRARY ======================= -->
     <section id="view-categories" class="view-section">
-      <!-- Sub-View A: All Categories Grid -->
       <div id="categoriesOverviewPanel">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
           <div>
@@ -1022,7 +1015,6 @@
         <div class="grid-3" id="categoriesGridContainer"></div>
       </div>
 
-      <!-- Sub-View B: Inside a Specific Category's Paper Library -->
       <div id="categoryPaperLibraryPanel" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
           <div>
@@ -1088,10 +1080,10 @@
       </div>
     </section>
 
-    <!-- ======================= 5. CREATE MOCK TEST STUDIO (OLD SIMPLE PASTE / .TXT WORKFLOW) ======================= -->
+    <!-- ======================= 5. CREATE & AUTO-MERGE MOCK TEST STUDIO ======================= -->
     <section id="view-studio" class="view-section">
       <div class="studio-grid">
-        <!-- LEFT COLUMN: EXAM DETAILS & PROMPT-ENGINEERED AI PROMPT -->
+        <!-- LEFT COLUMN: EXAM DETAILS & TWO SPECIALIZED AI PROMPTS -->
         <div style="display: flex; flex-direction: column; gap: 18px;">
           <!-- Step 1: Exam Category & Paper Details -->
           <div class="card">
@@ -1127,92 +1119,142 @@
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
               <div>
                 <label class="field-label">Duration (Min)</label>
                 <input type="number" id="studioDuration" value="60" min="1" />
               </div>
               <div>
                 <label class="field-label">Marks / Correct</label>
-                <input type="number" id="studioPosMark" value="1" step="0.25" />
+                <input type="number" id="studioPosMark" value="1" step="0.25" oninput="applyCustomMarkRangesToStudio()" />
               </div>
               <div>
                 <label class="field-label">Negative (MCQ)</label>
-                <input type="number" id="studioNegMark" value="0.25" step="0.05" min="0" />
+                <input type="number" id="studioNegMark" value="0.25" step="0.05" min="0" oninput="applyCustomMarkRangesToStudio()" />
               </div>
+            </div>
+
+            <!-- Optional 2nd Tier Marking (e.g. GATE 2-Mark Questions) -->
+            <div style="background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 8px; padding: 8px 10px;">
+              <label class="field-label" style="margin-bottom: 4px; color: var(--primary);">
+                ⚡ Optional: Double-Mark Question Numbers (e.g. 6-10, 36-65)
+              </label>
+              <input
+                type="text"
+                id="studioTwoMarkRanges"
+                placeholder="Leave blank if all Qs have same marks, or type: 6-10, 36-65"
+                oninput="applyCustomMarkRangesToStudio()"
+                style="font-size: 0.8rem; padding: 6px 10px; background: #fff;"
+              />
             </div>
           </div>
 
-          <!-- Step 2: Prompt-Engineered AI Prompt Helper -->
+          <!-- Step 2: Two-Prompt Separation Strategy (Questions Prompt + Figures Prompt) -->
           <div class="card" style="background: var(--primary-soft); border-color: rgba(37, 99, 235, 0.28);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h2 style="font-size: 1rem; color: #1E3A8A;">2. Convert Any PDF via Free AI</h2>
-              <span class="tag tag-success">LaTeX + Full SVG + MCQ/MSQ/NAT</span>
+              <h2 style="font-size: 1rem; color: #1E3A8A;">2. Two-Step AI Prompts + PDF Cropper</h2>
+              <span class="tag tag-success">Auto-Merges by Q#</span>
             </div>
-            <p style="font-size: 0.82rem; color: #1E40AF; margin-bottom: 12px; line-height: 1.55;">
-              Upload your question PDF to Gemini or ChatGPT along with our <b>Prompt-Engineered Master Prompt</b>. It formats all exponents/fractions in clean <code>$...$</code> LaTeX, draws complete high-precision vector <code>[SVG_START]</code> diagrams, and preserves <b>MCQ, MSQ, and Numerical (NAT)</b> questions!
+            <p style="font-size: 0.8rem; color: #1E40AF; margin-bottom: 12px; line-height: 1.5;">
+              <b>Why 2 Prompts?</b> Extract all questions &amp; LaTeX `\begin{array}` tables with <b>Prompt 1</b>, then either paste SVGs from <b>Prompt 2</b> or click <b>✂️ Crop from PDF</b> in Preview to grab exact diagrams (~5 KB WebP)!
             </p>
-            <button class="btn btn-primary" id="copyEngineeredPromptBtn" style="width: 100%; margin-bottom: 8px;" onclick="copyEngineeredAiPrompt()">
-              📋 Copy Prompt-Engineered AI Prompt
+
+            <button class="btn btn-primary" id="copyPrompt1Btn" style="width: 100%; margin-bottom: 8px;" onclick="copyPrompt1QuestionsOnly()">
+              📋 1. Copy Prompt for Questions + LaTeX Tables
+            </button>
+            <button class="btn btn-purple" id="copyPrompt2Btn" style="width: 100%; margin-bottom: 8px;" onclick="copyPrompt2FiguresOnly()">
+              📐 2. Copy Prompt for SVG Figures Only (By Q#)
             </button>
             <button class="btn btn-outline btn-sm" style="width: 100%; background: #fff;" onclick="openModal('promptModal')">
-              👁️ View / Inspect Full Engineered Prompt
+              👁️ Inspect Both Engineered Prompts
             </button>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: STEP 3 — DIRECT PASTE OR UPLOAD .TXT/.PDF & VISUAL PREVIEW -->
+        <!-- RIGHT COLUMN: STEP 3 — DUAL INPUT (QUESTIONS + SEPARATE FIGURES) & AUTO-MERGER -->
         <div class="card" style="display: flex; flex-direction: column;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
             <div>
-              <h2 style="font-size: 1.08rem;">3. Paste Formatted Questions or Upload .TXT File</h2>
+              <h2 style="font-size: 1.08rem;">3. Upload / Paste Questions &amp; Figures (Auto-Merged by Q#)</h2>
               <p style="font-size: 0.8rem; color: var(--muted);">
-                Supports direct paste, <code>.txt</code> files, <code>$...$</code> LaTeX math, <code>[SVG_START]</code> diagrams, MCQ, MSQ &amp; NAT.
+                Paste or upload your <b>Questions `.txt`</b> on the left and your <b>Figures `.txt`</b> on the right. In <b>Preview</b>, you can also click <b>✂️ Crop from PDF</b> on any question!
               </p>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label class="btn btn-outline btn-sm" style="cursor: pointer;">
-                📂 Upload .TXT / .PDF
-                <input type="file" id="studioFileUploadInput" accept=".txt,.pdf,.json" style="display: none;" onchange="handleSimpleStudioFileUpload(event)" />
-              </label>
               <button class="btn btn-outline btn-sm" style="background: var(--warning-soft); border-color: rgba(217,119,6,0.35); color: #92400E;" onclick="loadComprehensiveDemoIntoStudio()">
-                ⚡ Load Demo (MCQ + MSQ + NAT + Diagrams)
+                ⚡ Load Split Demo (Questions + Separate Figures)
               </button>
             </div>
           </div>
 
-          <!-- Sub-Mode Tabs: Paste Text Box vs Visual Preview & Edit -->
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-primary btn-sm" id="tabBtnPasteText" onclick="switchStudioTab('raw')">📝 Paste / Edit Text</button>
-              <button class="btn btn-outline btn-sm" id="tabBtnVisualPreview" onclick="switchStudioTab('visual')">🔍 Preview Rendered Math, Diagrams &amp; Types</button>
+          <!-- Sub-Mode Tabs: Dual Paste/Upload vs Merged Visual Preview -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" id="tabBtnPasteText" onclick="switchStudioTab('raw')">📝 1. Paste / Upload Questions &amp; Figures</button>
+              <button class="btn btn-outline btn-sm" id="tabBtnVisualPreview" onclick="switchStudioTab('visual')">🔍 2. Preview Merged Test &amp; Crop PDF Figures</button>
             </div>
-            <span class="tag tag-primary" id="studioQCount">0 Questions Detected</span>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <span class="tag tag-primary" id="studioQCount">0 Questions</span>
+              <span class="tag tag-purple" id="studioFigCount">0 Figures Linked</span>
+            </div>
           </div>
 
-          <!-- TAB A: DIRECT PASTE TEXTAREA (DEFAULT, CLEAN & FAST LIKE OLD VERSION) -->
-          <div id="studio-tab-raw" style="flex: 1; display: flex; flex-direction: column;">
-            <textarea
-              id="directPasteInput"
-              rows="16"
-              oninput="handleDirectPasteLiveInput()"
-              style="flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.55;"
-              placeholder="Q1: The relationship between two variables $x$ and $y$ is given by $x + py + q = 0$ and is shown in the figure. Find the values of $p$ and $q$.
+          <!-- TAB A: DUAL SIDE-BY-SIDE QUESTIONS BOX + FIGURES BOX -->
+          <div id="studio-tab-raw" style="flex: 1; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px;">
+            <!-- Box 3A: Questions, Options, Answers & LaTeX -->
+            <div style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="field-label" style="margin: 0; color: var(--primary);">📄 A. Questions, Options &amp; Answers (Prompt 1 Output)</label>
+                <label class="btn btn-outline btn-sm" style="padding: 3px 9px; font-size: 0.74rem; cursor: pointer;">
+                  📂 Upload Questions .TXT
+                  <input type="file" accept=".txt,.pdf,.json" style="display: none;" onchange="handleQuestionsFileUpload(event)" />
+                </label>
+              </div>
+              <textarea
+                id="directPasteInput"
+                rows="15"
+                oninput="handleDirectPasteLiveInput()"
+                style="flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.5;"
+                placeholder="Paste Prompt 1 output (or upload Questions .txt) here:
+
+Q1: The relationship between $x$ and $y$ is $x + py + q = 0$ as shown in the figure. Find $p$ and $q$.
 Type: MCQ
-[SVG_START]
-<svg viewBox=&quot;0 0 420 220&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
-  ...
-</svg>
-[SVG_END]
+Section: General Aptitude
+Figure: YES
 A) $p = -\frac{1}{2} \; ; \; q = 2$
 B) $p = 2 \; ; \; q = -2$
 C) $p = \frac{1}{2} \; ; \; q = 4$
 D) $p = 2 \; ; \; q = 4$
 Answer: A
-Explanation: The line passes through $(-2, 0)$ and $(0, 4)$.
----
-Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
-            ></textarea>
+Explanation: Passes through $(-2, 0)$ and $(0, 4)$.
+---"
+              ></textarea>
+            </div>
+
+            <!-- Box 3B: Separate SVG / ASCII Figures by Question Number -->
+            <div style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="field-label" style="margin: 0; color: var(--purple);">📐 B. Separate Figures by Q# (Prompt 2 or PDF Crops)</label>
+                <label class="btn btn-outline btn-sm" style="padding: 3px 9px; font-size: 0.74rem; cursor: pointer;">
+                  📂 Upload Figures .TXT
+                  <input type="file" accept=".txt,.svg" style="display: none;" onchange="handleFiguresFileUpload(event)" />
+                </label>
+              </div>
+              <textarea
+                id="figuresPasteInput"
+                rows="15"
+                oninput="handleDirectPasteLiveInput()"
+                style="flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.5; border-color: rgba(124, 58, 237, 0.35);"
+                placeholder="Paste Prompt 2 output (or upload Figures .txt) here, OR switch to '2. Preview Merged Test' to crop figures directly from your PDF!
+
+FIGURE Q1:
+[SVG_START]
+<svg viewBox=&quot;0 0 480 240&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  ...
+</svg>
+[SVG_END]"
+              ></textarea>
+            </div>
           </div>
 
           <!-- TAB B: VISUAL VERIFICATION & LIVE MATHJAX / SVG PREVIEW -->
@@ -1223,10 +1265,10 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
           <!-- Bottom Action Bar -->
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
             <div id="studioStatusText" style="font-size: 0.83rem; font-weight: 600; color: var(--muted);">
-              Ready to parse questions, LaTeX equations, and SVG diagrams.
+              Ready to parse and auto-merge questions &amp; figures.
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <button class="btn btn-outline" onclick="saveStudioPaperToFirebase(false)">💾 Save Paper to Category</button>
+              <button class="btn btn-outline" onclick="saveStudioPaperToFirebase(false)">💾 Save Merged Paper to Category</button>
               <button class="btn btn-success" style="padding: 10px 22px; font-size: 0.94rem;" onclick="saveStudioPaperToFirebase(true)">
                 🚀 Start Mock Test Now →
               </button>
@@ -1322,7 +1364,7 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
         <div class="card">
           <h3 style="font-size: 1.05rem; margin-bottom: 14px;">Portable JSON Backup & Restore</h3>
           <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;">
-            All your categories, papers, and attempts are automatically stored in your <b>Firebase Cloud Firestore</b> (`free-mock-test-by-srujan`). You can also download a portable backup file anytime.
+            All your categories, papers, and attempts are automatically stored in your <b>Firebase Cloud Firestore</b> (`free-mock-test-by-srujan`) and cached locally on your device.
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
             <button class="btn btn-primary" onclick="exportFullBackupJSON()">📥 Export Complete Backup (.json)</button>
@@ -1384,15 +1426,51 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
         Every retest creates a brand-new attempt record in Firebase without overwriting your previous scores:
       </p>
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-primary" style="justify-content: flex-start; padding: 14px;" id="btnRetestStandard">
-          ▶️ <div><div style="text-align:left;">Retake Exact Same Paper</div><div style="font-size:0.75rem;opacity:0.85;font-weight:400;">Original question & option order to benchmark speed improvement.</div></div>
+        <button type="button" class="btn btn-primary" style="justify-content: flex-start; padding: 14px;" id="btnRetestStandard" onclick="executeRetestMode('STANDARD')">
+          ▶️ <div><div style="text-align:left;">Retake Exact Same Paper</div><div style="font-size:0.75rem;opacity:0.85;font-weight:400;">Original question &amp; option order to benchmark speed improvement.</div></div>
         </button>
-        <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestRandom">
+        <button type="button" class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestRandom" onclick="executeRetestMode('RANDOMIZED')">
           🔀 <div><div style="text-align:left;">Randomized Retest (Shuffled)</div><div style="font-size:0.75rem;color:var(--muted);font-weight:400;">Shuffles question order and option order while keeping answer keys mapped.</div></div>
         </button>
-        <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestIncorrect">
-          🎯 <div><div style="text-align:left;">Retry Incorrect & Unanswered Questions Only</div><div style="font-size:0.75rem;color:var(--muted);font-weight:400;">Generates a focused practice session from your mistakes in the last attempt.</div></div>
+        <button type="button" class="btn btn-outline" style="justify-content: flex-start; padding: 14px;" id="btnRetestIncorrect" onclick="executeRetestMode('INCORRECT_ONLY')">
+          🎯 <div><div style="text-align:left;">Retry Incorrect &amp; Unanswered Questions Only</div><div style="font-size:0.75rem;color:var(--muted);font-weight:400;">Generates a focused practice session from your mistakes in the last attempt.</div></div>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= PDF FIGURE CROPPER MODAL (5KB WEBP + WATERMARK FADE) ======================= -->
+  <div class="modal-backdrop" id="pdfCropModal">
+    <div class="modal" style="max-width: 860px;">
+      <div class="modal-header">
+        <h3 id="pdfCropModalTitle">✂️ Crop Exact Figure from PDF (Auto-Compressed ~5 KB)</h3>
+        <button class="icon-btn" onclick="closeModal('pdfCropModal')">✕</button>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+        <label class="btn btn-primary btn-sm" style="cursor: pointer;">
+          📂 1. Select Exam PDF
+          <input type="file" accept=".pdf" style="display: none;" onchange="loadPdfIntoCropper(event)" />
+        </label>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="changeCropperPage(-1)">◀ Prev</button>
+          <span style="font-size: 0.82rem; font-weight: 700;">Page <input type="number" id="cropPageInput" value="1" min="1" style="width: 58px; padding: 4px 6px; text-align: center;" onchange="goToCropperPage(this.value)" /> / <span id="cropTotalPages">0</span></span>
+          <button type="button" class="btn btn-outline btn-sm" onclick="changeCropperPage(1)">Next ▶</button>
+        </div>
+        <select id="cropFilterMode" style="width: auto; padding: 6px 10px; font-size: 0.8rem;">
+          <option value="fade" selected>✨ Soft Watermark Fade (Keeps Shading)</option>
+          <option value="original">🎨 Original Colors</option>
+          <option value="bw">⚫ Crisp High-Contrast B&amp;W</option>
+        </select>
+        <button type="button" class="btn btn-success btn-sm" onclick="confirmAndSavePdfCrop()">✅ Save Crop to Question</button>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--muted); margin-bottom: 8px;">
+        Drag a box on the PDF page below around the circuit/graph (or all 4 option graphs), then click <b>✅ Save Crop to Question</b>:
+      </p>
+      <div id="cropCanvasWrap" style="position: relative; max-height: 62vh; overflow: auto; background: #0F172A; border-radius: 10px; text-align: center; padding: 10px; user-select: none; touch-action: none;">
+        <div style="position: relative; display: inline-block;">
+          <canvas id="pdfCropCanvas" style="max-width: 100%; cursor: crosshair; border-radius: 4px;"></canvas>
+          <div id="pdfCropSelectionBox" style="display: none; position: absolute; border: 2.5px dashed #2563EB; background: rgba(37, 99, 235, 0.14); pointer-events: none;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1419,10 +1497,8 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
         <div class="exam-subtabs" id="examSubTabs"></div>
 
         <div class="exam-workspace" id="examWorkspace">
-          <!-- Shared Passage Pane (Shown automatically when a question has a linked passage) -->
           <div class="passage-pane" id="livePassagePane" style="display: none;"></div>
 
-          <!-- Main Question & Diagram & Answer Pane -->
           <div class="question-pane">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
               <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -1437,7 +1513,7 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
             <!-- Question Text (Rendered with MathJax LaTeX) -->
             <div id="liveQuestionText" style="font-size: 1.04rem; font-weight: 500; white-space: pre-wrap; line-height: 1.65;"></div>
 
-            <!-- High-Precision Vector SVG Diagram Window (Automatically shown if question has [SVG_START]) -->
+            <!-- High-Precision Vector SVG / Cropped PDF Diagram Window -->
             <div id="liveSvgBox" class="svg-diagram-box" style="display: none;">
               <div class="svg-diagram-header">
                 <span>📐 Question Figure / Circuit / Graph</span>
@@ -1446,7 +1522,7 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
               <div id="liveSvgRender" class="svg-diagram-render" onclick="openSvgZoomModal(this.innerHTML)"></div>
             </div>
 
-            <!-- ASCII Text Schematic Window (Automatically shown if question has [DIAGRAM_START]) -->
+            <!-- ASCII Text Schematic Window -->
             <div id="liveAsciiBox" class="ascii-diagram-box" style="display: none;">
               <div class="ascii-diagram-header">▣ Monospace Schematic View</div>
               <pre id="liveAsciiPre" class="ascii-diagram-pre"></pre>
@@ -1529,18 +1605,22 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
     </div>
   </div>
 
-  <!-- ======================= PROMPT-ENGINEERED AI PROMPT MODAL ======================= -->
+  <!-- ======================= TWO-STEP AI PROMPTS MODAL ======================= -->
   <div class="modal-backdrop" id="promptModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>🤖 Prompt-Engineered AI Extraction Prompt</h3>
+        <h3>🤖 Two-Step Engineered AI Prompts (Questions + Separate Figures)</h3>
         <button class="icon-btn" onclick="closeModal('promptModal')">✕</button>
       </div>
-      <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 10px;">
-        Upload your question paper PDF to Gemini or ChatGPT and paste this prompt. It instructs the AI to write <b>complete, high-precision vector SVG diagrams</b>, format all exponents/fractions in <b>LaTeX (<code>$...$</code>)</b>, and preserve <b>MCQ, MSQ, and Numerical (NAT)</b> question types:
-      </p>
-      <textarea id="aiPromptText" rows="14" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; margin-bottom: 12px; background: #0F172A; color: #F8FAFC;"></textarea>
-      <button class="btn btn-primary" style="width: 100%;" onclick="copyEngineeredAiPrompt(); closeModal('promptModal');">📋 Copy Engineered Prompt to Clipboard</button>
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="showPromptInModal(1)">📄 View Prompt 1 (Questions + LaTeX Tables)</button>
+        <button class="btn btn-purple btn-sm" style="flex: 1;" onclick="showPromptInModal(2)">📐 View Prompt 2 (SVG Figures Only)</button>
+      </div>
+      <textarea id="aiPromptText" rows="13" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; margin-bottom: 12px; background: #0F172A; color: #F8FAFC;"></textarea>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" style="flex: 1;" onclick="copyPrompt1QuestionsOnly(); closeModal('promptModal');">📋 Copy Prompt 1 (Questions)</button>
+        <button class="btn btn-purple" style="flex: 1;" onclick="copyPrompt2FiguresOnly(); closeModal('promptModal');">📐 Copy Prompt 2 (Figures)</button>
+      </div>
     </div>
   </div>
 
@@ -1616,15 +1696,20 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
     let timerInterval = null;
     let currentReviewAttempt = null;
     let currentHistoryPaperId = null;
+    let currentRetestPaperId = null;
     let dashLineChart = null, dashBarChart = null, scatterChart = null;
 
     // ============================================================================
-    // 2. MATHJAX LATEX RENDERER, UNICODE NORMALIZER & SVG SANITIZER
+    // 2. MATHJAX LATEX RENDERER, UNICODE NORMALIZER & SVG / WEBP SANITIZER
     // ============================================================================
     function normalizeMathText(str) {
       if (!str) return "";
-      // NFKC normalization converts mathematical italic Unicode (𝑥, 𝑦, 𝑝, 𝑞) into standard readable letters
-      let normalized = String(str).normalize("NFKC");
+      let s = String(str);
+      const supMap = { "⁰":"^0","¹":"^1","²":"^2","³":"^3","⁴":"^4","⁵":"^5","⁶":"^6","⁷":"^7","⁸":"^8","⁹":"^9","⁺":"^+","⁻":"^-" };
+      const subMap = { "₀":"_0","₁":"_1","₂":"_2","₃":"_3","₄":"_4","₅":"_5","₆":"_6","₇":"_7","₈":"_8","₉":"_9" };
+      s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]/g, m => supMap[m] || m)
+           .replace(/[₀₁₂₃₄₅₆₇₈₉]/g, m => subMap[m] || m);
+      let normalized = s.normalize("NFKC");
       normalized = normalized.replace(/\u2212/g, "-");
       normalized = normalized.replace(/[\uF000-\uF8FF]+/g, " _____ ");
       return normalized;
@@ -1633,19 +1718,18 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
     function formatRichMathHtml(rawStr) {
       if (!rawStr) return "";
       const clean = escapeHtml(normalizeMathText(rawStr));
-      // Style fill-in-the-blank underscores (3+ underscores) as a clean exam blank underline
-      let formatted = clean.replace(
-        /_{3,}/g,
-        '<span style="display:inline-block;min-width:58px;border-bottom:2px solid var(--primary);margin:0 4px;padding:0 4px;text-align:center;color:var(--primary);font-family:monospace;font-size:0.85em;">&nbsp;&nbsp;&nbsp;</span>'
-      );
-      // Fallback superscript/subscript formatting if plain carets (e.g., 10^-6 or x^2) are used outside $...$ LaTeX
-      if (!formatted.includes("$") && !formatted.includes("\\(")) {
-        formatted = formatted
-          .replace(/\^\{([^}]+)\}/g, "<sup>$1</sup>")
-          .replace(/\^([+\-]?\d+[A-Za-z]*)/g, "<sup>$1</sup>")
-          .replace(/_\{([^}]+)\}/g, "<sub>$1</sub>");
-      }
-      return formatted;
+      const parts = clean.split(/(\$\$[\s\S]*?\$\$|\$[^$]+\$)/g);
+      return parts.map(part => {
+        if (part.startsWith("$")) return part;
+        let p = part.replace(
+          /_{3,}/g,
+          '<span style="display:inline-block;min-width:58px;border-bottom:2px solid var(--primary);margin:0 4px;padding:0 4px;text-align:center;color:var(--primary);font-family:monospace;font-size:0.85em;">&nbsp;&nbsp;&nbsp;</span>'
+        );
+        p = p.replace(/\^\{([^}]+)\}/g, "<sup>$1</sup>")
+             .replace(/\^([+\-]?\d+[A-Za-z]*)/g, "<sup>$1</sup>")
+             .replace(/_\{([^}]+)\}/g, "<sub>$1</sub>");
+        return p;
+      }).join("");
     }
 
     function triggerMathJax(containerEl) {
@@ -1658,18 +1742,23 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
 
     function sanitizeSvgMarkup(rawSvg) {
       if (!rawSvg) return "";
-      let cleaned = rawSvg
+      const trimmed = String(rawSvg).trim();
+      if (trimmed.startsWith("data:image/")) {
+        return `<img src="${trimmed}" alt="Question Figure" style="max-width:100%;max-height:380px;width:auto;height:auto;margin:0 auto;display:block;border-radius:6px;" />`;
+      }
+      if (/^<img\s/i.test(trimmed)) {
+        return trimmed.replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "");
+      }
+      let cleaned = trimmed
         .replace(/```(?:svg|xml|html)?/gi, "")
         .replace(/```/g, "")
         .trim();
       cleaned = cleaned
         .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
-        .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "");
-      // Strip accidental 1000-line full-page PDF base64 raster dumps while keeping all vector paths & text
-      cleaned = cleaned
+        .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
         .replace(/<mask[\s\S]*?>[\s\S]*?<\/mask>/gi, "")
-        .replace(/<image[^>]*xlink:href=["']data:image\/[^"']{5000,}["'][^>]*\/?>/gi, "")
-        .replace(/<image[^>]*href=["']data:image\/[^"']{5000,}["'][^>]*\/?>/gi, "");
+        .replace(/<image[^>]*xlink:href=["']data:image\/[^"']{80000,}["'][^>]*\/?>/gi, "")
+        .replace(/<image[^>]*href=["']data:image\/[^"']{80000,}["'][^>]*\/?>/gi, "");
       return cleaned;
     }
 
@@ -1679,72 +1768,169 @@ Q2: [Next Question (MCQ, MSQ with Answer: A, C, or NAT with Answer: 25.5)]"
     };
 
     // ============================================================================
-    // 3. PROMPT-ENGINEERED MASTER PROMPT (UNRESTRICTED HIGH-PRECISION SVG + LATEX + ALL TYPES)
+    // 3. TWO SPECIALIZED PROMPTS (WITH LATEX TABLES & 2x2 MULTI-FIGURE GRID RULES)
     // ============================================================================
-    function getEngineeredPromptText() {
+    function getPrompt1QuestionsText() {
       return `<ROLE>
-You are an expert Technical Exam Document Parser, Mathematical LaTeX Typesetter, and High-Precision Vector SVG Schematic Designer. Your task is to convert EVERY question, diagram, option, and answer from the attached exam PDF(s) into the strict plain-text format below.
+You are an expert Technical Exam Transcriber and Mathematical LaTeX Typesetter. Extract EVERY main question, option, answer, and explanation from the attached exam PDF(s) into the strict plain-text format below.
 </ROLE>
 
-<CRITICAL_CONSTRAINTS>
-1. CLEAN LATEX FOR ALL EXPONENTS, POWERS, FRACTIONS & SYMBOLS:
-   - Wrap ALL mathematical expressions, exponents, powers, subscripts, fractions, matrices, integrals,phasor angles, and Greek letters in inline LaTeX \`$ ... $\` delimiters (or \`$$ ... $$\` for multi-line matrices/equations).
-   - Examples: Write \`$e^{-2t}$\`, \`$10^{-6}\\text{ F}$\`, \`$p = -\\frac{1}{2}$\`, \`$V_{AB}$\`, \`$\\sqrt{R^2 + X_L^2}$\`, \`$36.87^\\circ$\`, \`$\\Omega$\`.
-   - NEVER use raw PDF Unicode mathematical italic characters (like 𝑥, 𝑦, 𝑝) or leave blank spaces where fraction bars or exponents belong.
-   - For fill-in-the-blank questions, use 5 standard underscores \`_____\`.
-
-2. HIGH-PRECISION, COMPLETE VECTOR SVG DIAGRAMS ([SVG_START] ... [SVG_END]):
-   - Whenever a question contains a circuit diagram, graph, phasor, control block diagram, Venn diagram, geometry figure, or visual table, recreate it with 100% visual accuracy using inline \`<svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg">\` wrapped between \`[SVG_START]\` and \`[SVG_END]\`.
-   - DO NOT oversimplify or abbreviate the SVG! Use as many vector elements (\`<path>\`, \`<line>\`, \`<circle>\`, \`<rect>\`, \`<polygon>\`, \`<g>\`, \`<defs>\`, \`<marker>\` for arrowheads, proper resistor zig-zags, inductor coils, capacitor plates, axes ticks, dashed projection lines, and \`<text>\` labels) as needed so the diagram is crystal-clear, well-proportioned, and textbook-accurate.
-   - Ensure all text labels, node letters, component values, and coordinates inside the SVG have generous spacing and never overlap lines.
-   - NEVER embed raw full-page base64 PNG dumps (\`<image xlink:href="data:image/png;base64...">\`). Draw pure vector SVG shapes and text.
-
-3. EXACT QUESTION TYPE SUPPORT (MCQ, MSQ, NAT):
-   - Specify \`Type: MCQ\` (Single Correct), \`Type: MSQ\` (Multiple Select — 1 or more correct options), or \`Type: NAT\` (Numerical Answer Type — no options, numeric value/range answer) on each question.
-   - For \`Type: MCQ\`: Provide options \`A)\`, \`B)\`, \`C)\`, \`D)\` and \`Answer: B\` (single letter).
-   - For \`Type: MSQ\`: Provide options \`A)\`, \`B)\`, \`C)\`, \`D)\` and \`Answer: A, C\` (comma-separated correct letters).
-   - For \`Type: NAT\`: Omit options A-D and write \`Answer: 25.5\` or the official range \`Answer: 24.8 to 25.2\`.
-
-4. NO TRUNCATION & SEQUENTIAL COMPLETENESS:
-   - Separate every question strictly with \`---\` on its own line.
-   - If the paper has more than 25 questions, output Q1 to Q25 completely first, then pause and ask "Reply CONTINUE for Q26+" so no question or SVG is ever cut off mid-output.
-</CRITICAL_CONSTRAINTS>
+<CRITICAL_RULES>
+1. DO NOT DRAW DIAGRAMS IN THIS STEP: Skip circuit/graph SVGs here. If a question or its options contain a figure/circuit/graph, add \`Figure: YES\` right below \`Section:\`. (Ignore pages titled "EXTRA (BUFFER) Questions" at the end of the PDF unless requested.)
+2. RENDER ALL DATA TABLES USING LATEX ARRAY:
+   - Whenever a question contains a data/score/time table (like Student P & Q scores or Time vs Output), include the complete table directly inside the question text using display LaTeX:
+     \`$$\\begin{array}{|c|c|c|} \\hline \\textbf{Col 1} & \\textbf{Col 2} & \\textbf{Col 3} \\\\ \\hline 1 & 2 & 3 \\\\ \\hline \\end{array}$$\`
+3. CLEAN LATEX FOR ALL MATH, EXPONENTS & FRACTIONS:
+   - Wrap ALL mathematical expressions, exponents, subscripts, fractions, matrices, integrals, phasor angles, and Greek letters in inline LaTeX \`$ ... $\` delimiters (e.g., \`$e^{-2t}$\`, \`$p = -\\frac{1}{2}$\`, \`$V_{AB}$\`, \`$\\Omega$\`).
+   - For fill-in-the-blank questions, use 5 underscores \`_____\`.
+4. EXACT QUESTION TYPES (MCQ, MSQ, NAT):
+   - Include \`Type: MCQ\`, \`Type: MSQ\`, or \`Type: NAT\` (no options A-D).
+   - If options A, B, C, D in the PDF are diagrams/graphs, write \`A) Fig. (A)\`, \`B) Fig. (B)\`, \`C) Fig. (C)\`, \`D) Fig. (D)\` (or \`Fig. (i)\` to \`Fig. (iv)\`) and set \`Figure: YES\`.
+   - Separate every question with \`---\`.
+</CRITICAL_RULES>
 
 <OUTPUT_SCHEMA>
-Q1: [Full Question Text with $...$ LaTeX]
+Q1: [Full Question Text + any LaTeX $$\\begin{array}...\\end{array}$$ table]
 Type: [MCQ or MSQ or NAT]
-Section: [Subject or Section Name, e.g., Electrical Engineering / General Aptitude]
-[SVG_START]
-<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
-  <!-- Complete, high-precision vector diagram with all labels and arrows (omit [SVG_START]...[SVG_END] if no figure) -->
-</svg>
-[SVG_END]
+Section: [Subject Name]
+Figure: [YES or NO]
 A) [Option A with $...$ LaTeX (omit A-D if Type: NAT)]
 B) [Option B with $...$ LaTeX]
 C) [Option C with $...$ LaTeX]
 D) [Option D with $...$ LaTeX]
-Answer: [Single letter "B" for MCQ | Multiple letters "A, C" for MSQ | Number or range "24.5 to 25.5" for NAT]
-Explanation: [Step-by-step solution using $...$ LaTeX]
+Answer: [B | A, C | 25.5]
+Explanation: [Concise solution using $...$ LaTeX]
 ---
-</OUTPUT_SCHEMA>
-
-Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_SCHEMA> strictly.`;
+</OUTPUT_SCHEMA>`;
     }
 
-    document.getElementById("aiPromptText").value = getEngineeredPromptText();
+    function getPrompt2FiguresText() {
+      return `<ROLE>
+You are a High-Precision Vector SVG Schematic & Technical Diagram Designer. Recreate ONLY the figures, circuits, graphs, Venn diagrams, and control blocks for questions that have visuals. (Tip: If there are more than 15 figures, generate them in 2 batches so no diagram is simplified!)
+</ROLE>
 
-    window.copyEngineeredAiPrompt = () => {
-      navigator.clipboard.writeText(getEngineeredPromptText());
-      const btn = document.getElementById("copyEngineeredPromptBtn");
+<CRITICAL_SVG_RULES>
+1. ONLY QUESTIONS WITH FIGURES: Output ONLY questions with diagrams, tagged by exact Question Number (\`FIGURE Q3:\`, \`FIGURE Q4:\`, etc.).
+2. NEVER SPOIL MULTI-DIAGRAM OPTIONS:
+   - If Options (A), (B), (C), (D) or Fig. (i)–(iv) are 4 different graphs/circuits/gates, you MUST draw ALL 4 diagrams arranged in a neat 2x2 grid inside the SVG labeled (A), (B), (C), (D) or Fig. (i)–(iv). NEVER draw only the single correct option!
+   - For matching questions (like Column-I text vs Column-II Venn diagrams), draw both columns clearly in their exact P, Q, R, S order.
+3. FORBID BOTTOM TEXT DUMPS:
+   - Place every label (\`V_in\`, \`V_out\`, \`+V_DD\`, \`-V_EE\`, node letters, polarity \`+\`/\`-\` signs at summing junctions) at its exact coordinate on the circuit/graph. NEVER dump leftover labels in a single text line at the bottom of the SVG!
+4. Separate each figure block with \`---\`.
+</CRITICAL_SVG_RULES>
+
+<OUTPUT_SCHEMA>
+FIGURE Q3:
+[SVG_START]
+<svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <!-- Complete vector diagram for Q3 -->
+</svg>
+[SVG_END]
+---
+</OUTPUT_SCHEMA>`;
+    }
+
+    document.getElementById("aiPromptText").value = getPrompt1QuestionsText();
+
+    window.showPromptInModal = (num) => {
+      document.getElementById("aiPromptText").value = num === 1 ? getPrompt1QuestionsText() : getPrompt2FiguresText();
+    };
+
+    window.copyPrompt1QuestionsOnly = () => {
+      navigator.clipboard.writeText(getPrompt1QuestionsText());
+      const btn = document.getElementById("copyPrompt1Btn");
       if (btn) {
         const old = btn.innerHTML;
-        btn.innerHTML = "✅ Copied Engineered Prompt to Clipboard!";
+        btn.innerHTML = "✅ Copied Prompt 1 (Questions + LaTeX)!";
+        setTimeout(() => (btn.innerHTML = old), 2500);
+      }
+    };
+
+    window.copyPrompt2FiguresOnly = () => {
+      navigator.clipboard.writeText(getPrompt2FiguresText());
+      const btn = document.getElementById("copyPrompt2Btn");
+      if (btn) {
+        const old = btn.innerHTML;
+        btn.innerHTML = "✅ Copied Prompt 2 (Figures Only)!";
         setTimeout(() => (btn.innerHTML = old), 2500);
       }
     };
 
     // ============================================================================
-    // 4. UNIVERSAL PARSER: SUPPORTS MCQ, MSQ, NAT, LATEX, [SVG_START] & JSON
+    // 4. SEPARATE FIGURES PARSER & AUTO-MERGER BY QUESTION NUMBER (Q3 -> Q3)
+    // ============================================================================
+    function normalizeQuestionKey(rawKey) {
+      if (!rawKey) return "";
+      return String(rawKey)
+        .toUpperCase()
+        .replace(/^(?:FIGURE|FIG|DIAGRAM|QUESTION|Q|\s|\.)+/g, "")
+        .replace(/[^0-9A-Z]/g, "")
+        .replace(/^0+(\d)/, "$1");
+    }
+
+    function parseSeparateFiguresMap(rawFiguresText) {
+      const figMap = new Map();
+      const cleaned = (rawFiguresText || "").replace(/\r\n/g, "\n").trim();
+      if (!cleaned) return figMap;
+
+      let blocks = cleaned
+        .split(/\n\s*---+\s*\n/)
+        .map(b => b.trim())
+        .filter(Boolean);
+
+      if (blocks.length <= 1) {
+        blocks = cleaned
+          .split(/\n(?=(?:FIGURE|FIG|DIAGRAM)?\s*(?:Q\.?\s*\d+[A-Za-z]?|Question\s*\d+)[\s:.)])/i)
+          .map(b => b.trim())
+          .filter(Boolean);
+      }
+
+      for (const block of blocks) {
+        const headerMatch = block.match(/(?:^|\n)\s*(?:FIGURE|FIG|DIAGRAM)?\s*(?:Q(?:uestion)?\.?\s*(\d+[A-Za-z]?)|(\d+[A-Za-z]?))\s*[:.)\-]?/i);
+        if (!headerMatch) continue;
+        const qKey = normalizeQuestionKey(headerMatch[1] || headerMatch[2]);
+        if (!qKey) continue;
+
+        const svgMatch = block.match(/\[SVG_START\]([\s\S]*?)\[SVG_END\]/i) || block.match(/(<svg[\s\S]*?<\/svg>)/i) || block.match(/(<img\s[^>]*>)/i);
+        const asciiMatch = block.match(/\[DIAGRAM_START\]([\s\S]*?)\[DIAGRAM_END\]/i);
+
+        if (svgMatch) {
+          figMap.set(qKey, { svg: sanitizeSvgMarkup(svgMatch[1]), diagram: "" });
+        } else if (asciiMatch) {
+          figMap.set(qKey, { svg: "", diagram: asciiMatch[1].replace(/^\n+|\n+$/g, "") });
+        }
+      }
+
+      return figMap;
+    }
+
+    function parseAndMergeQuestionsAndFigures(rawQuestionsText, rawFiguresText) {
+      const questions = parseUniversalQuestions(rawQuestionsText);
+      const figMap = parseSeparateFiguresMap(rawFiguresText);
+
+      let matchedFiguresCount = 0;
+      const matchedLabels = [];
+
+      questions.forEach((q, idx) => {
+        const keyByOrig = normalizeQuestionKey(q.origQKey || String(idx + 1));
+        const matchedFig = figMap.get(keyByOrig);
+
+        if (matchedFig) {
+          if (matchedFig.svg) q.svg = matchedFig.svg;
+          if (matchedFig.diagram) q.diagram = matchedFig.diagram;
+          matchedFiguresCount++;
+          matchedLabels.push(`Q${q.origQKey || (idx + 1)}`);
+        } else if (q.svg || q.diagram) {
+          matchedFiguresCount++;
+          matchedLabels.push(`Q${q.origQKey || (idx + 1)}`);
+        }
+      });
+
+      return { questions, matchedFiguresCount, matchedLabels };
+    }
+
+    // ============================================================================
+    // 5. UNIVERSAL QUESTIONS PARSER (SUPPORTS MCQ, MSQ, NAT, LATEX & INLINE SVG)
     // ============================================================================
     function parseUniversalQuestions(rawInput) {
       const cleanedInput = (rawInput || "").replace(/\r\n/g, "\n").trim();
@@ -1752,7 +1938,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
 
       const defaultSec = document.getElementById("studioSubject")?.value.trim() || "General";
 
-      // 1. Check if the user pasted a JSON array
       const jsonCandidate = cleanedInput
         .replace(/^```(?:json|javascript|text)?\s*/i, "")
         .replace(/\s*```$/i, "")
@@ -1762,12 +1947,9 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
           const parsed = JSON.parse(jsonCandidate);
           const arr = Array.isArray(parsed) ? parsed : (parsed.questions || [parsed]);
           return arr.map((q, idx) => normalizeQuestionObject(q, idx + 1, defaultSec));
-        } catch (e) {
-          // Fall through to text block parser
-        }
+        } catch (e) {}
       }
 
-      // 2. Split by "---" separator OR by Q1:, Q.1, Question 1 boundaries
       let blocks = cleanedInput
         .split(/\n\s*---+\s*\n/)
         .map(b => b.trim())
@@ -1790,12 +1972,14 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         const rawLines = block.split("\n");
         if (rawLines.length < 2) continue;
 
+        let origQKey = "";
         let questionLines = [];
         let passageLines = [];
         let svgLines = [];
         let diagramLines = [];
         const options = [];
         let explicitType = "";
+        let needsFigureFlag = false;
         let sectionName = defaultSec;
         let rawAnswerStr = "";
         let explanationLines = [];
@@ -1807,7 +1991,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         for (const rawLine of rawLines) {
           const trimmedLine = rawLine.trim();
 
-          // Vector SVG Block [SVG_START] ... [SVG_END]
           if (/^\[SVG_START\]$/i.test(trimmedLine)) {
             insideSvg = true;
             continue;
@@ -1825,7 +2008,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
             }
           }
 
-          // ASCII Schematic Block [DIAGRAM_START] ... [DIAGRAM_END]
           if (/^\[DIAGRAM_START\]$/i.test(trimmedLine)) {
             insideDiagram = true;
             continue;
@@ -1841,9 +2023,10 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
 
           if (!trimmedLine) continue;
 
-          // Metadata lines: Type:, Section:, Passage:
           const typeMatch = trimmedLine.match(/^Type\s*[:\-]\s*(MCQ|MSQ|NAT)/i);
           const secMatch = trimmedLine.match(/^Section\s*[:\-]\s*(.+)$/i);
+          const figFlagMatch = trimmedLine.match(/^Figure\s*[:\-]\s*(YES|TRUE|REQUIRED)/i);
+          const figNoMatch = trimmedLine.match(/^Figure\s*[:\-]\s*(NO|FALSE|NONE)/i);
           const passMatch = trimmedLine.match(/^(?:Passage|Directions)\s*[:\-]\s*(.+)$/i);
 
           if (typeMatch && mode === "question") {
@@ -1852,6 +2035,13 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
           }
           if (secMatch && mode === "question") {
             sectionName = secMatch[1].trim();
+            continue;
+          }
+          if (figFlagMatch && mode === "question") {
+            needsFigureFlag = true;
+            continue;
+          }
+          if (figNoMatch && mode === "question") {
             continue;
           }
           if (passMatch && mode === "question") {
@@ -1874,6 +2064,12 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
             if (expMatch[1]) explanationLines.push(normalizeMathText(expMatch[1].trim()));
           } else {
             if (mode === "question") {
+              if (questionLines.length === 0) {
+                const qNumMatch = trimmedLine.match(/^(?:Q\.?\s*(\d+[A-Za-z]?)|Question\s*(\d+[A-Za-z]?)|(\d+))[\s:.)]+/i);
+                if (qNumMatch) {
+                  origQKey = normalizeQuestionKey(qNumMatch[1] || qNumMatch[2] || qNumMatch[3]);
+                }
+              }
               const cleanedQLine = questionLines.length === 0
                 ? trimmedLine.replace(/^(?:Q\.?\s*\d+[A-Za-z]?|Question\s*\d+|\d+)[\s:.)]+/i, "").trim()
                 : trimmedLine;
@@ -1888,19 +2084,16 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
 
         if (questionLines.length === 0) continue;
 
-        // Determine Exact Question Type (MCQ vs MSQ vs NAT)
         let qType = explicitType;
         let singleAnsIdx = 0;
         let multiAnsIndices = [];
         let natMin = null, natMax = null, natText = "";
 
-        // Check if Answer has multiple option letters like "A, C" or "A; B; D" or "(A), (C)"
         const multiLetterTokens = rawAnswerStr
           .split(/[,;&]+|\band\b/i)
           .map(s => s.trim().replace(/^[\(\[]|[\)\]]$/g, "").toUpperCase())
           .filter(s => /^[A-E]$/.test(s));
 
-        // Check if Answer is a numerical value or range like "24.5 to 25.5" or "-12.4"
         const natRangeMatch = rawAnswerStr.match(/^([+\-]?\d+(?:\.\d+)?)\s*(?:to|\.\.\.?|[-–—])\s*([+\-]?\d+(?:\.\d+)?)$/i);
         const natSingleMatch = rawAnswerStr.match(/^([+\-]?\d+(?:\.\d+)?)$/);
 
@@ -1941,7 +2134,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
           if (multiAnsIndices.length === 0) multiAnsIndices = [0];
           singleAnsIdx = multiAnsIndices[0];
         } else {
-          // MCQ
           const firstLet = rawAnswerStr.match(/^[\(\[]?([A-Ea-e1-5])[\)\]]?/);
           if (firstLet) {
             const tok = firstLet[1].toUpperCase();
@@ -1953,8 +2145,11 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
           options.push("Option A", "Option B", "Option C", "Option D");
         }
 
+        const seqNum = parsedQuestions.length + 1;
         parsedQuestions.push({
-          id: parsedQuestions.length + 1,
+          id: seqNum,
+          origQKey: origQKey || String(seqNum),
+          needsFigure: needsFigureFlag,
           type: qType,
           section: sectionName,
           passage: passageLines.join("\n"),
@@ -1978,8 +2173,11 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       const qType = (q.type || (Array.isArray(q.answers) && q.answers.length > 1 ? "MSQ" : (q.options && q.options.length === 0 ? "NAT" : "MCQ"))).toUpperCase();
       return {
         id: q.id || defaultId,
+        origQKey: q.origQKey || String(q.id || defaultId),
         type: qType,
         section: q.section || defaultSec,
+        posMark: q.posMark,
+        negMark: q.negMark,
         passage: normalizeMathText(q.passage || ""),
         question: normalizeMathText(q.question || ""),
         svg: q.svg ? sanitizeSvgMarkup(q.svg) : "",
@@ -1995,7 +2193,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     }
 
     // ============================================================================
-    // 5. EXACT EVALUATION ENGINE FOR MCQ, MSQ & NAT QUESTIONS
+    // 6. EXACT EVALUATION ENGINE FOR MCQ, MSQ & NAT QUESTIONS
     // ============================================================================
     function isQuestionAttempted(q, uAns) {
       if (uAns === undefined || uAns === null) return false;
@@ -2021,7 +2219,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         const target = parseFloat(q.answerText);
         return !isNaN(target) && Math.abs(val - target) <= 0.01;
       }
-      return uAns === q.answer;
+      return Number(uAns) === Number(q.answer);
     }
 
     function formatUserAnswerDisplay(q, uAns) {
@@ -2032,7 +2230,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       if (q.type === "NAT") {
         return String(uAns);
       }
-      return String.fromCharCode(65 + uAns);
+      return String.fromCharCode(65 + Number(uAns));
     }
 
     function formatCorrectAnswerDisplay(q) {
@@ -2042,11 +2240,11 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       if (q.type === "NAT") {
         return q.answerText || `${q.answerMin} to ${q.answerMax}`;
       }
-      return String.fromCharCode(65 + (q.answer || 0));
+      return String.fromCharCode(65 + (Number(q.answer) || 0));
     }
 
     // ============================================================================
-    // 6. FIREBASE AUTHENTICATION & FIRESTORE CLOUD SYNC
+    // 7. FIREBASE AUTHENTICATION & FIRESTORE CLOUD SYNC
     // ============================================================================
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -2107,6 +2305,10 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         appState.papers = loadedPapers.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
         appState.attempts = loadedAttempts.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
+        for (const p of appState.papers) {
+          await hydratePaperFiguresFromLocalCache(p);
+        }
+
         if (appState.papers.length === 0) {
           await seedDemoPaperIfEmpty();
         }
@@ -2138,9 +2340,14 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     async function savePaperDocToFirestore(paper) {
       if (!currentUser) return;
       try {
+        await hydratePaperFiguresFromLocalCache(paper);
         await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), paper);
       } catch (err) {
-        console.warn("Firestore Paper Save Error:", err);
+        console.warn("Firestore Paper Save Error (caching figures locally):", err);
+        try {
+          const lightPaper = { ...paper, questions: paper.questions.map(q => ({ ...q, svg: "" })) };
+          await setDoc(doc(db, "users", currentUser.uid, "papers", paper.id), lightPaper);
+        } catch (e2) {}
       }
     }
 
@@ -2172,7 +2379,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     }
 
     // ============================================================================
-    // 7. VERTICAL SIDEBAR, NAVIGATION & CATEGORY DROPDOWNS
+    // 8. VERTICAL SIDEBAR, NAVIGATION & CATEGORY DROPDOWNS
     // ============================================================================
     window.toggleVerticalSidebar = () => {
       document.getElementById("verticalSidebar").classList.toggle("open");
@@ -2251,7 +2458,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     window.closeModal = (id) => document.getElementById(id).classList.remove("active");
 
     // ============================================================================
-    // 8. CATEGORY MANAGER
+    // 9. CATEGORY MANAGER
     // ============================================================================
     function renderCategoryManagerModal() {
       const list = document.getElementById("categoryManagerList");
@@ -2322,7 +2529,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 9. LANDING PAGE & GLOBAL SEARCH
+    // 10. LANDING PAGE & GLOBAL SEARCH
     // ============================================================================
     function renderLandingView() {
       renderResumeBanner("landingResumeContainer");
@@ -2407,7 +2614,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     }
 
     // ============================================================================
-    // 10. DASHBOARD CONTROL CENTRE & CHARTS
+    // 11. DASHBOARD CONTROL CENTRE & CHARTS
     // ============================================================================
     function renderDashboardView() {
       renderResumeBanner("dashboardResumeContainer");
@@ -2501,7 +2708,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 11. CATEGORIES PAGE & PAPER LIBRARIES
+    // 12. CATEGORIES PAGE & PAPER LIBRARIES
     // ============================================================================
     function renderCategoriesView() {
       if (appState.activeCategoryFolder) {
@@ -2595,7 +2802,8 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       grid.innerHTML = papers.map(p => {
         const atts = appState.attempts.filter(a => a.paperId === p.id);
         const inProg = appState.activeAttempt && appState.activeAttempt.paperId === p.id;
-        const maxM = p.questions.length * (p.posMark || 1);
+        const defaultPos = Number(p.posMark) || 1;
+        const maxM = Number(p.questions.reduce((s, qItem) => s + (Number(qItem.posMark) || defaultPos), 0).toFixed(2));
         const bestScore = atts.length ? Math.max(...atts.map(a => a.score)) : null;
 
         let statusBadge = `<span class="tag">Not Attempted</span>`;
@@ -2652,9 +2860,10 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       switchView("studio");
     };
 
-    window.editExistingPaperInStudio = (paperId) => {
+    window.editExistingPaperInStudio = async (paperId) => {
       const p = appState.papers.find(x => x.id === paperId);
       if (!p) return;
+      await hydratePaperFiguresFromLocalCache(p);
       appState.editingPaperId = p.id;
       document.getElementById("studioCategorySelect").value = p.category;
       handleStudioCategoryDropdownChange();
@@ -2665,26 +2874,42 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       document.getElementById("studioPosMark").value = p.posMark || 1;
       document.getElementById("studioNegMark").value = p.negMark ?? 0.25;
       appState.studioQuestions = JSON.parse(JSON.stringify(p.questions));
-      document.getElementById("directPasteInput").value = questionsArrayToStrictText(appState.studioQuestions);
+
+      const splitData = splitQuestionsAndFiguresToText(appState.studioQuestions);
+      document.getElementById("directPasteInput").value = splitData.questionsText;
+      document.getElementById("figuresPasteInput").value = splitData.figuresText;
       renderStudioQuestions();
       switchStudioTab("visual");
       switchView("studio");
     };
 
-    function questionsArrayToStrictText(qList) {
-      return qList.map((q, idx) => {
-        const lines = [`Q${idx + 1}: ${q.question}`, `Type: ${q.type || "MCQ"}`];
+    function splitQuestionsAndFiguresToText(qList) {
+      const qBlocks = [];
+      const figBlocks = [];
+      qList.forEach((q, idx) => {
+        const qNum = q.origQKey || (idx + 1);
+        const lines = [`Q${qNum}: ${q.question}`, `Type: ${q.type || "MCQ"}`];
         if (q.section) lines.push(`Section: ${q.section}`);
+        if (q.svg || q.diagram) lines.push(`Figure: YES`);
         if (q.passage) lines.push(`Passage: ${q.passage}`);
-        if (q.svg) lines.push(`[SVG_START]\n${q.svg}\n[SVG_END]`);
-        if (q.diagram) lines.push(`[DIAGRAM_START]\n${q.diagram}\n[DIAGRAM_END]`);
         if (q.type !== "NAT" && Array.isArray(q.options)) {
           q.options.forEach((opt, oi) => lines.push(`${String.fromCharCode(65 + oi)}) ${opt}`));
         }
         lines.push(`Answer: ${formatCorrectAnswerDisplay(q)}`);
         if (q.explanation) lines.push(`Explanation: ${q.explanation}`);
-        return lines.join("\n");
-      }).join("\n---\n");
+        qBlocks.push(lines.join("\n"));
+
+        if (q.svg) {
+          const wrapped = q.svg.startsWith("data:image/") ? `<img src="${q.svg}" alt="Q${qNum} Figure" />` : q.svg;
+          figBlocks.push(`FIGURE Q${qNum}:\n[SVG_START]\n${wrapped}\n[SVG_END]`);
+        } else if (q.diagram) {
+          figBlocks.push(`FIGURE Q${qNum}:\n[DIAGRAM_START]\n${q.diagram}\n[DIAGRAM_END]`);
+        }
+      });
+      return {
+        questionsText: qBlocks.join("\n---\n"),
+        figuresText: figBlocks.join("\n---\n")
+      };
     }
 
     window.deletePaperWithWarning = async (paperId) => {
@@ -2708,26 +2933,27 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 12. PAPER ATTEMPT HISTORY & RETEST SYSTEM
+    // 13. PAPER ATTEMPT HISTORY & RETEST SYSTEM (FIXED ALL 3 MODES)
     // ============================================================================
     window.openPaperHistory = (paperId) => {
       currentHistoryPaperId = paperId;
-      const p = appState.papers.find(x => x.id === paperId);
+      const p = resolvePaperForRetest(paperId);
       if (!p) return;
 
       document.getElementById("histCategoryBadge").textContent = p.category;
       document.getElementById("histPaperTitle").textContent = `${p.title} — Attempt History`;
-      document.getElementById("histRetestBtn").onclick = () => openRetestModal(paperId);
+      document.getElementById("histRetestBtn").onclick = () => openRetestModal(p.id);
 
       renderPaperHistoryTable();
       switchView("history");
     };
 
     window.renderPaperHistoryTable = () => {
-      const p = appState.papers.find(x => x.id === currentHistoryPaperId);
+      const p = resolvePaperForRetest(currentHistoryPaperId);
       if (!p) return;
-      const atts = appState.attempts.filter(a => a.paperId === p.id);
-      const maxM = p.questions.length * (p.posMark || 1);
+      const atts = appState.attempts.filter(a => a.paperId === p.id || a.title === p.title);
+      const defaultPos = Number(p.posMark) || 1;
+      const maxM = Number(p.questions.reduce((s, qItem) => s + (Number(qItem.posMark) || defaultPos), 0).toFixed(2));
 
       const best = atts.length ? Math.max(...atts.map(a => a.score)) : 0;
       const latest = atts.length ? atts[atts.length - 1].score : 0;
@@ -2758,64 +2984,104 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       `).join("") || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">No attempts recorded for this paper yet.</td></tr>`;
     };
 
+    function resolvePaperForRetest(paperId) {
+      let p = appState.papers.find(x => x.id === paperId);
+      if (p) return p;
+      const att = (currentReviewAttempt && (!paperId || currentReviewAttempt.paperId === paperId))
+        ? currentReviewAttempt
+        : appState.attempts.slice().reverse().find(a => a.paperId === paperId) || appState.attempts[appState.attempts.length - 1];
+      if (att && Array.isArray(att.questions) && att.questions.length > 0) {
+        return {
+          id: att.paperId || ("paper_" + Date.now()),
+          title: att.title || "Practice Paper",
+          category: att.category || (appState.categories[0]?.name || "GATE"),
+          subject: "General",
+          duration: Math.max(15, Math.round(att.questions.length * 1.5)),
+          posMark: att.posMark || 1,
+          negMark: att.negMark ?? 0.25,
+          questions: JSON.parse(JSON.stringify(att.questions))
+        };
+      }
+      return appState.papers[0] || null;
+    }
+
     window.openRetestModal = (paperId) => {
-      document.getElementById("btnRetestStandard").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "STANDARD");
-      };
-      document.getElementById("btnRetestRandom").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "RANDOMIZED");
-      };
-      document.getElementById("btnRetestIncorrect").onclick = () => {
-        closeModal("retestModal");
-        openInstructionsModal(paperId, "INCORRECT_ONLY");
-      };
+      currentRetestPaperId = paperId || currentReviewAttempt?.paperId || currentHistoryPaperId || appState.papers[0]?.id;
       openModal("retestModal");
     };
 
-    // ============================================================================
-    // 13. INSTRUCTIONS MODAL & LIVE EXAM ENGINE (WITH MCQ, MSQ & NAT SUPPORT)
-    // ============================================================================
-    window.openInstructionsModal = (paperId, mode = "STANDARD") => {
-      const p = appState.papers.find(x => x.id === paperId);
-      if (!p) return;
+    window.executeRetestMode = (mode) => {
+      const targetPaperId = currentRetestPaperId || currentReviewAttempt?.paperId || currentHistoryPaperId || appState.papers[0]?.id;
+      closeModal("retestModal");
+      openInstructionsModal(targetPaperId, mode, true);
+    };
 
+    // ============================================================================
+    // 14. INSTRUCTIONS MODAL & LIVE EXAM ENGINE (MCQ, MSQ & NAT)
+    // ============================================================================
+    window.openInstructionsModal = async (paperId, mode = "STANDARD", autoStart = false) => {
+      const p = resolvePaperForRetest(paperId);
+      if (!p) return alert("Could not find question paper data for this test.");
+
+      await hydratePaperFiguresFromLocalCache(p);
       let questionsToRun = JSON.parse(JSON.stringify(p.questions));
 
       if (mode === "INCORRECT_ONLY") {
-        const past = appState.attempts.filter(a => a.paperId === paperId);
-        if (!past.length) return alert("Complete at least one attempt first to use Retry Incorrect mode.");
-        const lastAttempt = past[past.length - 1];
-        questionsToRun = lastAttempt.questions.filter((q, idx) => !isQuestionCorrect(q, lastAttempt.responses?.[idx]));
-        if (!questionsToRun.length) return alert("You answered every question correctly on your last attempt!");
+        const past = appState.attempts.filter(a => a.paperId === p.id || a.title === p.title);
+        const lastAttempt = past.length ? past[past.length - 1] : currentReviewAttempt;
+        if (!lastAttempt) return alert("Complete at least one attempt first to use Retry Incorrect mode.");
+
+        const sourceQs = (Array.isArray(lastAttempt.questions) && lastAttempt.questions.length) ? lastAttempt.questions : p.questions;
+        questionsToRun = sourceQs.filter((q, idx) => {
+          const resp = lastAttempt.responses?.[idx] ?? lastAttempt.responses?.[String(idx)];
+          return !isQuestionCorrect(q, resp);
+        }).map(q => {
+          const parentQ = p.questions.find(pq => pq.id === q.id || pq.origQKey === q.origQKey || pq.question === q.question);
+          return { ...q, svg: q.svg || parentQ?.svg || "", diagram: q.diagram || parentQ?.diagram || "" };
+        });
+
+        if (!questionsToRun.length) {
+          return alert("🎉 You answered every question correctly on your last attempt! Try Randomized Retest instead.");
+        }
       } else if (mode === "RANDOMIZED") {
         questionsToRun = shuffleArray(questionsToRun).map(q => {
-          if (q.type === "NAT" || !Array.isArray(q.options) || q.options.length < 2) return q;
-          if (q.type === "MSQ") {
-            const correctTexts = (q.answers || [q.answer]).map(i => q.options[i]);
-            const shuffledOpts = shuffleArray([...q.options]);
-            const newAnsIndices = correctTexts.map(t => shuffledOpts.indexOf(t)).filter(i => i >= 0).sort((a, b) => a - b);
+          const qType = (q.type || "MCQ").toUpperCase();
+          if (qType === "NAT" || !Array.isArray(q.options) || q.options.length < 2) return q;
+          const idxOrder = shuffleArray(q.options.map((_, i) => i));
+          const shuffledOpts = idxOrder.map(i => q.options[i]);
+          if (qType === "MSQ") {
+            const oldCorrect = Array.isArray(q.answers) && q.answers.length ? q.answers.map(Number) : [Number(q.answer) || 0];
+            const newAnsIndices = idxOrder
+              .map((origIdx, newPos) => (oldCorrect.includes(origIdx) ? newPos : -1))
+              .filter(pos => pos >= 0)
+              .sort((a, b) => a - b);
             return { ...q, options: shuffledOpts, answers: newAnsIndices, answer: newAnsIndices[0] || 0 };
           } else {
-            const correctText = q.options[q.answer];
-            const shuffledOpts = shuffleArray([...q.options]);
-            return { ...q, options: shuffledOpts, answer: Math.max(0, shuffledOpts.indexOf(correctText)) };
+            const origAns = Number(q.answer) || 0;
+            const newAns = Math.max(0, idxOrder.indexOf(origAns));
+            return { ...q, options: shuffledOpts, answer: newAns };
           }
         });
       }
 
+      if (autoStart) {
+        launchLiveExamSession(p, questionsToRun, mode);
+        return;
+      }
+
+      const defaultPos = Number.isFinite(parseFloat(p.posMark)) ? parseFloat(p.posMark) : 1;
+      const defaultNeg = Number.isFinite(parseFloat(p.negMark)) ? parseFloat(p.negMark) : 0.25;
       const mcqCount = questionsToRun.filter(q => (q.type || "MCQ") === "MCQ").length;
       const msqCount = questionsToRun.filter(q => q.type === "MSQ").length;
       const natCount = questionsToRun.filter(q => q.type === "NAT").length;
-      const maxMarks = questionsToRun.length * (p.posMark || 1);
+      const maxMarks = Number(questionsToRun.reduce((sum, q) => sum + (Number(q.posMark) || defaultPos), 0).toFixed(2));
 
       document.getElementById("instPaperTitle").textContent = `${p.title} (${mode})`;
       document.getElementById("instDetailsBody").innerHTML = `
         <div><b>Exam Category:</b> ${escapeHtml(p.category)} • <b>Subject:</b> ${escapeHtml(p.subject || "General")}</div>
         <div><b>Total Questions:</b> ${questionsToRun.length} (${mcqCount} MCQ, ${msqCount} MSQ, ${natCount} NAT)</div>
         <div><b>Total Duration:</b> ${p.duration} Minutes</div>
-        <div><b>Marking Scheme:</b> +${p.posMark || 1} for Correct • -${p.negMark ?? 0.25} for Wrong MCQ • <b>0 Negative</b> for MSQ &amp; NAT (Max: ${maxMarks} Marks)</div>
+        <div><b>Marking Scheme:</b> Default +${defaultPos} / -${defaultNeg} (MCQ) • <b>0 Negative</b> for MSQ &amp; NAT (Max: ${maxMarks} Marks)</div>
       `;
 
       document.getElementById("confirmStartExamBtn").onclick = () => {
@@ -2836,14 +3102,17 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         timeSpentMap[idx] = 0;
       });
 
+      const safePos = Number.isFinite(parseFloat(paper.posMark)) ? parseFloat(paper.posMark) : 1;
+      const safeNeg = Number.isFinite(parseFloat(paper.negMark)) ? parseFloat(paper.negMark) : 0.25;
+
       appState.activeAttempt = {
         paperId: paper.id,
         title: paper.title,
         category: paper.category,
         mode,
         questions: questionsList,
-        posMark: parseFloat(paper.posMark) || 1,
-        negMark: parseFloat(paper.negMark) ?? 0.25,
+        posMark: safePos,
+        negMark: safeNeg,
         startTime: now,
         deadline: now + durationSeconds * 1000,
         currentIndex: 0,
@@ -2852,8 +3121,8 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         timeSpent: timeSpentMap
       };
 
-      await saveCoreMetadataToFirestore();
       openExamOverlayUI();
+      saveCoreMetadataToFirestore();
     }
 
     window.resumeUnfinishedAttempt = () => {
@@ -2942,23 +3211,25 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
 
       const typeBadge = document.getElementById("liveQTypeBadge");
       const markBadge = document.getElementById("liveQMarkInfo");
+      const qPos = Number(q.posMark) || act.posMark;
+      const qNeg = Number.isFinite(Number(q.negMark)) ? Number(q.negMark) : act.negMark;
+
       if (qType === "MSQ") {
         typeBadge.textContent = "MSQ (Multiple Select — Select 1 or more)";
         typeBadge.className = "tag tag-purple";
-        markBadge.textContent = `+${act.posMark} / 0 Negative`;
+        markBadge.textContent = `+${qPos} / 0 Negative`;
       } else if (qType === "NAT") {
         typeBadge.textContent = "NAT (Numerical Answer Type)";
         typeBadge.className = "tag tag-warning";
-        markBadge.textContent = `+${act.posMark} / 0 Negative`;
+        markBadge.textContent = `+${qPos} / 0 Negative`;
       } else {
         typeBadge.textContent = "MCQ (Single Choice)";
         typeBadge.className = "tag tag-primary";
-        markBadge.textContent = `+${act.posMark} / -${act.negMark}`;
+        markBadge.textContent = `+${qPos} / -${qNeg}`;
       }
 
       document.getElementById("liveQuestionText").innerHTML = formatRichMathHtml(q.question);
 
-      // Shared Passage Pane
       const ws = document.getElementById("examWorkspace");
       const pPane = document.getElementById("livePassagePane");
       if (q.passage && q.passage.trim()) {
@@ -2970,7 +3241,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         pPane.style.display = "none";
       }
 
-      // 1. High-Precision Vector SVG Diagram Window
       const svgBox = document.getElementById("liveSvgBox");
       const svgRender = document.getElementById("liveSvgRender");
       if (q.svg && q.svg.trim()) {
@@ -2981,7 +3251,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         svgBox.style.display = "none";
       }
 
-      // 2. Monospace ASCII Schematic Window
       const asciiBox = document.getElementById("liveAsciiBox");
       const asciiPre = document.getElementById("liveAsciiPre");
       if (q.diagram && q.diagram.trim()) {
@@ -2995,7 +3264,6 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       const isBm = appState.bookmarks.some(b => b.question === q.question);
       document.getElementById("liveBookmarkBtn").textContent = isBm ? "⭐ Bookmarked" : "☆ Bookmark";
 
-      // 3. Render Answer Input by Question Type (MCQ vs MSQ vs NAT)
       const optsContainer = document.getElementById("liveOptionsContainer");
       const curResp = act.responses[idx];
 
@@ -3221,34 +3489,39 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       const act = appState.activeAttempt;
       if (!act) return;
 
-      let correct = 0, wrong = 0, skipped = 0, rawScore = 0;
+      let correct = 0, wrong = 0, skipped = 0, rawScore = 0, totalMaxMarks = 0;
       act.questions.forEach((q, i) => {
         const uAns = act.responses[i];
         const qType = (q.type || "MCQ").toUpperCase();
+        const qPos = Number(q.posMark) || act.posMark;
+        const qNeg = Number.isFinite(Number(q.negMark)) ? Number(q.negMark) : act.negMark;
+        totalMaxMarks += qPos;
+
         if (!isQuestionAttempted(q, uAns)) {
           skipped++;
         } else if (isQuestionCorrect(q, uAns)) {
           correct++;
-          rawScore += act.posMark;
+          rawScore += qPos;
         } else {
           wrong++;
-          // Official rule: Negative marking applies to MCQ only; MSQ & NAT have 0 negative marking
-          if (qType === "MCQ") rawScore -= act.negMark;
+          if (qType === "MCQ") rawScore -= qNeg;
         }
       });
 
-      const maxMarks = Number((act.questions.length * act.posMark).toFixed(2));
+      const maxMarks = Number(totalMaxMarks.toFixed(2));
       const score = Number(rawScore.toFixed(2));
       const attempted = correct + wrong;
       const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
       const timeTaken = Math.max(1, Math.floor((Date.now() - act.startTime) / 1000));
 
-      const attemptDoc = {
+      const fullAttemptInMemory = {
         id: "att_" + Date.now(),
         paperId: act.paperId,
         title: act.title,
         category: act.category,
         mode: act.mode || "STANDARD",
+        posMark: act.posMark,
+        negMark: act.negMark,
         date: new Date().toISOString(),
         score,
         maxMarks,
@@ -3262,13 +3535,15 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
         timeSpent: act.timeSpent
       };
 
-      appState.attempts.push(attemptDoc);
+      appState.attempts.push(fullAttemptInMemory);
       appState.activeAttempt = null;
 
-      await saveAttemptDocToFirestore(attemptDoc);
+      // Strip heavy SVG/image strings from Firestore attempt doc so re-attempts use 0 duplicate image storage
+      const lightQuestionsForCloud = act.questions.map(q => ({ ...q, svg: "" }));
+      await saveAttemptDocToFirestore({ ...fullAttemptInMemory, questions: lightQuestionsForCloud });
       await saveCoreMetadataToFirestore();
       refreshAllViews();
-      openAttemptReview(attemptDoc.id);
+      openAttemptReview(fullAttemptInMemory.id);
     };
 
     window.addEventListener("keydown", e => {
@@ -3291,12 +3566,24 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     });
 
     // ============================================================================
-    // 14. RESULTS ANALYSIS, SCATTER PLOT, SOLUTIONS & CSV EXPORT
+    // 15. RESULTS ANALYSIS, SCATTER PLOT, SOLUTIONS & CSV EXPORT
     // ============================================================================
-    window.openAttemptReview = (attemptId) => {
+    window.openAttemptReview = async (attemptId) => {
       const att = appState.attempts.find(a => a.id === attemptId);
       if (!att) return;
       currentReviewAttempt = att;
+
+      // Re-attach figures from parent paper or phone cache
+      const parentPaper = appState.papers.find(p => p.id === att.paperId || p.title === att.title);
+      if (parentPaper) {
+        await hydratePaperFiguresFromLocalCache(parentPaper);
+        att.questions.forEach(q => {
+          if (!q.svg) {
+            const pq = parentPaper.questions.find(x => x.id === q.id || x.origQKey === q.origQKey || x.question === q.question);
+            if (pq?.svg) q.svg = pq.svg;
+          }
+        });
+      }
 
       switchView("review");
       document.getElementById("reviewCategoryBadge").textContent = `${att.category} • ${att.mode || "Standard"}`;
@@ -3304,7 +3591,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       document.getElementById("reviewRetestBtn").onclick = () => openRetestModal(att.paperId);
       document.getElementById("reviewHistoryBtn").onclick = () => openPaperHistory(att.paperId);
 
-      const paperAttempts = appState.attempts.filter(a => a.paperId === att.paperId);
+      const paperAttempts = appState.attempts.filter(a => a.paperId === att.paperId || a.title === att.title);
       const bestScore = Math.max(...paperAttempts.map(a => a.score));
       document.getElementById("reviewComparisonSubtext").textContent =
         `Attempt #${paperAttempts.findIndex(a => a.id === att.id) + 1} of ${paperAttempts.length} • Paper Best Score: ${bestScore} / ${att.maxMarks}`;
@@ -3327,7 +3614,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       if (scatterChart) scatterChart.destroy();
 
       const points = att.questions.map((q, idx) => {
-        const uAns = att.responses?.[idx];
+        const uAns = att.responses?.[idx] ?? att.responses?.[String(idx)];
         let color = "#94A3B8";
         if (isQuestionAttempted(q, uAns)) color = isQuestionCorrect(q, uAns) ? "#059669" : "#DC2626";
         return { x: idx + 1, y: att.timeSpent?.[idx] || 0, color };
@@ -3361,7 +3648,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       const list = document.getElementById("reviewQuestionsList");
 
       const html = att.questions.map((q, idx) => {
-        const uAns = att.responses?.[idx];
+        const uAns = att.responses?.[idx] ?? att.responses?.[String(idx)];
         const qType = (q.type || "MCQ").toUpperCase();
         const isSkipped = !isQuestionAttempted(q, uAns);
         const isCorrect = !isSkipped && isQuestionCorrect(q, uAns);
@@ -3397,8 +3684,8 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
             </div>
           `;
         } else {
-          const correctSet = qType === "MSQ" ? (q.answers || [q.answer]) : [q.answer];
-          const userSet = qType === "MSQ" ? (Array.isArray(uAns) ? uAns : []) : (typeof uAns === "number" ? [uAns] : []);
+          const correctSet = qType === "MSQ" ? (q.answers || [q.answer]).map(Number) : [Number(q.answer)];
+          const userSet = qType === "MSQ" ? (Array.isArray(uAns) ? uAns.map(Number) : []) : (typeof uAns === "number" ? [uAns] : []);
           answerBlockHtml = `
             <div class="grid-2" style="gap:8px;margin:12px 0;">
               ${q.options.map((opt, oi) => {
@@ -3446,7 +3733,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       const att = currentReviewAttempt;
       const rows = [["Q#", "Type", "Section", "Question", "Your Answer", "Correct Answer", "Status", "Time Spent (s)"]];
       att.questions.forEach((q, idx) => {
-        const u = att.responses?.[idx];
+        const u = att.responses?.[idx] ?? att.responses?.[String(idx)];
         const status = !isQuestionAttempted(q, u) ? "Unattempted" : (isQuestionCorrect(q, u) ? "Correct" : "Incorrect");
         rows.push([
           idx + 1,
@@ -3468,32 +3755,124 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 15. STUDIO: DIRECT PASTE / .TXT UPLOAD & VISUAL PREVIEW
+    // 16. STUDIO: DUAL QUESTIONS + FIGURES, PDF CROPPER & PHONE INDEXEDDB CACHE
     // ============================================================================
+    function openLocalFigDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open("ExamForgeFigCacheDB", 1);
+        req.onupgradeneeded = () => req.result.createObjectStore("figures");
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveFigureToPhoneCache(key, dataStr) {
+      try {
+        const idb = await openLocalFigDB();
+        const tx = idb.transaction("figures", "readwrite");
+        tx.objectStore("figures").put(dataStr, key);
+      } catch (e) {}
+    }
+
+    async function getFigureFromPhoneCache(key) {
+      try {
+        const idb = await openLocalFigDB();
+        return await new Promise(res => {
+          const r = idb.transaction("figures", "readonly").objectStore("figures").get(key);
+          r.onsuccess = () => res(r.result || "");
+          r.onerror = () => res("");
+        });
+      } catch (e) { return ""; }
+    }
+
+    async function hydratePaperFiguresFromLocalCache(paper) {
+      if (!paper || !Array.isArray(paper.questions)) return;
+      for (const q of paper.questions) {
+        const cacheKey = `fig_${paper.id}_Q${q.origQKey || q.id}`;
+        if (!q.svg) {
+          const cached = await getFigureFromPhoneCache(cacheKey);
+          if (cached) q.svg = cached;
+        } else {
+          saveFigureToPhoneCache(cacheKey, q.svg);
+        }
+      }
+    }
+
+    function parseQuestionRangeSet(rangeStr) {
+      const set = new Set();
+      if (!rangeStr) return set;
+      rangeStr.split(",").forEach(part => {
+        const m = part.trim().match(/^(\d+)\s*-\s*(\d+)$/);
+        if (m) {
+          const s = Math.min(+m[1], +m[2]), e = Math.max(+m[1], +m[2]);
+          for (let i = s; i <= e; i++) set.add(String(i));
+        } else if (part.trim()) {
+          set.add(normalizeQuestionKey(part.trim()));
+        }
+      });
+      return set;
+    }
+
+    window.applyCustomMarkRangesToStudio = () => {
+      const basePos = parseFloat(document.getElementById("studioPosMark")?.value) || 1;
+      const baseNeg = parseFloat(document.getElementById("studioNegMark")?.value) ?? 0.25;
+      const rangeStr = document.getElementById("studioTwoMarkRanges")?.value || "";
+      const doubleSet = parseQuestionRangeSet(rangeStr);
+
+      appState.studioQuestions.forEach((q, idx) => {
+        const key = normalizeQuestionKey(q.origQKey || String(idx + 1));
+        const isDouble = doubleSet.has(key) || doubleSet.has(String(idx + 1));
+        q.posMark = isDouble ? Number((basePos * 2).toFixed(2)) : basePos;
+        q.negMark = isDouble ? Number((baseNeg * 2).toFixed(2)) : baseNeg;
+      });
+      if (document.getElementById("studio-tab-visual").style.display !== "none") {
+        renderStudioQuestions();
+      }
+    };
+
+    window.toggleSingleQuestionMark = (qi) => {
+      const q = appState.studioQuestions[qi];
+      if (!q) return;
+      const basePos = parseFloat(document.getElementById("studioPosMark")?.value) || 1;
+      const baseNeg = parseFloat(document.getElementById("studioNegMark")?.value) ?? 0.25;
+      const isCurrentlyBase = (q.posMark || basePos) === basePos;
+      q.posMark = isCurrentlyBase ? Number((basePos * 2).toFixed(2)) : basePos;
+      q.negMark = isCurrentlyBase ? Number((baseNeg * 2).toFixed(2)) : baseNeg;
+      renderStudioQuestions();
+    };
+
     window.handleDirectPasteLiveInput = () => {
-      const raw = document.getElementById("directPasteInput").value;
+      const rawQuestions = document.getElementById("directPasteInput").value;
+      const rawFigures = document.getElementById("figuresPasteInput").value;
       const statusEl = document.getElementById("studioStatusText");
       const countBadge = document.getElementById("studioQCount");
+      const figBadge = document.getElementById("studioFigCount");
 
-      if (!raw.trim()) {
+      if (!rawQuestions.trim()) {
         appState.studioQuestions = [];
-        countBadge.textContent = "0 Questions Detected";
-        statusEl.textContent = "Paste formatted questions or upload a .txt file above.";
+        countBadge.textContent = "0 Questions";
+        figBadge.textContent = "0 Figures Linked";
+        statusEl.textContent = "Paste or upload your Questions (left) and Figures (right) above.";
         statusEl.style.color = "var(--muted)";
         return;
       }
 
-      const parsed = parseUniversalQuestions(raw);
-      appState.studioQuestions = parsed;
+      const { questions, matchedFiguresCount, matchedLabels } =
+        parseAndMergeQuestionsAndFigures(rawQuestions, rawFigures);
 
-      const mcqC = parsed.filter(q => q.type === "MCQ").length;
-      const msqC = parsed.filter(q => q.type === "MSQ").length;
-      const natC = parsed.filter(q => q.type === "NAT").length;
-      const diagC = parsed.filter(q => Boolean(q.svg || q.diagram)).length;
+      appState.studioQuestions = questions;
+      applyCustomMarkRangesToStudio();
 
-      countBadge.textContent = `${parsed.length} Questions (${mcqC} MCQ, ${msqC} MSQ, ${natC} NAT)`;
-      if (parsed.length > 0) {
-        statusEl.textContent = `✅ Ready! Detected ${parsed.length} question(s) [${mcqC} MCQ, ${msqC} MSQ, ${natC} NAT, ${diagC} Diagrams].`;
+      const mcqC = questions.filter(q => q.type === "MCQ").length;
+      const msqC = questions.filter(q => q.type === "MSQ").length;
+      const natC = questions.filter(q => q.type === "NAT").length;
+
+      countBadge.textContent = `${questions.length} Qs (${mcqC} MCQ, ${msqC} MSQ, ${natC} NAT)`;
+      figBadge.textContent = `${matchedFiguresCount} Figures Linked`;
+
+      if (questions.length > 0) {
+        const linkedInfo = matchedLabels.length > 0 ? ` • Linked Figures to: ${matchedLabels.join(", ")}` : "";
+        statusEl.textContent = `✅ Auto-Merged ${questions.length} question(s) [${mcqC} MCQ, ${msqC} MSQ, ${natC} NAT]${linkedInfo}`;
         statusEl.style.color = "var(--success)";
       } else {
         statusEl.textContent = "⚠️ Could not detect valid questions yet. Ensure each question starts with Q1: and has Answer:.";
@@ -3501,16 +3880,12 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       }
     };
 
-    window.handleSimpleStudioFileUpload = async (event) => {
+    window.handleQuestionsFileUpload = async (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      const statusEl = document.getElementById("studioStatusText");
-      statusEl.textContent = `Reading "${file.name}"...`;
-
       if (!document.getElementById("studioTitle").value || document.getElementById("studioTitle").value === "New Practice Mock Paper") {
         document.getElementById("studioTitle").value = file.name.replace(/\.(txt|pdf|json)$/i, "");
       }
-
       try {
         if (file.name.toLowerCase().endsWith(".pdf")) {
           const ab = await file.arrayBuffer();
@@ -3522,20 +3897,31 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
             extracted += tc.items.map(it => it.str).join(" ") + "\n";
           }
           document.getElementById("directPasteInput").value = normalizeMathText(extracted);
-          handleDirectPasteLiveInput();
         } else {
           const text = await file.text();
           document.getElementById("directPasteInput").value = normalizeMathText(text);
-          handleDirectPasteLiveInput();
         }
+        handleDirectPasteLiveInput();
       } catch (err) {
-        statusEl.textContent = "Error reading file: " + err.message;
+        alert("Error reading Questions file: " + err.message);
+      }
+    };
+
+    window.handleFiguresFileUpload = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        document.getElementById("figuresPasteInput").value = text;
+        handleDirectPasteLiveInput();
+      } catch (err) {
+        alert("Error reading Figures file: " + err.message);
       }
     };
 
     window.switchStudioTab = (tab) => {
       const isRaw = tab === "raw";
-      document.getElementById("studio-tab-raw").style.display = isRaw ? "flex" : "none";
+      document.getElementById("studio-tab-raw").style.display = isRaw ? "grid" : "none";
       document.getElementById("studio-tab-visual").style.display = isRaw ? "none" : "block";
       document.getElementById("tabBtnPasteText").className = isRaw ? "btn btn-primary btn-sm" : "btn btn-outline btn-sm";
       document.getElementById("tabBtnVisualPreview").className = !isRaw ? "btn btn-primary btn-sm" : "btn btn-outline btn-sm";
@@ -3548,24 +3934,35 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     function renderStudioQuestions() {
       const list = document.getElementById("studioVisualList");
       if (!appState.studioQuestions.length) {
-        list.innerHTML = `<div style="text-align:center;padding:50px;color:var(--muted);">No questions parsed yet. Switch to "📝 Paste / Edit Text" and paste your questions or load the Demo Paper!</div>`;
+        list.innerHTML = `<div style="text-align:center;padding:50px;color:var(--muted);">No questions parsed yet. Switch to "📝 1. Paste / Upload Questions & Figures" or click "Load Split Demo"!</div>`;
         return;
       }
 
+      const basePos = parseFloat(document.getElementById("studioPosMark")?.value) || 1;
+      const baseNeg = parseFloat(document.getElementById("studioNegMark")?.value) ?? 0.25;
+
       list.innerHTML = appState.studioQuestions.map((q, qi) => {
         const qType = (q.type || "MCQ").toUpperCase();
+        const qPos = q.posMark || basePos;
+        const qNeg = qType === "MCQ" ? (q.negMark ?? baseNeg) : 0;
         const svgHtml = q.svg
-          ? `<div class="svg-diagram-box"><div class="svg-diagram-header"><span>📐 Vector SVG Diagram Preview</span></div><div class="svg-diagram-render">${sanitizeSvgMarkup(q.svg)}</div></div>`
-          : "";
+          ? `<div class="svg-diagram-box"><div class="svg-diagram-header"><span>📐 Linked Figure (Q${escapeHtml(q.origQKey || (qi + 1))})</span></div><div class="svg-diagram-render" onclick="openSvgZoomModal(this.innerHTML)">${sanitizeSvgMarkup(q.svg)}</div></div>`
+          : (q.needsFigure ? `<div style="padding:10px;border-radius:8px;background:var(--warning-soft);color:var(--warning);font-size:0.8rem;margin:6px 0;">⚠️ Marked "Figure: YES" — Click "✂️ Crop from PDF" to attach the exact diagram!</div>` : "");
         return `
           <div class="q-edit-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <div>
-                <strong style="color:var(--primary);">Q${qi + 1}</strong> •
-                <span class="tag tag-purple">${qType}</span> •
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <strong style="color:var(--primary);">Q${qi + 1} (Source Q${escapeHtml(q.origQKey || (qi + 1))})</strong>
+                <span class="tag tag-purple">${qType}</span>
                 <span class="tag">${escapeHtml(q.section || "General")}</span>
+                <button type="button" class="tag tag-primary" style="cursor:pointer;" onclick="toggleSingleQuestionMark(${qi})" title="Click to toggle 1x / 2x Marks">
+                  🎯 +${qPos} / -${qNeg} (Tap to toggle)
+                </button>
               </div>
-              <span class="tag tag-success">Correct Key: ${escapeHtml(formatCorrectAnswerDisplay(q))}</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="openPdfCropperForQuestion(${qi})">✂️ Crop from PDF</button>
+                <span class="tag tag-success">Key: ${escapeHtml(formatCorrectAnswerDisplay(q))}</span>
+              </div>
             </div>
             <div style="font-weight:600;margin-bottom:8px;white-space:pre-wrap;">${formatRichMathHtml(q.question)}</div>
             ${svgHtml}
@@ -3588,22 +3985,184 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       triggerMathJax(list);
     }
 
+    // ============================================================================
+    // BUILT-IN PDF FIGURE CROPPER (5KB WEBP + SOFT WATERMARK FADE)
+    // ============================================================================
+    let cropPdfDoc = null, cropCurrentPage = 1, cropTargetQIdx = null, cropRect = null, isDraggingCrop = false, cropStartPt = null;
+
+    window.openPdfCropperForQuestion = (qi) => {
+      cropTargetQIdx = qi;
+      const q = appState.studioQuestions[qi];
+      document.getElementById("pdfCropModalTitle").textContent = `✂️ Crop Figure from PDF → Q${qi + 1} (Source Q${q?.origQKey || (qi + 1)})`;
+      openModal("pdfCropModal");
+      if (cropPdfDoc) renderCropperPage(cropCurrentPage);
+    };
+
+    window.loadPdfIntoCropper = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const ab = await file.arrayBuffer();
+      cropPdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+      document.getElementById("cropTotalPages").textContent = cropPdfDoc.numPages;
+      cropCurrentPage = Math.min(cropCurrentPage || 1, cropPdfDoc.numPages);
+      renderCropperPage(cropCurrentPage);
+    };
+
+    window.changeCropperPage = (delta) => {
+      if (!cropPdfDoc) return;
+      const next = Math.max(1, Math.min(cropPdfDoc.numPages, cropCurrentPage + delta));
+      renderCropperPage(next);
+    };
+
+    window.goToCropperPage = (val) => {
+      if (!cropPdfDoc) return;
+      const p = Math.max(1, Math.min(cropPdfDoc.numPages, parseInt(val, 10) || 1));
+      renderCropperPage(p);
+    };
+
+    async function renderCropperPage(pageNum) {
+      cropCurrentPage = pageNum;
+      document.getElementById("cropPageInput").value = pageNum;
+      const page = await cropPdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.75 });
+      const canvas = document.getElementById("pdfCropCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      cropRect = null;
+      document.getElementById("pdfCropSelectionBox").style.display = "none";
+      setupCropCanvasEvents(canvas);
+    }
+
+    function setupCropCanvasEvents(canvas) {
+      if (canvas.dataset.bound) return;
+      canvas.dataset.bound = "1";
+      const box = document.getElementById("pdfCropSelectionBox");
+
+      const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: Math.max(0, Math.min(canvas.width, (clientX - r.left) * (canvas.width / r.width))),
+          y: Math.max(0, Math.min(canvas.height, (clientY - r.top) * (canvas.height / r.height))),
+          cssX: clientX - r.left,
+          cssY: clientY - r.top
+        };
+      };
+
+      const start = (e) => {
+        isDraggingCrop = true;
+        cropStartPt = getPos(e);
+        box.style.display = "block";
+      };
+      const move = (e) => {
+        if (!isDraggingCrop || !cropStartPt) return;
+        e.preventDefault();
+        const cur = getPos(e);
+        const left = Math.min(cropStartPt.cssX, cur.cssX);
+        const top = Math.min(cropStartPt.cssY, cur.cssY);
+        const width = Math.abs(cur.cssX - cropStartPt.cssX);
+        const height = Math.abs(cur.cssY - cropStartPt.cssY);
+        box.style.left = left + "px";
+        box.style.top = top + "px";
+        box.style.width = width + "px";
+        box.style.height = height + "px";
+        cropRect = {
+          x: Math.min(cropStartPt.x, cur.x),
+          y: Math.min(cropStartPt.y, cur.y),
+          w: Math.abs(cur.x - cropStartPt.x),
+          h: Math.abs(cur.y - cropStartPt.y)
+        };
+      };
+      const end = () => { isDraggingCrop = false; };
+
+      canvas.addEventListener("mousedown", start);
+      window.addEventListener("mousemove", move);
+      window.addEventListener("mouseup", end);
+      canvas.addEventListener("touchstart", start, { passive: false });
+      canvas.addEventListener("touchmove", move, { passive: false });
+      window.addEventListener("touchend", end);
+    }
+
+    window.confirmAndSavePdfCrop = () => {
+      if (!cropRect || cropRect.w < 15 || cropRect.h < 15) {
+        return alert("Please drag a selection box on the PDF page first.");
+      }
+      const srcCanvas = document.getElementById("pdfCropCanvas");
+      const maxW = 560;
+      const scale = Math.min(1, maxW / cropRect.w);
+      const outCanvas = document.createElement("canvas");
+      outCanvas.width = Math.round(cropRect.w * scale);
+      outCanvas.height = Math.round(cropRect.h * scale);
+      const outCtx = outCanvas.getContext("2d");
+      outCtx.fillStyle = "#FFFFFF";
+      outCtx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+      outCtx.drawImage(srcCanvas, cropRect.x, cropRect.y, cropRect.w, cropRect.h, 0, 0, outCanvas.width, outCanvas.height);
+
+      const mode = document.getElementById("cropFilterMode").value;
+      if (mode !== "original") {
+        const imgData = outCtx.getImageData(0, 0, outCanvas.width, outCanvas.height);
+        const d = imgData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const r = d[i], g = d[i + 1], b = d[i + 2];
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          const isPaleGreenYellowWatermark = (g > 210 && b > 195 && r > 195) || lum > 224;
+          if (mode === "fade") {
+            if (isPaleGreenYellowWatermark) { d[i] = 255; d[i + 1] = 255; d[i + 2] = 255; }
+          } else if (mode === "bw") {
+            const v = lum > 195 ? 255 : (lum < 110 ? 15 : lum);
+            d[i] = v; d[i + 1] = v; d[i + 2] = v;
+          }
+        }
+        outCtx.putImageData(imgData, 0, 0);
+      }
+
+      let dataUrl = outCanvas.toDataURL("image/webp", 0.58);
+      if (dataUrl.startsWith("data:image/png") || dataUrl.length > 28000) {
+        dataUrl = outCanvas.toDataURL("image/jpeg", 0.72);
+      }
+
+      if (cropTargetQIdx !== null && appState.studioQuestions[cropTargetQIdx]) {
+        const q = appState.studioQuestions[cropTargetQIdx];
+        q.svg = dataUrl;
+        const qNum = q.origQKey || (cropTargetQIdx + 1);
+        const figBox = document.getElementById("figuresPasteInput");
+        const blockRegex = new RegExp(`FIGURE\\s+Q${qNum}\\s*:\\s*\\[(?:SVG|DIAGRAM)_START\\][\\s\\S]*?\\[(?:SVG|DIAGRAM)_END\\]`, "i");
+        const newBlock = `FIGURE Q${qNum}:\n[SVG_START]\n<img src="${dataUrl}" alt="Q${qNum} Figure" />\n[SVG_END]`;
+        if (blockRegex.test(figBox.value)) {
+          figBox.value = figBox.value.replace(blockRegex, newBlock);
+        } else {
+          figBox.value = (figBox.value.trim() ? figBox.value.trim() + "\n---\n" : "") + newBlock;
+        }
+        document.getElementById("studioFigCount").textContent =
+          `${appState.studioQuestions.filter(x => x.svg || x.diagram).length} Figures Linked`;
+        renderStudioQuestions();
+      }
+      closeModal("pdfCropModal");
+    };
+
     window.loadComprehensiveDemoIntoStudio = () => {
       document.getElementById("studioCategorySelect").value = "GATE";
       handleStudioCategoryDropdownChange();
-      document.getElementById("studioTitle").value = "GATE EE 2025 — MCQ, MSQ, NAT & SVG Demo";
+      document.getElementById("studioTitle").value = "GATE EE 2025 — Split Questions & Figures Auto-Merge Demo";
       document.getElementById("studioSubject").value = "Electrical Engineering";
       document.getElementById("studioDuration").value = 25;
 
-      document.getElementById("directPasteInput").value = getDemoPaperStrictText();
+      const demoData = getSplitDemoQuestionsAndFigures();
+      document.getElementById("directPasteInput").value = demoData.questionsOnly;
+      document.getElementById("figuresPasteInput").value = demoData.figuresOnly;
       handleDirectPasteLiveInput();
       switchStudioTab("visual");
     };
 
     window.saveStudioPaperToFirebase = async (startImmediately) => {
-      handleDirectPasteLiveInput();
       if (!appState.studioQuestions.length) {
-        return alert("Please paste valid questions or click 'Load Demo' before saving.");
+        handleDirectPasteLiveInput();
+      }
+      if (!appState.studioQuestions.length) {
+        return alert("Please paste valid questions or click 'Load Split Demo' before saving.");
       }
 
       const sel = document.getElementById("studioCategorySelect");
@@ -3647,7 +4206,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 16. BOOKMARKS, SETTINGS & PORTABLE CLOUD BACKUP
+    // 17. BOOKMARKS, SETTINGS & PORTABLE CLOUD BACKUP
     // ============================================================================
     window.toggleLiveBookmark = async () => {
       const act = appState.activeAttempt;
@@ -3761,16 +4320,53 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
     };
 
     // ============================================================================
-    // 17. DEMO PAPER GENERATOR (SHOWCASING MCQ, MSQ, NAT, LATEX & DETAILED SVG)
+    // 18. SPLIT DEMO GENERATOR (QUESTIONS IN BOX A + FIGURES IN BOX B -> AUTO-MERGED)
     // ============================================================================
-    function getDemoPaperStrictText() {
-      return `Q1: The relationship between two variables $x$ and $y$ is given by $x + py + q = 0$ and is shown in the figure below. Find the values of $p$ and $q$.
+    function getSplitDemoQuestionsAndFigures() {
+      const questionsOnly = `Q1: Kavya _____ go to work yesterday as she _____ feeling well. Select the most appropriate option to complete the above sentence.
 Type: MCQ
 Section: General Aptitude
+Figure: NO
+A) didn't; isn't
+B) wouldn't; wasn't
+C) wasn't; wasn't
+D) couldn't; wasn't
+Answer: D
+Explanation: "couldn't" indicates past inability and "wasn't" matches the past tense ("yesterday").
+---
+Q2: The relationship between two variables $x$ and $y$ is given by $x + py + q = 0$ and is shown in the figure. Find the values of $p$ and $q$.
+Type: MCQ
+Section: General Aptitude
+Figure: YES
+A) $p = -\\frac{1}{2} \\; ; \\; q = 2$
+B) $p = 2 \\; ; \\; q = -2$
+C) $p = \\frac{1}{2} \\; ; \\; q = 4$
+D) $p = 2 \\; ; \\; q = 4$
+Answer: A
+Explanation: The line passes through $(-2, 0)$ and $(0, 4)$. Substituting $(-2, 0)$ into $x + py + q = 0$ gives $-2 + q = 0 \\Rightarrow q = 2$. Substituting $(0, 4)$ gives $0 + 4p + 2 = 0 \\Rightarrow p = -\\frac{1}{2}$.
+---
+Q3: In a source-free series $RLC$ circuit with $R = 4\\text{ }\\Omega$, $L = 1\\text{ H}$, and $C = \\frac{1}{8}\\text{ F}$, which of the following statements is/are CORRECT regarding its natural response for $t \\ge 0$?
+Type: MSQ
+Section: Electrical Circuits
+Figure: NO
+A) The damped natural frequency is $\\omega_d = 2\\text{ rad/s}$
+B) The damping attenuation factor is $\\alpha = 2\\text{ Np/s}$
+C) The circuit is overdamped with two distinct real roots
+D) The natural current response is of the form $i(t) = e^{-2t}(K_1\\cos 2t + K_2\\sin 2t)$
+Answer: A, B, D
+Explanation: Characteristic equation: $s^2 + \\frac{R}{L}s + \\frac{1}{LC} = s^2 + 4s + 8 = 0$. The roots are $s_{1,2} = -2 \\pm j2$. Thus $\\alpha = 2\\text{ Np/s}$ and $\\omega_d = 2\\text{ rad/s}$.
+---
+Q4: For the DC network shown in the figure, calculate the node voltage $V_A$ (in Volts) across the parallel branch.
+Type: NAT
+Section: Electrical Circuits
+Figure: YES
+Answer: 12
+Explanation: The $12\\text{ }\\Omega$ and $6\\text{ }\\Omega$ resistors are in parallel: $R_p = \\frac{12 \\times 6}{12 + 6} = 4\\text{ }\\Omega$. By voltage division, $V_A = 24 \\times \\frac{4}{4 + 4} = 12\\text{ V}$.`;
+
+      const figuresOnly = `FIGURE Q2:
 [SVG_START]
 <svg viewBox="0 0 480 250" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
   <rect width="480" height="250" fill="#f8fafc" rx="8"/>
-  <!-- Coordinate Grid -->
   <g stroke="#e2e8f0" stroke-width="1">
     <line x1="60" y1="30" x2="420" y2="30"/><line x1="60" y1="65" x2="420" y2="65"/>
     <line x1="60" y1="100" x2="420" y2="100"/><line x1="60" y1="135" x2="420" y2="135"/>
@@ -3779,12 +4375,10 @@ Section: General Aptitude
     <line x1="240" y1="20" x2="240" y2="215"/><line x1="310" y1="20" x2="310" y2="215"/>
     <line x1="380" y1="20" x2="380" y2="215"/>
   </g>
-  <!-- Axes X and Y -->
   <line x1="50" y1="170" x2="435" y2="170" stroke="#0f172a" stroke-width="2.2"/>
   <polygon points="435,165 446,170 435,175" fill="#0f172a"/>
   <line x1="240" y1="220" x2="240" y2="18" stroke="#0f172a" stroke-width="2.2"/>
   <polygon points="235,20 240,9 245,20" fill="#0f172a"/>
-  <!-- Plotted Line passing through (-2,0), (0,4), (2,8) -->
   <line x1="170" y1="170" x2="345" y2="47.5" stroke="#2563eb" stroke-width="3.2"/>
   <circle cx="170" cy="170" r="5" fill="#dc2626"/>
   <text x="138" y="192" font-size="12" font-weight="bold" fill="#991b1b">(-2, 0)</text>
@@ -3796,68 +4390,45 @@ Section: General Aptitude
   <text x="218" y="22" font-size="15" font-style="italic" font-weight="bold" fill="#0f172a">y</text>
 </svg>
 [SVG_END]
-A) $p = -\\frac{1}{2} \\; ; \\; q = 2$
-B) $p = 2 \\; ; \\; q = -2$
-C) $p = \\frac{1}{2} \\; ; \\; q = 4$
-D) $p = 2 \\; ; \\; q = 4$
-Answer: A
-Explanation: The line passes through $(-2, 0)$ and $(0, 4)$. Substituting $(-2, 0)$ into $x + py + q = 0$ gives $-2 + q = 0 \\Rightarrow q = 2$. Substituting $(0, 4)$ gives $0 + 4p + 2 = 0 \\Rightarrow p = -\\frac{1}{2}$.
 ---
-Q2: In a source-free series $RLC$ circuit with $R = 4\\text{ }\\Omega$, $L = 1\\text{ H}$, and $C = \\frac{1}{8}\\text{ F}$, which of the following statements is/are CORRECT regarding its natural response for $t \\ge 0$? (Multiple Select Question)
-Type: MSQ
-Section: Electrical Circuits
-A) The damped natural frequency is $\\omega_d = 2\\text{ rad/s}$
-B) The damping attenuation factor is $\\alpha = 2\\text{ Np/s}$
-C) The circuit is overdamped with two distinct real roots
-D) The natural current response is of the form $i(t) = e^{-2t}(K_1\\cos 2t + K_2\\sin 2t)$
-Answer: A, B, D
-Explanation: Characteristic equation: $s^2 + \\frac{R}{L}s + \\frac{1}{LC} = s^2 + 4s + 8 = 0$. The roots are $s_{1,2} = -\\alpha \\pm j\\omega_d = -2 \\pm j2$. Thus $\\alpha = 2\\text{ Np/s}$, $\\omega_d = 2\\text{ rad/s}$, and the circuit is underdamped with response $e^{-2t}(K_1\\cos 2t + K_2\\sin 2t)$. Statements A, B, and D are correct.
----
-Q3: For the DC network shown in the figure below, calculate the node voltage $V_A$ (in Volts) across the parallel branch. (Enter a numerical value)
-Type: NAT
-Section: Electrical Circuits
+FIGURE Q4:
 [SVG_START]
 <svg viewBox="0 0 540 230" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
   <rect width="540" height="230" fill="#f8fafc" rx="8"/>
-  <!-- Top & Bottom Rails -->
   <line x1="70" y1="50" x2="145" y2="50" stroke="#0f172a" stroke-width="2.5"/>
   <line x1="235" y1="50" x2="440" y2="50" stroke="#0f172a" stroke-width="2.5"/>
   <line x1="70" y1="180" x2="440" y2="180" stroke="#0f172a" stroke-width="2.5"/>
   <line x1="70" y1="50" x2="70" y2="88" stroke="#0f172a" stroke-width="2.5"/>
   <line x1="70" y1="142" x2="70" y2="180" stroke="#0f172a" stroke-width="2.5"/>
-  <!-- 24V Source -->
   <circle cx="70" cy="115" r="26" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
   <text x="64" y="109" font-size="15" font-weight="bold" fill="#1d4ed8">+</text>
   <text x="66" y="129" font-size="17" font-weight="bold" fill="#1d4ed8">-</text>
   <text x="14" y="120" font-size="14" font-weight="bold" fill="#1e3a8a">24 V</text>
-  <!-- Resistor R1 = 4 Ohm Zig-Zag -->
   <polyline points="145,50 153,38 165,62 177,38 189,62 201,38 213,62 225,38 235,50" fill="none" stroke="#4338ca" stroke-width="2.5"/>
   <text x="162" y="28" font-size="13" font-weight="bold" fill="#312e81">R1 = 4 Ω</text>
-  <!-- Node Va -->
   <circle cx="300" cy="50" r="5" fill="#dc2626"/>
   <text x="285" y="32" font-size="14" font-weight="bold" fill="#dc2626">V_A</text>
-  <!-- Branch 1: R2 = 12 Ohm -->
   <line x1="300" y1="50" x2="300" y2="80" stroke="#0f172a" stroke-width="2.5"/>
   <polyline points="300,80 312,87 288,99 312,111 288,123 312,135 288,145 300,152" fill="none" stroke="#059669" stroke-width="2.5"/>
   <text x="320" y="120" font-size="13" font-weight="bold" fill="#065f46">R2 = 12 Ω</text>
   <line x1="300" y1="152" x2="300" y2="180" stroke="#0f172a" stroke-width="2.5"/>
-  <!-- Branch 2: R3 = 6 Ohm -->
   <line x1="440" y1="50" x2="440" y2="80" stroke="#0f172a" stroke-width="2.5"/>
   <polyline points="440,80 452,87 428,99 452,111 428,123 452,135 428,145 440,152" fill="none" stroke="#059669" stroke-width="2.5"/>
   <text x="460" y="120" font-size="13" font-weight="bold" fill="#065f46">R3 = 6 Ω</text>
   <line x1="440" y1="152" x2="440" y2="180" stroke="#0f172a" stroke-width="2.5"/>
 </svg>
-[SVG_END]
-Answer: 12
-Explanation: The $12\\text{ }\\Omega$ and $6\\text{ }\\Omega$ resistors are in parallel: $R_p = \\frac{12 \\times 6}{12 + 6} = 4\\text{ }\\Omega$. By voltage division, $V_A = 24 \\times \\frac{R_p}{R_1 + R_p} = 24 \\times \\frac{4}{4 + 4} = 12\\text{ V}$.`;
+[SVG_END]`;
+
+      return { questionsOnly, figuresOnly };
     }
 
     async function seedDemoPaperIfEmpty() {
       if (appState.papers.length > 0) return;
-      const sampleQuestions = parseUniversalQuestions(getDemoPaperStrictText());
+      const demo = getSplitDemoQuestionsAndFigures();
+      const { questions } = parseAndMergeQuestionsAndFigures(demo.questionsOnly, demo.figuresOnly);
       const samplePaper = {
         id: "paper_demo_gate_ee_2025",
-        title: "GATE EE 2025 — MCQ, MSQ, NAT & SVG Benchmark",
+        title: "GATE EE 2025 — Split Auto-Merged MCQ, MSQ & NAT Demo",
         category: "GATE",
         year: 2026,
         subject: "Electrical Engineering",
@@ -3865,7 +4436,7 @@ Explanation: The $12\\text{ }\\Omega$ and $6\\text{ }\\Omega$ resistors are in p
         posMark: 2,
         negMark: 0.67,
         createdAt: new Date().toISOString(),
-        questions: sampleQuestions
+        questions
       };
       appState.papers.push(samplePaper);
       await savePaperDocToFirestore(samplePaper);
